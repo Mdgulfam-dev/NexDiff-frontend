@@ -51,7 +51,7 @@ return ( <section className="min-h-screen bg-[#0F172A] text-white py-22 px-6"> <
     {/* Heading */}
     <div className="text-center">
       <h1 className="text-4xl font-bold">
-        Our Services 🚀
+        Our Services
       </h1>
       <p className="mt-4 text-white/70">
         We provide complete digital solutions tailored to your business.

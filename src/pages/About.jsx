@@ -74,7 +74,7 @@ return ( <section className="min-h-screen bg-[#0F172A] text-white py-30 px-6"> <
     {/* ABOUT COMPANY */}
     <div className="mt-20 text-center max-w-3xl mx-auto">
       <h2 className="text-3xl font-bold mb-4">
-        Who We Are 🚀
+        Who We Are
       </h2>
       <p className="text-white/70 leading-relaxed">
         We are a team of passionate engineers and creatives focused on building
@@ -86,7 +86,7 @@ return ( <section className="min-h-screen bg-[#0F172A] text-white py-30 px-6"> <
     {/* TEAM SECTION */}
     <div className="mt-20">
       <h2 className="text-3xl font-bold text-center">
-        Meet Our Team 👨‍💻
+        Meet Our Team
       </h2>
 
       <div className="grid md:grid-cols-4 gap-8 mt-10">
@@ -131,7 +131,7 @@ return ( <section className="min-h-screen bg-[#0F172A] text-white py-30 px-6"> <
     {/* CTA */}
     <div className="mt-20 text-center">
       <h2 className="text-3xl font-bold">
-        Let’s Work Together 🚀
+        Let’s Work Together 
       </h2>
 
       <div className="mt-6">

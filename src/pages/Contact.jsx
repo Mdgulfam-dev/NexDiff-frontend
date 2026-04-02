@@ -154,7 +154,7 @@ return (
           <Button
             className={`w-full ${loading ? "opacity-70 cursor-not-allowed" : ""}`}
           >
-            {loading ? "Sending..." : "Send Message 🚀"}
+            {loading ? "Sending..." : "Send Message"}
           </Button>
         </div>
       </form>
