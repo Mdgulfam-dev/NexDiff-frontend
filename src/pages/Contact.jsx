@@ -102,7 +102,7 @@ return (
         </p>
 
         <div className="mt-8 space-y-4 text-white/80">
-          <p>📧 info@nexdiff.com</p>
+          {/* <p>📧 info@nexdiff.com</p> */}
           <p>📞 +91 9001402531</p>
           <p>📍 Delhi, India</p>
         </div>
