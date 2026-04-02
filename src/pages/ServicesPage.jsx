@@ -1,30 +1,51 @@
 import { motion } from "framer-motion";
-
+import {
+  FaCode,
+  FaMobileAlt,
+  FaCloud,
+  FaChartLine,
+  FaRobot,
+} from "react-icons/fa";
 const services = [
-{
-title: "Web Development",
-desc: "We build fast, scalable and SEO-friendly websites using modern technologies like React, Node.js and more.",
-},
-{
-title: "App Development",
-desc: "Custom Android & iOS apps designed for performance, scalability and great user experience.",
-},
-{
-title: "AI Solutions",
-desc: "AI-powered applications, automation tools and smart integrations for your business.",
-},
-{
-title: "Cloud & DevOps",
-desc: "AWS deployment, Docker setup, CI/CD pipelines and scalable cloud infrastructure.",
-},
-{
-title: "Digital Marketing",
-desc: "SEO, paid ads, and social media strategies to grow your brand online.",
-},
+  {
+    title: "Lead Generating Websites",
+    icon: <FaCode size={26} />,
+    desc: "We build high-converting websites designed to generate leads, boost SEO rankings, and grow your business.",
+  },
+  {
+    title: "Mobile Apps for Growth",
+    icon: <FaMobileAlt size={26} />,
+    desc: "Engaging mobile apps that improve customer retention, user experience, and revenue generation.",
+  },
+  {
+    title: "Web Development",
+    icon: <FaCode size={28} />,
+    desc: "Modern, fast and scalable web applications using latest technologies.",
+  },
+  {
+    title: "AI Automation Solutions",
+    icon: <FaRobot size={26} />,
+    desc: "Automate your business with AI chatbots, workflows, and smart tools to save time and increase efficiency.",
+  },
+  {
+    title: "Cloud & DevOps Scaling",
+    icon: <FaCloud size={26} />,
+    desc: "Scale your product with secure cloud infrastructure, fast deployment, and zero downtime systems.",
+  },
+  {
+    title: "Performance Marketing",
+    icon: <FaChartLine size={26} />,
+    desc: "Run high-converting ads on Google, Facebook & Instagram to generate real leads and maximize ROI.",
+  },
+  {
+    title: "Social Media Growth",
+    icon: <FaChartLine size={26} />,
+    desc: "We manage and grow your social media presence to build brand awareness and attract customers.",
+  },
 ];
 
 const ServicesPage = () => {
-return ( <section className="min-h-screen bg-[#0F172A] text-white py-20 px-6"> <div className="max-w-7xl mx-auto">
+return ( <section className="min-h-screen bg-[#0F172A] text-white py-22 px-6"> <div className="max-w-7xl mx-auto">
 
 
     {/* Heading */}

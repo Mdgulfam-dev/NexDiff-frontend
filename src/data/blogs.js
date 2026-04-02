@@ -658,7 +658,8 @@ will lead the next generation of software innovation.
     id: 3,
     title: "DevOps Complete Guide: Docker, CI/CD & Kubernetes Explained",
     category: "DevOps",
-    image: "https://images.unsplash.com/photo-1605902711622-cfb43c4437d1",
+    image:
+      "https://images.unsplash.com/photo-1518770660439-4636190af475?q=80&w=1200&auto=format&fit=crop",
     desc: "Master DevOps tools, workflows, and system design practices for modern scalable applications.",
     content: `
 
