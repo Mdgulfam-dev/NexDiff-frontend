@@ -1,6 +1,10 @@
 {
   "routes": [
     {
+      "src": "/assets/(.*)",
+      "dest": "/assets/$1"
+    },
+    {
       "src": "/sitemap.xml",
       "headers": {
         "Content-Type": "application/xml"
