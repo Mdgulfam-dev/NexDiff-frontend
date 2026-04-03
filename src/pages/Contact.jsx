@@ -84,7 +84,7 @@ setLoading(false);
 
 
 return (
-  <section className="min-h-screen bg-[#0F172A] text-white py-60 px-6">
+  <section className="min-h-screen bg-[#0F172A] text-white py-30 px-6">
     {" "}
     <div className="max-w-6xl mx-auto grid md:grid-cols-2 gap-12 items-start">
       {/* LEFT SIDE */}
