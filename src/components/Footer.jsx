@@ -187,7 +187,7 @@ const Footer = () => {
 
           <div className="space-y-3 text-sm text-white/70">
             <p className="flex items-center gap-2">
-              <FaEnvelope /> info@nexdiff.in
+              <FaEnvelope /> info.nexdiff@gmail.com
             </p>
 
             <a
