@@ -169,7 +169,7 @@ const DashboardPreview = () => {
   useEffect(() => {
     const interval = setInterval(() => {
       // 🔥 small realistic change
-      const change = Math.floor(Math.random() * 6 + 2); // +2 to +8 users
+      const change = Math.floor(Math.random() * 2 + 1); // +1 to +3 users
 
       setUsers((prev) => prev + change);
 
@@ -190,7 +190,7 @@ const DashboardPreview = () => {
 
         return [...prev.slice(1), newPoint];
       });
-    }, 3000);
+    }, 15000);
 
     return () => clearInterval(interval);
   }, []);
