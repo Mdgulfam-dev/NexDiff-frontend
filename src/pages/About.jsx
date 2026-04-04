@@ -230,7 +230,7 @@ const About = () => {
                 link: "https://nexdiff.in",
               },
               {
-                name: "Rennovax",
+                name: "Renovax",
                 desc: "Construction, renovation, and infrastructure solutions for modern businesses.",
                 link: "https://mdrabbancontractor.in",
               },

@@ -146,7 +146,7 @@ const Footer = () => {
           {/* 🔥 Brands */}
           <div className="mt-4 text-xs text-white/50 space-y-1">
             <p>🏢 NexDiff</p>
-            <p>🏗️ Rennovax</p>
+            <p>🏗️ Renovax</p>
             <p>🛍️ SK Discount Bazaar</p>
           </div>
         </div>
@@ -204,10 +204,13 @@ const Footer = () => {
             <a href="#" target="_blank">
               <FaFacebook className="hover:text-white hover:scale-110 transition" />
             </a>
-            <a href="#" target="_blank">
+            <a
+              href="https://www.instagram.com/nexdiff.in?igsh=MTg1MGQ3eXEzODVqcA=="
+              target="_blank"
+            >
               <FaInstagram className="hover:text-white hover:scale-110 transition" />
             </a>
-            <a href="#" target="_blank">
+            <a href="https://www.linkedin.com/company/nexdiff/" target="_blank">
               <FaLinkedin className="hover:text-white hover:scale-110 transition" />
             </a>
             <a href="#" target="_blank">

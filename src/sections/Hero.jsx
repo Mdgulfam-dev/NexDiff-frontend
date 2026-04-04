@@ -185,7 +185,7 @@ const Hero = () => {
             className="mt-8 flex flex-wrap gap-4 text-xs text-white/60"
           >
             <span>🏢 NexDiff</span>
-            <span>🏗️ Rennovax</span>
+            <span>🏗️ Renovax</span>
             <span>🛍️ SK Discount Bazaar</span>
           </motion.div>
 
