@@ -126,6 +126,7 @@
 // export default TechStack;
 
 import { motion } from "framer-motion";
+import { useNavigate } from "react-router-dom";
 import {
   FaReact,
   FaNodeJs,
@@ -156,6 +157,7 @@ import {
 } from "react-icons/si";
 
 const tech = {
+
   Frontend: [
     { name: "React", icon: <FaReact />, tag: "🔥 Core" },
     { name: "Next.js", icon: <SiNextdotjs />, tag: "⚡ Fast" },
@@ -201,6 +203,8 @@ const tech = {
 };
 
 const TechStack = () => {
+  const navigate = useNavigate();
+  
   return (
     <section className="bg-[#0B1120] text-white py-24 px-6 relative overflow-hidden">
       {/* 🔥 Background Glow */}
@@ -276,7 +280,10 @@ const TechStack = () => {
         <div className="text-center mt-16">
           <p className="text-white/50 mb-4">Want to build using modern tech?</p>
 
-          <button className="px-6 py-3 bg-gradient-to-r from-purple-500 to-cyan-400 rounded-xl font-semibold text-black hover:scale-105 transition">
+          <button
+            onClick={() => navigate("/contact")}
+            className="px-6 py-3 bg-gradient-to-r from-purple-500 to-cyan-400 rounded-xl font-semibold text-black hover:scale-105 transition"
+          >
             🚀 Start Your Project
           </button>
         </div>
