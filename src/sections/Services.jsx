@@ -13,7 +13,7 @@ const services = [
     title: "Lead Generating Websites",
     icon: <FaCode size={26} />,
     desc: "High-converting websites designed to generate leads and boost SEO.",
-    highlight: "🔥 High Demand",
+    highlight: " High Demand",
   },
   {
     title: "Mobile Apps for Growth",
@@ -29,7 +29,7 @@ const services = [
     title: "AI Automation Solutions",
     icon: <FaRobot size={26} />,
     desc: "Automate workflows, reduce cost, and increase efficiency.",
-    highlight: "🤖 Trending",
+    highlight: " Trending",
   },
   {
     title: "Cloud & DevOps Scaling",
@@ -40,7 +40,7 @@ const services = [
     title: "Performance Marketing",
     icon: <FaChartLine size={26} />,
     desc: "Run ads that generate real leads & measurable ROI.",
-    highlight: "💰 ROI Focused",
+    highlight: " ROI Focused",
   },
   {
     title: "Social Media Growth",
@@ -139,7 +139,7 @@ const Services = () => {
             onClick={() => navigate("/contact")}
             className="px-6 py-3 bg-gradient-to-r from-purple-500 to-cyan-400 rounded-xl font-semibold text-black hover:scale-105 transition"
           >
-            🚀 Book Free Consultation
+             Book Free Consultation
           </button>
         </div>
       </div>

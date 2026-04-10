@@ -118,7 +118,7 @@ const Hero = () => {
             variants={{ hidden: { opacity: 0 }, visible: { opacity: 1 } }}
             className="text-sm text-cyan-400 mb-3"
           >
-            🚀 AI + Software + Growth Systems
+            AI + Software + Growth Systems
           </motion.p>
 
           {/* 🔥 HEADING */}
@@ -156,7 +156,7 @@ const Hero = () => {
             }}
             className="mt-4 text-sm text-white/50"
           >
-            Trusted by startups & businesses across India 🇮🇳
+            Trusted by startups & businesses across India 
           </motion.p>
 
           {/* 🔥 BUTTONS */}
@@ -168,7 +168,7 @@ const Hero = () => {
             className="mt-8 flex flex-col sm:flex-row gap-4"
           >
             <Button onClick={() => navigate("/contact")}>
-              🚀 Get Free Consultation
+              Get Free Consultation
             </Button>
 
             <Button variant="outline" onClick={() => navigate("/services")}>
@@ -184,9 +184,9 @@ const Hero = () => {
             }}
             className="mt-8 flex flex-wrap gap-4 text-xs text-white/60"
           >
-            <span>🏢 NexDiff</span>
-            <span>🏗️ Renovax</span>
-            <span>🛍️ SK Discount Bazaar</span>
+            <span>NexDiff</span>
+            <span>Renovax</span>
+            <span>SK Discount Bazaar</span>
           </motion.div>
 
           {/* 🔥 STATS */}

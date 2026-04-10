@@ -143,7 +143,7 @@ const Testimonials = () => {
         {/* 🔥 Heading */}
         <div className="text-center">
           <h2 className="text-4xl md:text-5xl font-bold">
-            Loved by Clients ❤️
+            Loved by Clients
           </h2>
 
           <p className="mt-4 text-white/60">
@@ -220,7 +220,7 @@ const Testimonials = () => {
             onClick={() => navigate("/contact")}
             className="px-6 py-3 bg-gradient-to-r from-purple-500 to-cyan-400 rounded-xl font-semibold text-black hover:scale-105 transition"
           >
-            🚀 Start Your Project
+            Start Your Project
           </button>
         </div>
       </div>
