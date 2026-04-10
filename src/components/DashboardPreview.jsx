@@ -285,8 +285,8 @@ const DashboardPreview = () => {
 
       {/* Footer */}
       <div className="mt-6 text-sm text-white/70 space-y-1">
-        <p>🚀 Early-stage growth</p>
-        <p>📈 Real-time user activity</p>
+        <p> Early-stage growth</p>
+        <p> Real-time user activity</p>
       </div>
     </motion.div>
   );

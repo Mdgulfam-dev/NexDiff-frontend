@@ -307,7 +307,7 @@ const About = () => {
         {/* 🔥 CTA */}
         <div className="mt-20 text-center">
           <h2 className="text-3xl font-bold">
-            Let’s Build Something Powerful Together 🚀
+            Let’s Build Something Powerful Together 
           </h2>
 
           <p className="text-white/60 mt-4">

@@ -1,112 +1,4 @@
-// import { FaFacebook, FaInstagram, FaLinkedin, FaTwitter } from "react-icons/fa";
-// import logo from "../assets/logo.png";
-// import { Link } from "react-router-dom";
 
-// const Footer = () => {
-//   const handleScrollTop = () => {
-//     window.scrollTo({
-//       top: 0,
-//       behavior: "smooth",
-//     });
-//   };
-
-//   return (
-//     <footer className="bg-[#0F172A] text-white border-t border-white/10">
-//       <div className="max-w-7xl mx-auto px-6 py-14 grid md:grid-cols-4 gap-10">
-//         {/* Brand */}
-//         <div>
-//           <div className="flex items-center gap-2">
-//             <img
-//               src={logo}
-//               alt="NexDiff Logo"
-//               className="w-12 h-12 object-contain"
-//             />
-//             <h2 className="text-xl font-semibold">NexDiff</h2>
-//           </div>
-
-//           <p className="mt-4 text-white/70 text-sm leading-relaxed">
-//             We build modern digital solutions to help businesses grow faster.
-//           </p>
-//         </div>
-
-//         {/* Quick Links */}
-//         <div>
-//           <h3 className="font-semibold mb-4">Quick Links</h3>
-//           <ul className="space-y-2 text-white/70 text-sm">
-//             <li>
-//               <Link
-//                 to="/"
-//                 onClick={handleScrollTop}
-//                 className="hover:text-white transition"
-//               >
-//                 Home
-//               </Link>
-//             </li>
-
-//             <li>
-//               <Link
-//                 to="/services"
-//                 onClick={handleScrollTop}
-//                 className="hover:text-white transition"
-//               >
-//                 Services
-//               </Link>
-//             </li>
-
-//             <li>
-//               <Link
-//                 to="/about"
-//                 onClick={handleScrollTop}
-//                 className="hover:text-white transition"
-//               >
-//                 About
-//               </Link>
-//             </li>
-
-//             <li>
-//               <Link
-//                 to="/contact"
-//                 onClick={handleScrollTop}
-//                 className="hover:text-white transition"
-//               >
-//                 Contact
-//               </Link>
-//             </li>
-//           </ul>
-//         </div>
-
-//         {/* Services */}
-//         <div>
-//           <h3 className="font-semibold mb-4">Services</h3>
-//           <ul className="space-y-2 text-white/70 text-sm">
-//             <li>Web Development</li>
-//             <li>App Development</li>
-//             <li>AI Solutions</li>
-//             <li>Cloud & DevOps</li>
-//           </ul>
-//         </div>
-
-//         {/* Social */}
-//         <div>
-//           <h3 className="font-semibold mb-4">Connect</h3>
-//           <div className="flex gap-4 text-xl text-white/70">
-//             <FaFacebook className="hover:text-white cursor-pointer transition" />
-//             <FaInstagram className="hover:text-white cursor-pointer transition" />
-//             <FaLinkedin className="hover:text-white cursor-pointer transition" />
-//             <FaTwitter className="hover:text-white cursor-pointer transition" />
-//           </div>
-//         </div>
-//       </div>
-
-//       {/* Bottom */}
-//       <div className="border-t border-white/10 text-center py-6 text-white/50 text-sm">
-//         © {new Date().getFullYear()} NexDiff. All rights reserved.
-//       </div>
-//     </footer>
-//   );
-// };
-
-// export default Footer;
 
 import {
   FaFacebook,
@@ -115,6 +7,7 @@ import {
   FaTwitter,
   FaWhatsapp,
   FaEnvelope,
+  FaGoogle,
 } from "react-icons/fa";
 import logo from "../assets/logo.png";
 import { Link } from "react-router-dom";
@@ -145,9 +38,32 @@ const Footer = () => {
 
           {/* 🔥 Brands */}
           <div className="mt-4 text-xs text-white/50 space-y-1">
-            <p>🏢 NexDiff</p>
-            <p>🏗️ Renovax</p>
-            <p>🛍️ SK Discount Bazaar</p>
+            <a
+              href="https://www.nexdiff.in"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="block hover:text-white transition"
+            >
+              NexDiff
+            </a>
+
+            <a
+              href="https://mdrabbancontractor.in"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="block hover:text-white transition"
+            >
+              Renovax
+            </a>
+
+            <a
+              href="https://share.google/VCzF2MdYnnzzTvjti"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="block hover:text-white transition"
+            >
+              SK Discount Bazaar
+            </a>
           </div>
         </div>
 
@@ -213,8 +129,12 @@ const Footer = () => {
             <a href="https://www.linkedin.com/company/nexdiff/" target="_blank">
               <FaLinkedin className="hover:text-white hover:scale-110 transition" />
             </a>
-            <a href="#" target="_blank">
-              <FaTwitter className="hover:text-white hover:scale-110 transition" />
+            <a
+              href="https://share.google/3NBEUFrLgUfUMbEVE"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              <FaGoogle className="hover:text-white hover:scale-110 transition" />
             </a>
           </div>
         </div>
@@ -224,9 +144,7 @@ const Footer = () => {
       <div className="border-t border-white/10 text-center py-6 text-white/50 text-sm">
         © {new Date().getFullYear()} NexDiff. All rights reserved.
         <br />
-        <span className="text-xs text-white/40">
-          Built with ❤️ using modern web technologies
-        </span>
+        
       </div>
     </footer>
   );

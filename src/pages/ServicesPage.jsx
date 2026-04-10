@@ -34,7 +34,7 @@ const ServicesPage = () => {
         {/* 🔥 Bottom CTA */}
         <div className="text-center mt-20">
           <h3 className="text-2xl font-semibold">
-            Ready to grow your business? 🚀
+            Ready to grow your business? 
           </h3>
 
           <p className="text-white/50 mt-3">

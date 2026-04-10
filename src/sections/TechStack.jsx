@@ -159,18 +159,18 @@ import {
 const tech = {
 
   Frontend: [
-    { name: "React", icon: <FaReact />, tag: "🔥 Core" },
+    { name: "React", icon: <FaReact />, tag: "Core" },
     { name: "Next.js", icon: <SiNextdotjs />, tag: "⚡ Fast" },
     { name: "React Native", icon: <FaReact /> },
     { name: "JavaScript", icon: <SiJavascript /> },
-    { name: "TypeScript", icon: <SiTypescript />, tag: "🔥 Core" },
+    { name: "TypeScript", icon: <SiTypescript />, tag: "Core" },
     { name: "HTML5", icon: <FaHtml5 /> },
     { name: "CSS3", icon: <FaCss3Alt /> },
     { name: "Tailwind", icon: <SiTailwindcss /> },
   ],
 
   Backend: [
-    { name: "Node.js", icon: <FaNodeJs />, tag: "🔥 Core" },
+    { name: "Node.js", icon: <FaNodeJs />, tag: "Core" },
     { name: "Express.js", icon: <SiExpress /> },
     { name: "Spring Boot", icon: <SiSpring /> },
     { name: "Django", icon: <SiDjango /> },
@@ -178,7 +178,7 @@ const tech = {
   ],
 
   Database: [
-    { name: "MongoDB", icon: <SiMongodb />, tag: "🔥 Core" },
+    { name: "MongoDB", icon: <SiMongodb />, tag: "Core" },
     { name: "MySQL", icon: <SiMysql /> },
     { name: "PostgreSQL", icon: <SiPostgresql /> },
     { name: "Redis", icon: <SiRedis />, tag: "⚡ Fast" },
@@ -186,19 +186,19 @@ const tech = {
   ],
 
   DevOps: [
-    { name: "Docker", icon: <FaDocker />, tag: "🔥 Core" },
+    { name: "Docker", icon: <FaDocker />, tag: "Core" },
     { name: "Kubernetes", icon: <SiKubernetes /> },
     { name: "Nginx", icon: <SiNginx /> },
   ],
 
   Cloud: [
-    { name: "AWS", icon: <FaAws />, tag: "🔥 Core" },
+    { name: "AWS", icon: <FaAws />, tag: "Core" },
     { name: "Google Cloud", icon: <SiGooglecloud /> },
   ],
 
   AI: [
-    { name: "OpenAI", icon: <SiOpenai />, tag: "🤖 AI" },
-    { name: "AI Integration", icon: <SiOpenai />, tag: "🤖 AI" },
+    { name: "OpenAI", icon: <SiOpenai />, tag: "AI" },
+    { name: "AI Integration", icon: <SiOpenai />, tag: "AI" },
   ],
 };
 
@@ -284,7 +284,7 @@ const TechStack = () => {
             onClick={() => navigate("/contact")}
             className="px-6 py-3 bg-gradient-to-r from-purple-500 to-cyan-400 rounded-xl font-semibold text-black hover:scale-105 transition"
           >
-            🚀 Start Your Project
+            Start Your Project
           </button>
         </div>
       </div>
