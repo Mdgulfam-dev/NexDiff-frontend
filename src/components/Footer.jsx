@@ -1,10 +1,159 @@
+// import {
+//   FaFacebook,
+//   FaInstagram,
+//   FaLinkedin,
+//   FaTwitter,
+//   FaWhatsapp,
+//   FaEnvelope,
+//   FaGoogle,
+// } from "react-icons/fa";
+// import logo from "../assets/logo.png";
+// import { Link } from "react-router-dom";
 
+// const Footer = () => {
+//   const handleScrollTop = () => {
+//     window.scrollTo({ top: 0, behavior: "smooth" });
+//   };
+
+//   return (
+//     <footer className="bg-[#0F172A] text-white border-t border-white/10 relative overflow-hidden">
+//       {/* 🔥 Background Glow */}
+//       <div className="absolute w-[400px] h-[400px] bg-purple-600/20 blur-3xl top-[-100px] left-[-100px]" />
+//       <div className="absolute w-[300px] h-[300px] bg-cyan-500/20 blur-3xl bottom-[-100px] right-[-100px]" />
+
+//       <div className="max-w-7xl mx-auto px-6 py-14 grid md:grid-cols-4 gap-10 relative z-10">
+//         {/* 🔥 Brand */}
+//         <div>
+//           <div className="flex items-center gap-2">
+//             <img src={logo} alt="NexDiff Logo" className="w-12 h-12" />
+//             <h2 className="text-xl font-semibold">NexDiff</h2>
+//           </div>
+
+//           <p className="mt-4 text-white/70 text-sm leading-relaxed">
+//             We build scalable software, AI systems, and growth-focused solutions
+//             for modern businesses.
+//           </p>
+
+//           {/* 🔥 Brands */}
+//           <div className="mt-4 text-xs text-white/50 space-y-1">
+//             <a
+//               href="https://www.nexdiff.in"
+//               target="_blank"
+//               rel="noopener noreferrer"
+//               className="block hover:text-white transition"
+//             >
+//               NexDiff
+//             </a>
+
+//             <a
+//               href="https://mdrabbancontractor.in"
+//               target="_blank"
+//               rel="noopener noreferrer"
+//               className="block hover:text-white transition"
+//             >
+//               Renovax
+//             </a>
+
+//             <a
+//               href="https://share.google/VCzF2MdYnnzzTvjti"
+//               target="_blank"
+//               rel="noopener noreferrer"
+//               className="block hover:text-white transition"
+//             >
+//               SK Discount Bazaar
+//             </a>
+//           </div>
+//         </div>
+
+//         {/* 🔥 Quick Links */}
+//         <div>
+//           <h3 className="font-semibold mb-4">Quick Links</h3>
+//           <ul className="space-y-2 text-white/70 text-sm">
+//             {["/", "/services", "/about", "/contact"].map((path, i) => (
+//               <li key={i}>
+//                 <Link
+//                   to={path}
+//                   onClick={handleScrollTop}
+//                   className="hover:text-white transition"
+//                 >
+//                   {path === "/" ? "Home" : path.replace("/", "")}
+//                 </Link>
+//               </li>
+//             ))}
+//           </ul>
+//         </div>
+
+//         {/* 🔥 Services */}
+//         <div>
+//           <h3 className="font-semibold mb-4">Services</h3>
+//           <ul className="space-y-2 text-white/70 text-sm">
+//             <li>Web Development</li>
+//             <li>Mobile Apps</li>
+//             <li>AI Solutions</li>
+//             <li>Cloud & DevOps</li>
+//             <li>Performance Marketing</li>
+//           </ul>
+//         </div>
+
+//         {/* 🔥 Contact + Social */}
+//         <div>
+//           <h3 className="font-semibold mb-4">Contact</h3>
+
+//           <div className="space-y-3 text-sm text-white/70">
+//             <p className="flex items-center gap-2">
+//               <FaEnvelope /> info.nexdiff@gmail.com
+//             </p>
+
+//             <a
+//               href="https://wa.me/919001402531"
+//               target="_blank"
+//               className="flex items-center gap-2 hover:text-white transition"
+//             >
+//               <FaWhatsapp /> WhatsApp Chat
+//             </a>
+//           </div>
+
+//           {/* 🔥 Social */}
+//           <div className="flex gap-4 mt-5 text-xl text-white/70">
+//             <a href="#" target="_blank">
+//               <FaFacebook className="hover:text-white hover:scale-110 transition" />
+//             </a>
+//             <a
+//               href="https://www.instagram.com/nexdiff.in?igsh=MTg1MGQ3eXEzODVqcA=="
+//               target="_blank"
+//             >
+//               <FaInstagram className="hover:text-white hover:scale-110 transition" />
+//             </a>
+//             <a href="https://www.linkedin.com/company/nexdiff/" target="_blank">
+//               <FaLinkedin className="hover:text-white hover:scale-110 transition" />
+//             </a>
+//             <a
+//               href="https://share.google/3NBEUFrLgUfUMbEVE"
+//               target="_blank"
+//               rel="noopener noreferrer"
+//             >
+//               <FaGoogle className="hover:text-white hover:scale-110 transition" />
+//             </a>
+//           </div>
+//         </div>
+//       </div>
+
+//       {/* 🔥 Bottom */}
+//       <div className="border-t border-white/10 text-center py-6 text-white/50 text-sm">
+//         © {new Date().getFullYear()} NexDiff. All rights reserved.
+//         <br />
+
+//       </div>
+//     </footer>
+//   );
+// };
+
+// export default Footer;
 
 import {
   FaFacebook,
   FaInstagram,
   FaLinkedin,
-  FaTwitter,
   FaWhatsapp,
   FaEnvelope,
   FaGoogle,
@@ -18,77 +167,84 @@ const Footer = () => {
   };
 
   return (
-    <footer className="bg-[#0F172A] text-white border-t border-white/10 relative overflow-hidden">
-      {/* 🔥 Background Glow */}
-      <div className="absolute w-[400px] h-[400px] bg-purple-600/20 blur-3xl top-[-100px] left-[-100px]" />
-      <div className="absolute w-[300px] h-[300px] bg-cyan-500/20 blur-3xl bottom-[-100px] right-[-100px]" />
+    <footer className="bg-[#0B1120] text-white border-t border-white/10 relative overflow-hidden">
+      {/* 🔥 Glow */}
+      <div className="absolute w-[300px] h-[300px] bg-purple-500/10 blur-3xl top-0 left-0" />
+      <div className="absolute w-[300px] h-[300px] bg-cyan-500/10 blur-3xl bottom-0 right-0" />
 
-      <div className="max-w-7xl mx-auto px-6 py-14 grid md:grid-cols-4 gap-10 relative z-10">
-        {/* 🔥 Brand */}
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 py-12 sm:py-14 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 relative z-10">
+        {/* 🔥 BRAND */}
         <div>
           <div className="flex items-center gap-2">
-            <img src={logo} alt="NexDiff Logo" className="w-12 h-12" />
-            <h2 className="text-xl font-semibold">NexDiff</h2>
+            <img src={logo} alt="NexDiff Logo" className="w-10 h-10" />
+            <span className="text-lg font-semibold">
+              Nex
+              <span className="bg-gradient-to-r from-white to-cyan-400 bg-clip-text text-transparent">
+                Diff
+              </span>
+            </span>
           </div>
 
-          <p className="mt-4 text-white/70 text-sm leading-relaxed">
+          <p className="mt-4 text-white/60 text-sm leading-relaxed">
             We build scalable software, AI systems, and growth-focused solutions
             for modern businesses.
           </p>
 
-          {/* 🔥 Brands */}
+          {/* Brands */}
           <div className="mt-4 text-xs text-white/50 space-y-1">
             <a
               href="https://www.nexdiff.in"
               target="_blank"
-              rel="noopener noreferrer"
-              className="block hover:text-white transition"
+              className="block hover:text-white"
             >
               NexDiff
             </a>
-
             <a
               href="https://mdrabbancontractor.in"
               target="_blank"
-              rel="noopener noreferrer"
-              className="block hover:text-white transition"
+              className="block hover:text-white"
             >
               Renovax
             </a>
-
             <a
               href="https://share.google/VCzF2MdYnnzzTvjti"
               target="_blank"
-              rel="noopener noreferrer"
-              className="block hover:text-white transition"
+              className="block hover:text-white"
             >
               SK Discount Bazaar
             </a>
           </div>
         </div>
 
-        {/* 🔥 Quick Links */}
+        {/* 🔥 QUICK LINKS */}
         <div>
-          <h3 className="font-semibold mb-4">Quick Links</h3>
-          <ul className="space-y-2 text-white/70 text-sm">
-            {["/", "/services", "/about", "/contact"].map((path, i) => (
+          <h3 className="text-sm font-semibold mb-4 text-white/80">
+            Quick Links
+          </h3>
+          <ul className="space-y-2 text-white/60 text-sm">
+            {[
+              { name: "Home", path: "/" },
+              { name: "Services", path: "/services" },
+              { name: "About", path: "/about" },
+              { name: "Contact", path: "/contact" },
+            ].map((link, i) => (
               <li key={i}>
                 <Link
-                  to={path}
+                  to={link.path}
                   onClick={handleScrollTop}
                   className="hover:text-white transition"
                 >
-                  {path === "/" ? "Home" : path.replace("/", "")}
+                  {link.name}
                 </Link>
               </li>
             ))}
           </ul>
         </div>
 
-        {/* 🔥 Services */}
+        {/* 🔥 SERVICES */}
         <div>
-          <h3 className="font-semibold mb-4">Services</h3>
-          <ul className="space-y-2 text-white/70 text-sm">
+          <h3 className="text-sm font-semibold mb-4 text-white/80">Services</h3>
+          <ul className="space-y-2 text-white/60 text-sm">
             <li>Web Development</li>
             <li>Mobile Apps</li>
             <li>AI Solutions</li>
@@ -97,11 +253,11 @@ const Footer = () => {
           </ul>
         </div>
 
-        {/* 🔥 Contact + Social */}
+        {/* 🔥 CONTACT */}
         <div>
-          <h3 className="font-semibold mb-4">Contact</h3>
+          <h3 className="text-sm font-semibold mb-4 text-white/80">Contact</h3>
 
-          <div className="space-y-3 text-sm text-white/70">
+          <div className="space-y-3 text-sm text-white/60">
             <p className="flex items-center gap-2">
               <FaEnvelope /> info.nexdiff@gmail.com
             </p>
@@ -115,36 +271,41 @@ const Footer = () => {
             </a>
           </div>
 
-          {/* 🔥 Social */}
-          <div className="flex gap-4 mt-5 text-xl text-white/70">
-            <a href="#" target="_blank">
-              <FaFacebook className="hover:text-white hover:scale-110 transition" />
-            </a>
-            <a
-              href="https://www.instagram.com/nexdiff.in?igsh=MTg1MGQ3eXEzODVqcA=="
-              target="_blank"
-            >
-              <FaInstagram className="hover:text-white hover:scale-110 transition" />
-            </a>
-            <a href="https://www.linkedin.com/company/nexdiff/" target="_blank">
-              <FaLinkedin className="hover:text-white hover:scale-110 transition" />
-            </a>
-            <a
-              href="https://share.google/3NBEUFrLgUfUMbEVE"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              <FaGoogle className="hover:text-white hover:scale-110 transition" />
-            </a>
+          {/* 🔥 SOCIAL ICONS */}
+          <div className="flex gap-3 mt-5">
+            {[
+              { icon: <FaFacebook />, link: "#" },
+              {
+                icon: <FaInstagram />,
+                link: "https://www.instagram.com/nexdiff.in",
+              },
+              {
+                icon: <FaLinkedin />,
+                link: "https://www.linkedin.com/company/nexdiff/",
+              },
+              {
+                icon: <FaGoogle />,
+                link: "https://share.google/3NBEUFrLgUfUMbEVE",
+              },
+            ].map((s, i) => (
+              <a
+                key={i}
+                href={s.link}
+                target="_blank"
+                className="w-9 h-9 flex items-center justify-center rounded-lg 
+                bg-white/5 border border-white/10 text-white/70 
+                hover:text-white hover:border-cyan-400/40 transition"
+              >
+                {s.icon}
+              </a>
+            ))}
           </div>
         </div>
       </div>
 
-      {/* 🔥 Bottom */}
-      <div className="border-t border-white/10 text-center py-6 text-white/50 text-sm">
+      {/* 🔥 BOTTOM */}
+      <div className="border-t border-white/10 text-center py-5 text-white/40 text-xs sm:text-sm">
         © {new Date().getFullYear()} NexDiff. All rights reserved.
-        <br />
-        
       </div>
     </footer>
   );
