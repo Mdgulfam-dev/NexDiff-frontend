@@ -156,7 +156,16 @@ const Hero = () => {
   const navigate = useNavigate();
 
   return (
-    <section className="min-h-screen flex items-center justify-center bg-[#0B1120] text-white relative overflow-hidden px-4 sm:px-6 lg:px-8">
+    <section
+      className="
+  min-h-screen 
+  flex items-center justify-center 
+  bg-[#0B1120] text-white 
+  relative overflow-hidden 
+  px-4 sm:px-6 lg:px-8
+  pt-20 sm:pt-24 md:pt-28
+"
+    >
       {/* 🔥 BACKGROUND GLOW */}
       <div className="absolute w-[500px] sm:w-[700px] h-[500px] sm:h-[700px] bg-purple-600/20 blur-3xl rounded-full -top-40 -left-40" />
       <div className="absolute w-[400px] sm:w-[600px] h-[400px] sm:h-[600px] bg-cyan-500/20 blur-3xl rounded-full -bottom-40 -right-40" />
