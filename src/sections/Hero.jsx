@@ -115,6 +115,19 @@ const Hero = () => {
             >
               View Services
             </Button>
+
+            <Button
+              variant="outline"
+              onClick={() =>
+                navigate("/pricing/request?plan=free-social-media-analysis")
+              }
+              className="inline-flex items-center justify-center gap-2 rounded-md border-[#c7f9cc]/50 bg-[#c7f9cc]/10 text-[#c7f9cc] hover:bg-[#c7f9cc]/18"
+            >
+              Get Free Audit
+              <span className="rounded-md bg-[#c7f9cc] px-2 py-0.5 text-xs font-semibold text-[#101312]">
+                0 cost
+              </span>
+            </Button>
           </Motion.div>
 
           <Motion.div
