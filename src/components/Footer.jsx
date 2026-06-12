@@ -47,8 +47,18 @@ const Footer = () => {
           <div>
             <Link to="/" onClick={handleScrollTop} className="inline-flex items-center gap-3">
               <img src={logo} alt="NexDiff" className="h-12 w-12 object-contain" />
-              <span className="text-xl font-semibold">
-                Nex<span className="text-[#c7f9cc]">Diff</span>
+              <span className="font-['Poppins'] text-xl font-extrabold tracking-[0.01em]">
+                Nex
+                <span
+                  className="text-[#c7f9cc]"
+                  style={{
+                    fontFeatureSettings: '"liga" 0',
+                    fontVariantLigatures: "none",
+                    letterSpacing: "0.045em",
+                  }}
+                >
+                  Diff
+                </span>
               </span>
             </Link>
             <p className="mt-5 max-w-sm text-sm leading-7 text-white/62">

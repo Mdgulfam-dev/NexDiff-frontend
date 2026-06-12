@@ -101,7 +101,17 @@ ${form.message || "N/A"}
           <div>
             <p className="eyebrow">Careers</p>
             <h1 className="mt-4 max-w-4xl text-4xl font-semibold leading-tight sm:text-6xl">
-              Build practical digital products with NexDiff.
+              Build practical digital products with Nex
+              <span
+                style={{
+                  fontFeatureSettings: '"liga" 0',
+                  fontVariantLigatures: "none",
+                  letterSpacing: "0.035em",
+                }}
+              >
+                Diff
+              </span>
+              .
             </h1>
             <p className="mt-5 max-w-2xl text-sm leading-7 text-[#101312]/65 sm:text-base">
               Join a small execution-driven team working across websites,

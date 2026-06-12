@@ -73,7 +73,17 @@ const Hero = () => {
             }}
             className="max-w-4xl text-4xl font-semibold leading-[1.05] tracking-normal text-white sm:text-5xl lg:text-7xl"
           >
-            NexDiff turns brands into{" "}
+            Nex
+            <span
+              style={{
+                fontFeatureSettings: '"liga" 0',
+                fontVariantLigatures: "none",
+                letterSpacing: "0.035em",
+              }}
+            >
+              Diff
+            </span>{" "}
+            turns brands into{" "}
             <span className="text-[#c7f9cc]">online growth engines.</span>
           </Motion.h1>
 

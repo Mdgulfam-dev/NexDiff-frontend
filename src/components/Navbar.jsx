@@ -44,8 +44,18 @@ const Navbar = () => {
             />
           </span>
           <span className="flex flex-col leading-none">
-            <span className="text-xl font-bold tracking-normal text-[#101312]">
-              Nex<span className="text-[#e05f2f]">Diff</span>
+            <span className="font-['Poppins'] text-xl font-bold tracking-[0.01em] text-[#101312]">
+              Nex
+              <span
+                className="text-[#e05f2f]"
+                style={{
+                  fontFeatureSettings: '"liga" 0',
+                  fontVariantLigatures: "none",
+                  letterSpacing: "0.045em",
+                }}
+              >
+                Diff
+              </span>
             </span>
             <span className="mt-1 hidden text-[10px] font-semibold uppercase tracking-[0.18em] text-[#101312]/42 sm:block">
               Growth Systems
