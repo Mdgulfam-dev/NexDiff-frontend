@@ -72,23 +72,16 @@ const About = () => {
             </div>
 
             <div className="light-card rounded-lg p-5">
-              <div className="flex flex-col gap-5 sm:flex-row">
-                <img
-                  src={profile}
-                  alt="Md Gulfam"
-                  className="h-28 w-28 rounded-lg object-cover"
-                />
-                <div>
-                  <p className="text-xs font-semibold uppercase tracking-[0.16em] text-[#e05f2f]">
-                    Founder
-                  </p>
-                  <h2 className="mt-2 text-2xl font-semibold">Md Gulfam</h2>
-                  <p className="mt-3 text-sm leading-7 text-[#101312]/65">
-                    A full-stack developer and tech entrepreneur focused on
-                    building scalable applications, automation-ready systems,
-                    and digital products that solve real business problems.
-                  </p>
-                </div>
+              <div>
+                <p className="text-xs font-semibold uppercase tracking-[0.16em] text-[#e05f2f]">
+                  Growth partner
+                </p>
+                <h2 className="mt-2 text-2xl font-semibold">Built around business outcomes</h2>
+                <p className="mt-3 text-sm leading-7 text-[#101312]/65">
+                  We plan, build, launch, and improve digital systems that help
+                  businesses look credible online, capture enquiries, and manage
+                  growth with less scattered effort.
+                </p>
               </div>
             </div>
           </div>
