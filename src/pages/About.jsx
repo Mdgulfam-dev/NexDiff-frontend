@@ -1,28 +1,40 @@
-import { motion } from "framer-motion";
+import { motion as Motion } from "framer-motion";
 import { useNavigate } from "react-router-dom";
+import { ArrowUpRight, CheckCircle2 } from "lucide-react";
 import Button from "../components/Button";
 import profile from "../assets/profile.jpg";
 
 const team = [
+  { name: "Md Gulfam", role: "Founder & CEO", image: profile },
+  { name: "Frontend Team", role: "Product UI", image: "https://i.pravatar.cc/100?img=11" },
+  { name: "Backend Team", role: "Systems", image: "https://i.pravatar.cc/100?img=12" },
+  { name: "Growth Team", role: "Marketing", image: "https://i.pravatar.cc/100?img=13" },
+];
+
+const capabilities = [
+  "Business websites and landing pages",
+  "Custom web apps and dashboards",
+  "Social media content systems",
+  "Paid campaign and funnel planning",
+  "AI integrations and automation",
+  "Ongoing support and optimization",
+];
+
+const brands = [
   {
-    name: "Md Gulfam",
-    role: "Founder & CEO",
-    image: profile,
+    name: "NexDiff",
+    desc: "Software, AI, and growth systems for modern businesses.",
+    link: "https://nexdiff.in",
   },
   {
-    name: "Team Member",
-    role: "Frontend Developer",
-    image: "https://i.pravatar.cc/100?img=11",
+    name: "Renovax",
+    desc: "Construction, renovation, and infrastructure solutions.",
+    link: "https://mdrabbancontractor.in",
   },
   {
-    name: "Team Member",
-    role: "Backend Developer",
-    image: "https://i.pravatar.cc/100?img=12",
-  },
-  {
-    name: "Team Member",
-    role: "UI/UX Designer",
-    image: "https://i.pravatar.cc/100?img=13",
+    name: "SK Discount Bazaar",
+    desc: "Retail and discount platform for everyday products.",
+    link: "https://share.google/Wraq3eo2M4aLrqIqM",
   },
 ];
 
@@ -30,335 +42,190 @@ const About = () => {
   const navigate = useNavigate();
 
   return (
-    <section className="min-h-screen bg-[#0F172A] text-white py-28 px-6">
-      <div className="max-w-7xl mx-auto">
-        {/* HERO */}
-        <div className="text-center max-w-5xl mx-auto">
-          {/* 🔥 HEADING */}
-          <motion.h1
-            initial={{ opacity: 0, y: 40 }}
-            animate={{ opacity: 1, y: 0 }}
-            className="text-4xl md:text-5xl font-bold leading-tight"
-          >
-            Building the Future with{" "}
-            <span className="bg-gradient-to-r from-purple-500 to-cyan-400 bg-clip-text text-transparent">
-              NexDiff
-            </span>
-          </motion.h1>
-
-          {/* 🔥 SUBTEXT */}
-          <p className="mt-6 text-white/70 leading-relaxed text-lg">
-            NexDiff is not just a development company — it’s a growth-focused
-            technology partner. We specialize in building scalable web
-            applications, mobile apps, and AI-powered systems that help
-            businesses move faster, operate smarter, and grow stronger in the
-            digital world.
-          </p>
-
-          {/* 🔥 EXTRA VALUE LINE */}
-          <p className="mt-4 text-white/60 max-w-3xl mx-auto">
-            From startups to growing businesses, we transform ideas into real,
-            high-performing products using modern technologies like MERN, AI
-            integrations, cloud systems, and scalable architecture.
-          </p>
-
-          {/* 🔥 FOUNDER SECTION */}
-          <div className="mt-14 flex flex-col md:flex-row items-center gap-8 text-left bg-white/5 border border-white/10 rounded-2xl p-6">
-            <img
-              src={profile}
-              alt="Md Gulfam"
-              className="w-28 h-28 rounded-full object-cover border border-white/20"
-            />
-
+    <main className="page-shell">
+      <section className="section-pad">
+        <div className="container-wide">
+          <div className="grid gap-10 lg:grid-cols-[1.04fr_0.96fr] lg:items-center">
             <div>
-              <h3 className="text-xl font-semibold">
-                Md Gulfam — Founder & CEO
-              </h3>
-
-              <p className="text-white/70 text-sm mt-3 leading-relaxed">
-                Md Gulfam is a passionate full-stack developer and tech
-                entrepreneur with strong expertise in building scalable
-                applications using modern technologies like React, Node.js,
-                MongoDB, and cloud infrastructure. With hands-on experience in
-                real-world projects and startups, he founded NexDiff with a
-                vision to create impactful digital solutions that solve real
-                business problems.
-              </p>
-
-              <p className="text-white/60 text-sm mt-3 leading-relaxed">
-                His focus is not just on development, but on building systems
-                that drive business growth, improve efficiency, and deliver
-                measurable results. Under his leadership, NexDiff is rapidly
-                growing into a trusted technology partner for startups and
-                businesses.
-              </p>
-            </div>
-          </div>
-
-          {/* 🔥 COMPANY STORY */}
-          <div className="mt-12 text-left bg-white/5 border border-white/10 rounded-2xl p-6">
-            <h3 className="text-xl font-semibold mb-3">Our Story</h3>
-
-            <p className="text-white/70 text-sm leading-relaxed">
-              NexDiff started with a simple idea — to bridge the gap between
-              technology and business growth. Many businesses struggle not
-              because they lack ideas, but because they lack the right
-              technology and execution strategy.
-            </p>
-
-            <p className="text-white/70 text-sm mt-3 leading-relaxed">
-              We saw this gap and decided to build solutions that are not just
-              technically strong, but also business-focused. Today, NexDiff
-              helps companies build powerful digital products, automate
-              processes, and scale efficiently using modern tech stacks and
-              AI-driven systems.
-            </p>
-
-            <p className="text-white/60 text-sm mt-3 leading-relaxed">
-              Our goal is simple — to help businesses grow faster by building
-              technology that actually works.
-            </p>
-          </div>
-        </div>
-
-        {/* 🔥 WHAT WE DO */}
-        <div className="mt-20 text-center max-w-4xl mx-auto">
-          <h2 className="text-3xl font-bold mb-6">What We Do</h2>
-          <p className="text-white/70 leading-relaxed">
-            At NexDiff, we don’t just build software — we build growth systems.
-            From custom web applications and mobile apps to AI-powered
-            solutions, we design technology that helps businesses scale faster,
-            operate smarter, and stay ahead of the competition.
-          </p>
-        </div>
-
-        {/* 🔥 SERVICES */}
-        <div className="grid md:grid-cols-3 gap-8 mt-16">
-          {[
-            {
-              title: "Web Development",
-              desc: "Modern, fast, and scalable web applications tailored to your business.",
-            },
-            {
-              title: "Mobile Apps",
-              desc: "High-performance Android & iOS apps with seamless user experience.",
-            },
-            {
-              title: "AI Solutions",
-              desc: "Smart automation, AI integrations, and data-driven systems.",
-            },
-            {
-              title: "Custom Software",
-              desc: "Build tools and systems designed specifically for your business needs.",
-            },
-            {
-              title: "UI/UX Design",
-              desc: "Beautiful, intuitive, and conversion-focused designs.",
-            },
-            {
-              title: "Growth & Optimization",
-              desc: "We don’t just build — we help you grow and scale.",
-            },
-          ].map((item, i) => (
-            <div
-              key={i}
-              className="bg-white/5 border border-white/10 p-6 rounded-2xl"
-            >
-              <h3 className="text-lg font-semibold text-purple-400">
-                {item.title}
-              </h3>
-              <p className="text-white/70 text-sm mt-3">{item.desc}</p>
-            </div>
-          ))}
-        </div>
-
-        {/* 🔥 COMPANY STATS */}
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-6 mt-20 text-center">
-          {[
-            { label: "Projects Delivered", value: "50+" },
-            { label: "Happy Clients", value: "30+" },
-            { label: "Team Members", value: "10+" },
-            { label: "Years Experience", value: "2+" },
-          ].map((item, i) => (
-            <div
-              key={i}
-              className="p-6 bg-white/5 border border-white/10 rounded-xl"
-            >
-              <h3 className="text-2xl font-bold text-purple-400">
-                {item.value}
-              </h3>
-              <p className="text-sm text-white/60 mt-2">{item.label}</p>
-            </div>
-          ))}
-        </div>
-
-        {/* 🔥 WHY CHOOSE US */}
-        <div className="mt-20">
-          <h2 className="text-3xl font-bold text-center mb-10">
-            Why Choose NexDiff?
-          </h2>
-
-          <div className="grid md:grid-cols-3 gap-8">
-            {[
-              "Scalable & modern architecture",
-              "Fast delivery with clean code",
-              "AI-powered development approach",
-              "Business-focused solutions",
-              "Affordable & startup-friendly",
-              "Long-term support & maintenance",
-            ].map((item, i) => (
-              <div
-                key={i}
-                className="bg-white/5 border border-white/10 p-5 rounded-xl text-sm text-white/70"
+              <p className="eyebrow">About NexDiff</p>
+              <Motion.h1
+                initial={{ opacity: 0, y: 22 }}
+                animate={{ opacity: 1, y: 0 }}
+                className="mt-4 max-w-4xl text-4xl font-semibold leading-tight sm:text-6xl"
               >
-                ✔ {item}
+                We build practical digital systems for businesses that want to grow online.
+              </Motion.h1>
+              <p className="mt-6 max-w-2xl text-sm leading-7 text-[#101312]/65 sm:text-base">
+                NexDiff is a growth-focused technology partner. We combine
+                software development, social presence, digital marketing, and
+                lead generation into one connected operating system for brands.
+              </p>
+              <div className="mt-8 flex flex-col gap-3 sm:flex-row">
+                <Button onClick={() => navigate("/contact")}>
+                  Work With Us
+                  <ArrowUpRight size={16} />
+                </Button>
+                <Button variant="outline" onClick={() => navigate("/services")}>
+                  View Services
+                </Button>
+              </div>
+            </div>
+
+            <div className="light-card rounded-lg p-5">
+              <div className="flex flex-col gap-5 sm:flex-row">
+                <img
+                  src={profile}
+                  alt="Md Gulfam"
+                  className="h-28 w-28 rounded-lg object-cover"
+                />
+                <div>
+                  <p className="text-xs font-semibold uppercase tracking-[0.16em] text-[#e05f2f]">
+                    Founder
+                  </p>
+                  <h2 className="mt-2 text-2xl font-semibold">Md Gulfam</h2>
+                  <p className="mt-3 text-sm leading-7 text-[#101312]/65">
+                    A full-stack developer and tech entrepreneur focused on
+                    building scalable applications, automation-ready systems,
+                    and digital products that solve real business problems.
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div className="mt-16 grid gap-4 md:grid-cols-3">
+            {[
+              { value: "50+", label: "Projects Delivered" },
+              { value: "30+", label: "Happy Clients" },
+              { value: "4", label: "Core Services" },
+            ].map((item) => (
+              <div key={item.label} className="rounded-lg border border-[#101312]/10 bg-[#101312] p-6 text-white">
+                <p className="text-4xl font-semibold text-[#c7f9cc]">{item.value}</p>
+                <p className="mt-2 text-sm text-white/58">{item.label}</p>
               </div>
             ))}
           </div>
         </div>
+      </section>
 
-        
-        {/* 🔥 OUR BRANDS */}
-        <div className="mt-20">
-          <h2 className="text-3xl font-bold text-center mb-10">Our Brands</h2>
+      <section className="section-pad bg-white">
+        <div className="container-wide grid gap-10 lg:grid-cols-[0.9fr_1.1fr]">
+          <div>
+            <p className="eyebrow">Our story</p>
+            <h2 className="mt-3 text-3xl font-semibold sm:text-5xl">
+              Technology should make business simpler, not noisier.
+            </h2>
+          </div>
+          <div className="space-y-5 text-sm leading-7 text-[#101312]/68 sm:text-base">
+            <p>
+              NexDiff started with a simple observation: many businesses have
+              strong ideas, but their online systems are fragmented. A website,
+              a few posts, and a campaign do not automatically create growth.
+            </p>
+            <p>
+              We help connect those pieces. The result is a digital presence
+              that is credible, fast, measurable, and easier for teams to run.
+            </p>
+          </div>
+        </div>
+      </section>
 
-          <div className="grid md:grid-cols-3 gap-8">
-            {[
-              {
-                name: "NexDiff",
-                desc: "Software, AI & Growth company focused on scalable digital solutions.",
-                link: "https://nexdiff.in",
-              },
-              {
-                name: "Renovax",
-                desc: "Construction, renovation, and infrastructure solutions for modern businesses.",
-                link: "https://mdrabbancontractor.in",
-              },
-              {
-                name: "SK Discount Bazaar",
-                desc: "Retail and discount platform offering affordable products for everyday needs.",
-                link: "https://share.google/Wraq3eo2M4aLrqIqM",
-              },
-            ].map((brand, i) => (
+      <section className="section-pad bg-[#f7f3ea]">
+        <div className="container-wide">
+          <div className="grid gap-8 lg:grid-cols-[0.8fr_1.2fr]">
+            <div>
+              <p className="eyebrow">What we do</p>
+              <h2 className="mt-3 text-3xl font-semibold sm:text-5xl">
+                Capability across build, presence, reach, and leads.
+              </h2>
+            </div>
+            <div className="grid gap-3 sm:grid-cols-2">
+              {capabilities.map((item) => (
+                <div key={item} className="light-card flex gap-3 rounded-lg p-4">
+                  <CheckCircle2 size={19} className="mt-0.5 shrink-0 text-[#16837a]" />
+                  <p className="text-sm font-medium text-[#101312]/75">{item}</p>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          <div className="mt-16 grid gap-4 md:grid-cols-3">
+            {brands.map((brand) => (
               <a
-                key={i}
+                key={brand.name}
                 href={brand.link}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="bg-white/5 border border-white/10 p-6 rounded-2xl text-center hover:scale-105 transition block"
+                className="light-card rounded-lg p-6 transition hover:-translate-y-1"
               >
-                <h3 className="text-xl font-semibold text-purple-400">
-                  {brand.name}
-                </h3>
-                <p className="text-white/70 text-sm mt-3">{brand.desc}</p>
-
-                {/* 🔥 VIEW BUTTON */}
-                <p className="mt-4 text-sm text-cyan-400 font-medium">
-                  Visit Website →
+                <h3 className="text-xl font-semibold">{brand.name}</h3>
+                <p className="mt-3 text-sm leading-6 text-[#101312]/62">{brand.desc}</p>
+                <p className="mt-5 inline-flex items-center gap-2 text-sm font-semibold text-[#e05f2f]">
+                  Visit Website <ArrowUpRight size={15} />
                 </p>
               </a>
             ))}
           </div>
         </div>
+      </section>
 
-        {/* 🔥 TEAM */}
-        <div className="mt-20">
-          <h2 className="text-3xl font-bold text-center">Meet Our Team</h2>
+      <section className="section-pad bg-[#101312] text-white">
+        <div className="container-wide">
+          <div className="flex flex-col justify-between gap-6 md:flex-row md:items-end">
+            <div>
+              <p className="text-xs font-semibold uppercase tracking-[0.2em] text-[#c7f9cc]">
+                Team
+              </p>
+              <h2 className="mt-3 text-3xl font-semibold sm:text-5xl">
+                Small, focused, and execution-driven.
+              </h2>
+            </div>
+            <p className="max-w-xl text-sm leading-7 text-white/58">
+              We bring product, engineering, design, and growth thinking into a
+              compact team built for practical results.
+            </p>
+          </div>
 
-          <div className="grid md:grid-cols-4 gap-8 mt-10">
-            {team.map((member, i) => (
-              <motion.div
-                key={i}
-                whileHover={{ scale: 1.05 }}
-                className="text-center bg-white/5 border border-white/10 rounded-2xl p-6"
+          <div className="mt-10 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+            {team.map((member, index) => (
+              <Motion.div
+                key={member.name}
+                initial={{ opacity: 0, y: 18 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                transition={{ delay: index * 0.06 }}
+                viewport={{ once: true }}
+                className="dark-card rounded-lg p-5"
               >
                 <img
                   src={member.image}
                   alt={member.name}
-                  className="w-20 h-20 mx-auto rounded-full object-cover mb-4 border border-white/20"
+                  className="h-16 w-16 rounded-lg object-cover"
                 />
-
-                <h4 className="font-semibold">{member.name}</h4>
-                <p className="text-sm text-white/50">{member.role}</p>
-              </motion.div>
+                <h3 className="mt-5 font-semibold">{member.name}</h3>
+                <p className="mt-1 text-sm text-white/50">{member.role}</p>
+              </Motion.div>
             ))}
           </div>
-        </div>
 
-        {/* 🔥 MISSION + VISION */}
-        <div className="grid md:grid-cols-2 gap-10 mt-20">
-          <div className="bg-white/5 border border-white/10 p-6 rounded-2xl">
-            <h3 className="text-xl font-semibold mb-3">Our Mission</h3>
-            <p className="text-white/70 text-sm">
-              To empower businesses with technology that drives growth,
-              efficiency, and innovation.
-            </p>
-          </div>
-
-          <div className="bg-white/5 border border-white/10 p-6 rounded-2xl">
-            <h3 className="text-xl font-semibold mb-3">Our Vision</h3>
-            <p className="text-white/70 text-sm">
-              To become a globally recognized technology partner for building
-              scalable and future-ready digital solutions.
-            </p>
+          <div className="mt-12 grid gap-4 md:grid-cols-2">
+            <div className="dark-card rounded-lg p-6">
+              <h3 className="text-xl font-semibold">Mission</h3>
+              <p className="mt-3 text-sm leading-7 text-white/58">
+                Empower businesses with technology and growth systems that
+                improve visibility, efficiency, and revenue.
+              </p>
+            </div>
+            <div className="dark-card rounded-lg p-6">
+              <h3 className="text-xl font-semibold">Vision</h3>
+              <p className="mt-3 text-sm leading-7 text-white/58">
+                Become a trusted digital partner for future-ready brands that
+                want scalable online operations.
+              </p>
+            </div>
           </div>
         </div>
-
-        {/* 🔥 CTA */}
-        <div className="mt-20 text-center">
-          <h2 className="text-3xl font-bold">
-            Let’s Build Something Powerful Together 
-          </h2>
-
-          <p className="text-white/60 mt-4">
-            Have an idea or want to grow your business? We’re here to help.
-          </p>
-
-          <div className="mt-6">
-            <Button onClick={() => navigate("/contact")}>Contact Us</Button>
-          </div>
-        </div>
-
-        {/* 🔥 TESTIMONIALS */}
-        <div className="mt-20">
-          <h2 className="text-3xl font-bold text-center">
-            What Our Clients Say
-          </h2>
-
-          <div className="grid md:grid-cols-3 gap-8 mt-10">
-            {[
-              {
-                name: "Amit Sharma",
-                feedback:
-                  "NexDiff helped us build our platform from scratch. The performance and design exceeded our expectations.",
-              },
-              {
-                name: "Rohit Verma",
-                feedback:
-                  "Their team understands both technology and business. We saw real growth after working with them.",
-              },
-              {
-                name: "Sneha Kapoor",
-                feedback:
-                  "Professional, fast, and highly skilled. NexDiff delivered exactly what we needed.",
-              },
-            ].map((item, i) => (
-              <div
-                key={i}
-                className="bg-white/5 border border-white/10 p-6 rounded-2xl"
-              >
-                <p className="text-white/70 text-sm leading-relaxed">
-                  “{item.feedback}”
-                </p>
-                <h4 className="mt-4 font-semibold text-purple-400">
-                  — {item.name}
-                </h4>
-              </div>
-            ))}
-          </div>
-        </div>
-      </div>
-    </section>
+      </section>
+    </main>
   );
 };
 
