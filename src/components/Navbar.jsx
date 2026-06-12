@@ -7,6 +7,7 @@ import logo from "../assets/logo.png";
 const navLinks = [
   { name: "Home", path: "/" },
   { name: "Services", path: "/services" },
+  { name: "Pricing", path: "/pricing" },
   { name: "About", path: "/about" },
   { name: "Blog", path: "/blog" },
   { name: "Contact", path: "/contact" },
@@ -34,7 +35,7 @@ const Navbar = () => {
           </span>
         </Link>
 
-        <div className="hidden items-center gap-1 rounded-lg border border-[#101312]/10 bg-white/70 p-1 md:flex">
+        <div className="hidden items-center gap-1 rounded-lg border border-[#101312]/10 bg-white/70 p-1 lg:flex">
           {navLinks.map((link) => {
             const isActive = location.pathname === link.path;
 
@@ -56,7 +57,7 @@ const Navbar = () => {
 
         <button
           onClick={() => navigate("/contact")}
-          className="hidden min-h-11 items-center gap-2 rounded-lg border border-[#101312] bg-[#101312] px-5 py-3 text-sm font-semibold text-white transition hover:-translate-y-0.5 hover:bg-[#202522] md:inline-flex"
+          className="hidden min-h-11 items-center gap-2 rounded-lg border border-[#101312] bg-[#101312] px-5 py-3 text-sm font-semibold text-white transition hover:-translate-y-0.5 hover:bg-[#202522] lg:inline-flex"
         >
           Start Project
           <ArrowUpRight size={16} />
@@ -66,7 +67,7 @@ const Navbar = () => {
           type="button"
           aria-label={isOpen ? "Close menu" : "Open menu"}
           onClick={() => setIsOpen((value) => !value)}
-          className="inline-flex h-11 w-11 items-center justify-center rounded-lg border border-[#101312]/10 bg-white md:hidden"
+          className="inline-flex h-11 w-11 items-center justify-center rounded-lg border border-[#101312]/10 bg-white lg:hidden"
         >
           {isOpen ? <X size={22} /> : <Menu size={22} />}
         </button>
@@ -78,7 +79,7 @@ const Navbar = () => {
             initial={{ opacity: 0, y: -12 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -12 }}
-            className="border-t border-[#101312]/10 bg-[#f7f3ea] px-4 py-5 shadow-2xl md:hidden"
+            className="border-t border-[#101312]/10 bg-[#f7f3ea] px-4 py-5 shadow-2xl lg:hidden"
           >
             <div className="flex flex-col gap-2">
               {navLinks.map((link) => {
