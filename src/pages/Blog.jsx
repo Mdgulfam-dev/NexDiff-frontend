@@ -1,7 +1,7 @@
-
-import { useState, useMemo } from "react";
+import { useMemo, useState } from "react";
 import { Link } from "react-router-dom";
 import { Helmet } from "react-helmet-async";
+import { ArrowUpRight, Search } from "lucide-react";
 import blogs from "../data/blogs";
 
 const categories = ["All", "Development", "AI", "DevOps", "Business"];
@@ -10,28 +10,24 @@ const Blog = () => {
   const [active, setActive] = useState("All");
   const [search, setSearch] = useState("");
 
-  // 🔥 Optimized filtering (performance)
   const filteredBlogs = useMemo(() => {
     const searchText = search.trim().toLowerCase();
 
-    return blogs.filter((b) => {
-      const matchCategory = active === "All" || b.category === active;
-
+    return blogs.filter((blog) => {
+      const matchCategory = active === "All" || blog.category === active;
       const matchSearch =
-        b.title.toLowerCase().includes(searchText) ||
-        b.desc.toLowerCase().includes(searchText) ||
-        b.content.toLowerCase().includes(searchText);
+        blog.title.toLowerCase().includes(searchText) ||
+        blog.desc.toLowerCase().includes(searchText) ||
+        blog.content.toLowerCase().includes(searchText);
 
       return matchCategory && matchSearch;
     });
   }, [search, active]);
 
-  // 🔥 Safe featured blog
-  const featured = blogs?.[0];
+  const featured = blogs[0];
 
   return (
-    <section className="min-h-screen bg-[#0F172A] text-white py-20 px-6">
-      {/* 🔥 SEO */}
+    <main className="page-shell">
       <Helmet>
         <title>NexDiff Blog | Web Development, AI & Growth Insights</title>
         <meta
@@ -40,165 +36,121 @@ const Blog = () => {
         />
       </Helmet>
 
-      <div className="max-w-7xl mx-auto">
-        {/* 🔥 HERO */}
-        <div className="text-center max-w-3xl mx-auto">
-          <h1 className="text-4xl md:text-5xl font-bold leading-tight">
-            Insights, Guides & Strategies to Grow Your Business
-          </h1>
-
-          <p className="text-white/60 mt-4">
-            Learn MERN stack, AI development, and business growth strategies to
-            scale faster.
-          </p>
-        </div>
-
-        {/* 🔍 SEARCH */}
-        <div className="flex justify-center mt-8">
-          <input
-            type="text"
-            placeholder="Search articles..."
-            className="px-5 py-3 rounded-xl bg-white/10 w-full max-w-lg outline-none border border-white/10 focus:border-cyan-400 transition"
-            value={search}
-            onChange={(e) => setSearch(e.target.value)}
-          />
-        </div>
-
-        {/* 🔥 FEATURED BLOG */}
-        {featured && (
-          <div className="mt-14 group relative rounded-2xl overflow-hidden border border-white/10">
-            {/* Overlay */}
-            <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent z-10" />
-
-            <img
-              src={featured.image}
-              alt={featured.title}
-              loading="lazy"
-              className="w-full h-72 object-cover group-hover:scale-105 transition duration-500"
-            />
-
-            <div className="p-6 relative z-20">
-              <span className="text-purple-400 text-sm">Featured</span>
-
-              <h2 className="text-2xl md:text-3xl font-bold mt-2">
-                {featured.title}
-              </h2>
-
-              <p className="text-white/70 mt-3 max-w-2xl">{featured.desc}</p>
-
-              <Link
-                to={`/blog/${featured.slug || featured.id}`}
-                className="inline-block mt-4 text-cyan-400 hover:underline"
-              >
-                Read Full Article →
-              </Link>
+      <section className="section-pad">
+        <div className="container-wide">
+          <div className="grid gap-8 lg:grid-cols-[0.94fr_1.06fr] lg:items-end">
+            <div>
+              <p className="eyebrow">Insights</p>
+              <h1 className="mt-4 max-w-4xl text-4xl font-semibold leading-tight sm:text-6xl">
+                Practical guides for building and growing online.
+              </h1>
+            </div>
+            <div>
+              <p className="max-w-2xl text-sm leading-7 text-[#101312]/65 sm:text-base">
+                Explore development, AI, DevOps, and business growth ideas from
+                the NexDiff team.
+              </p>
+              <div className="relative mt-6">
+                <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-[#101312]/38" size={18} />
+                <input
+                  type="text"
+                  placeholder="Search articles"
+                  className="w-full rounded-lg border border-[#101312]/10 bg-white py-3 pl-11 pr-4 outline-none transition focus:border-[#101312]"
+                  value={search}
+                  onChange={(e) => setSearch(e.target.value)}
+                />
+              </div>
             </div>
           </div>
-        )}
 
-        {/* 🧠 CATEGORIES */}
-        <div className="flex flex-wrap justify-center gap-4 mt-12">
-          {categories.map((cat) => (
-            <button
-              key={cat}
-              onClick={() => setActive(cat)}
-              className={`px-5 py-2 rounded-full text-sm transition ${
-                active === cat
-                  ? "bg-gradient-to-r from-purple-600 to-cyan-500 shadow-lg"
-                  : "bg-white/10 hover:bg-white/20"
-              }`}
+          {featured && (
+            <Link
+              to={`/blog/${featured.slug || featured.id}`}
+              className="mt-12 grid overflow-hidden rounded-lg bg-[#101312] text-white transition hover:-translate-y-1 lg:grid-cols-[1fr_0.88fr]"
             >
-              {cat}
-            </button>
-          ))}
-        </div>
+              <img
+                src={featured.image}
+                alt={featured.title}
+                loading="lazy"
+                className="h-72 w-full object-cover lg:h-full"
+              />
+              <div className="p-6 sm:p-8">
+                <p className="text-xs font-semibold uppercase tracking-[0.2em] text-[#c7f9cc]">
+                  Featured
+                </p>
+                <h2 className="mt-4 text-2xl font-semibold leading-tight sm:text-4xl">
+                  {featured.title}
+                </h2>
+                <p className="mt-4 text-sm leading-7 text-white/62">{featured.desc}</p>
+                <p className="mt-6 inline-flex items-center gap-2 text-sm font-semibold text-[#c7f9cc]">
+                  Read Full Article <ArrowUpRight size={16} />
+                </p>
+              </div>
+            </Link>
+          )}
 
-        {/* 🧾 BLOG GRID */}
-        <div className="grid md:grid-cols-3 gap-8 mt-14">
-          {filteredBlogs.length > 0 ? (
-            filteredBlogs.map((blog, index) => (
-              <div
-                key={blog.id}
-                className="group relative bg-white/5 border border-white/10 rounded-2xl overflow-hidden hover:shadow-xl hover:shadow-purple-500/10 transition"
+          <div className="mt-10 flex flex-wrap gap-2">
+            {categories.map((category) => (
+              <button
+                key={category}
+                onClick={() => setActive(category)}
+                className={`rounded-lg border px-4 py-2 text-sm font-semibold transition ${
+                  active === category
+                    ? "border-[#101312] bg-[#101312] text-white"
+                    : "border-[#101312]/10 bg-white text-[#101312]/62 hover:border-[#101312]/30"
+                }`}
               >
-                {/* 🔥 Trending Badge */}
-                {index < 2 && (
-                  <span className="absolute top-3 left-3 text-xs bg-purple-500/20 text-purple-300 px-2 py-1 rounded-full z-10">
-                    Trending
-                  </span>
-                )}
+                {category}
+              </button>
+            ))}
+          </div>
 
-                {/* Image */}
-                <div className="overflow-hidden">
+          <div className="mt-8 grid gap-4 md:grid-cols-3">
+            {filteredBlogs.length > 0 ? (
+              filteredBlogs.map((blog) => (
+                <Link
+                  key={blog.id}
+                  to={`/blog/${blog.slug || blog.id}`}
+                  className="light-card group overflow-hidden rounded-lg transition hover:-translate-y-1"
+                >
                   <img
                     src={blog.image}
                     alt={blog.title}
                     loading="lazy"
-                    className="h-48 w-full object-cover group-hover:scale-110 transition duration-500"
+                    className="h-48 w-full object-cover"
                   />
-                </div>
-
-                {/* Content */}
-                <div className="p-5">
-                  <span className="text-xs text-purple-400">
-                    {blog.category}
-                  </span>
-
-                  <h3 className="text-lg font-semibold mt-2 group-hover:text-purple-400 transition">
-                    {blog.title}
-                  </h3>
-
-                  <p className="text-xs text-white/50 mt-1">
-                    {Math.ceil(blog.content.split(" ").length / 200)} min read
-                  </p>
-
-                  <p className="text-sm text-white/70 mt-2">{blog.desc}</p>
-
-                  <Link
-                    to={`/blog/${blog.slug || blog.id}`}
-                    className="inline-block mt-4 text-cyan-400 hover:underline"
-                  >
-                    Read More →
-                  </Link>
-                </div>
+                  <div className="p-5">
+                    <p className="text-xs font-semibold uppercase tracking-[0.16em] text-[#e05f2f]">
+                      {blog.category}
+                    </p>
+                    <h3 className="mt-3 text-lg font-semibold leading-snug group-hover:text-[#16837a]">
+                      {blog.title}
+                    </h3>
+                    <p className="mt-2 text-xs text-[#101312]/45">
+                      {Math.ceil(blog.content.split(" ").length / 200)} min read
+                    </p>
+                    <p className="mt-3 text-sm leading-6 text-[#101312]/62">{blog.desc}</p>
+                  </div>
+                </Link>
+              ))
+            ) : (
+              <div className="col-span-full rounded-lg border border-[#101312]/10 bg-white p-8 text-center">
+                <p className="text-[#101312]/60">No articles found.</p>
+                <button
+                  onClick={() => {
+                    setSearch("");
+                    setActive("All");
+                  }}
+                  className="mt-4 text-sm font-semibold text-[#e05f2f]"
+                >
+                  Reset filters
+                </button>
               </div>
-            ))
-          ) : (
-            <div className="col-span-full text-center mt-10">
-              <p className="text-white/50">No blogs found </p>
-
-              <button
-                onClick={() => {
-                  setSearch("");
-                  setActive("All");
-                }}
-                className="mt-4 text-cyan-400 hover:underline"
-              >
-                Reset Filters
-              </button>
-            </div>
-          )}
+            )}
+          </div>
         </div>
-
-        {/* 🔥 CTA */}
-        <div className="text-center mt-20">
-          <h3 className="text-2xl font-semibold">
-            Want help implementing these ideas? 
-          </h3>
-
-          <p className="text-white/60 mt-3">
-            Let’s build something powerful together.
-          </p>
-
-          <Link
-            to="/contact"
-            className="inline-block mt-6 px-6 py-3 bg-gradient-to-r from-purple-500 to-cyan-400 rounded-xl text-black font-semibold hover:scale-105 transition"
-          >
-            Get Free Consultation
-          </Link>
-        </div>
-      </div>
-    </section>
+      </section>
+    </main>
   );
 };
 

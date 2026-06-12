@@ -1,311 +1,119 @@
-// import {
-//   FaFacebook,
-//   FaInstagram,
-//   FaLinkedin,
-//   FaTwitter,
-//   FaWhatsapp,
-//   FaEnvelope,
-//   FaGoogle,
-// } from "react-icons/fa";
-// import logo from "../assets/logo.png";
-// import { Link } from "react-router-dom";
-
-// const Footer = () => {
-//   const handleScrollTop = () => {
-//     window.scrollTo({ top: 0, behavior: "smooth" });
-//   };
-
-//   return (
-//     <footer className="bg-[#0F172A] text-white border-t border-white/10 relative overflow-hidden">
-//       {/* 🔥 Background Glow */}
-//       <div className="absolute w-[400px] h-[400px] bg-purple-600/20 blur-3xl top-[-100px] left-[-100px]" />
-//       <div className="absolute w-[300px] h-[300px] bg-cyan-500/20 blur-3xl bottom-[-100px] right-[-100px]" />
-
-//       <div className="max-w-7xl mx-auto px-6 py-14 grid md:grid-cols-4 gap-10 relative z-10">
-//         {/* 🔥 Brand */}
-//         <div>
-//           <div className="flex items-center gap-2">
-//             <img src={logo} alt="NexDiff Logo" className="w-12 h-12" />
-//             <h2 className="text-xl font-semibold">NexDiff</h2>
-//           </div>
-
-//           <p className="mt-4 text-white/70 text-sm leading-relaxed">
-//             We build scalable software, AI systems, and growth-focused solutions
-//             for modern businesses.
-//           </p>
-
-//           {/* 🔥 Brands */}
-//           <div className="mt-4 text-xs text-white/50 space-y-1">
-//             <a
-//               href="https://www.nexdiff.in"
-//               target="_blank"
-//               rel="noopener noreferrer"
-//               className="block hover:text-white transition"
-//             >
-//               NexDiff
-//             </a>
-
-//             <a
-//               href="https://mdrabbancontractor.in"
-//               target="_blank"
-//               rel="noopener noreferrer"
-//               className="block hover:text-white transition"
-//             >
-//               Renovax
-//             </a>
-
-//             <a
-//               href="https://share.google/VCzF2MdYnnzzTvjti"
-//               target="_blank"
-//               rel="noopener noreferrer"
-//               className="block hover:text-white transition"
-//             >
-//               SK Discount Bazaar
-//             </a>
-//           </div>
-//         </div>
-
-//         {/* 🔥 Quick Links */}
-//         <div>
-//           <h3 className="font-semibold mb-4">Quick Links</h3>
-//           <ul className="space-y-2 text-white/70 text-sm">
-//             {["/", "/services", "/about", "/contact"].map((path, i) => (
-//               <li key={i}>
-//                 <Link
-//                   to={path}
-//                   onClick={handleScrollTop}
-//                   className="hover:text-white transition"
-//                 >
-//                   {path === "/" ? "Home" : path.replace("/", "")}
-//                 </Link>
-//               </li>
-//             ))}
-//           </ul>
-//         </div>
-
-//         {/* 🔥 Services */}
-//         <div>
-//           <h3 className="font-semibold mb-4">Services</h3>
-//           <ul className="space-y-2 text-white/70 text-sm">
-//             <li>Web Development</li>
-//             <li>Mobile Apps</li>
-//             <li>AI Solutions</li>
-//             <li>Cloud & DevOps</li>
-//             <li>Performance Marketing</li>
-//           </ul>
-//         </div>
-
-//         {/* 🔥 Contact + Social */}
-//         <div>
-//           <h3 className="font-semibold mb-4">Contact</h3>
-
-//           <div className="space-y-3 text-sm text-white/70">
-//             <p className="flex items-center gap-2">
-//               <FaEnvelope /> info.nexdiff@gmail.com
-//             </p>
-
-//             <a
-//               href="https://wa.me/919001402531"
-//               target="_blank"
-//               className="flex items-center gap-2 hover:text-white transition"
-//             >
-//               <FaWhatsapp /> WhatsApp Chat
-//             </a>
-//           </div>
-
-//           {/* 🔥 Social */}
-//           <div className="flex gap-4 mt-5 text-xl text-white/70">
-//             <a href="#" target="_blank">
-//               <FaFacebook className="hover:text-white hover:scale-110 transition" />
-//             </a>
-//             <a
-//               href="https://www.instagram.com/nexdiff.in?igsh=MTg1MGQ3eXEzODVqcA=="
-//               target="_blank"
-//             >
-//               <FaInstagram className="hover:text-white hover:scale-110 transition" />
-//             </a>
-//             <a href="https://www.linkedin.com/company/nexdiff/" target="_blank">
-//               <FaLinkedin className="hover:text-white hover:scale-110 transition" />
-//             </a>
-//             <a
-//               href="https://share.google/3NBEUFrLgUfUMbEVE"
-//               target="_blank"
-//               rel="noopener noreferrer"
-//             >
-//               <FaGoogle className="hover:text-white hover:scale-110 transition" />
-//             </a>
-//           </div>
-//         </div>
-//       </div>
-
-//       {/* 🔥 Bottom */}
-//       <div className="border-t border-white/10 text-center py-6 text-white/50 text-sm">
-//         © {new Date().getFullYear()} NexDiff. All rights reserved.
-//         <br />
-
-//       </div>
-//     </footer>
-//   );
-// };
-
-// export default Footer;
-
 import {
+  FaEnvelope,
   FaFacebook,
+  FaGoogle,
   FaInstagram,
   FaLinkedin,
   FaWhatsapp,
-  FaEnvelope,
-  FaGoogle,
 } from "react-icons/fa";
-import logo from "../assets/logo.png";
+import { ArrowUpRight } from "lucide-react";
 import { Link } from "react-router-dom";
+import logo from "../assets/logo.png";
+
+const links = [
+  { name: "Home", path: "/" },
+  { name: "Services", path: "/services" },
+  { name: "About", path: "/about" },
+  { name: "Blog", path: "/blog" },
+  { name: "Contact", path: "/contact" },
+];
+
+const services = [
+  "Software Development",
+  "Social Media Handling",
+  "Digital Marketing",
+  "Lead Generation",
+];
+
+const socials = [
+  { icon: <FaFacebook />, link: "#", label: "Facebook" },
+  { icon: <FaInstagram />, link: "https://www.instagram.com/nexdiff.in", label: "Instagram" },
+  { icon: <FaLinkedin />, link: "https://www.linkedin.com/company/nexdiff/", label: "LinkedIn" },
+  { icon: <FaGoogle />, link: "https://share.google/3NBEUFrLgUfUMbEVE", label: "Google" },
+];
 
 const Footer = () => {
-  const handleScrollTop = () => {
-    window.scrollTo({ top: 0, behavior: "smooth" });
-  };
+  const handleScrollTop = () => window.scrollTo({ top: 0, behavior: "smooth" });
 
   return (
-    <footer className="bg-[#0B1120] text-white border-t border-white/10 relative overflow-hidden">
-      {/* 🔥 Glow */}
-      <div className="absolute w-[300px] h-[300px] bg-purple-500/10 blur-3xl top-0 left-0" />
-      <div className="absolute w-[300px] h-[300px] bg-cyan-500/10 blur-3xl bottom-0 right-0" />
-
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 py-12 sm:py-14 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 relative z-10">
-        {/* 🔥 BRAND */}
-        <div>
-          <div className="flex items-center gap-2">
-            <img src={logo} alt="NexDiff Logo" className="w-10 h-10" />
-            <span className="text-lg font-semibold">
-              Nex
-              <span className="bg-gradient-to-r from-white to-cyan-400 bg-clip-text text-transparent">
-                Diff
+    <footer className="bg-[#101312] text-white">
+      <div className="container-wide px-4 py-14 sm:px-6 lg:px-8">
+        <div className="grid gap-10 lg:grid-cols-[1.25fr_0.75fr_0.85fr_1fr]">
+          <div>
+            <Link to="/" onClick={handleScrollTop} className="inline-flex items-center gap-3">
+              <img src={logo} alt="NexDiff" className="h-12 w-12 object-contain" />
+              <span className="text-xl font-semibold">
+                Nex<span className="text-[#c7f9cc]">Diff</span>
               </span>
-            </span>
-          </div>
-
-          <p className="mt-4 text-white/60 text-sm leading-relaxed">
-            We build scalable software, AI systems, and growth-focused solutions
-            for modern businesses.
-          </p>
-
-          {/* Brands */}
-          <div className="mt-4 text-xs text-white/50 space-y-1">
-            <a
-              href="https://www.nexdiff.in"
-              target="_blank"
-              className="block hover:text-white"
-            >
-              NexDiff
-            </a>
-            <a
-              href="https://mdrabbancontractor.in"
-              target="_blank"
-              className="block hover:text-white"
-            >
-              Renovax
-            </a>
-            <a
-              href="https://share.google/VCzF2MdYnnzzTvjti"
-              target="_blank"
-              className="block hover:text-white"
-            >
-              SK Discount Bazaar
-            </a>
-          </div>
-        </div>
-
-        {/* 🔥 QUICK LINKS */}
-        <div>
-          <h3 className="text-sm font-semibold mb-4 text-white/80">
-            Quick Links
-          </h3>
-          <ul className="space-y-2 text-white/60 text-sm">
-            {[
-              { name: "Home", path: "/" },
-              { name: "Services", path: "/services" },
-              { name: "About", path: "/about" },
-              { name: "Contact", path: "/contact" },
-            ].map((link, i) => (
-              <li key={i}>
-                <Link
-                  to={link.path}
-                  onClick={handleScrollTop}
-                  className="hover:text-white transition"
-                >
-                  {link.name}
-                </Link>
-              </li>
-            ))}
-          </ul>
-        </div>
-
-        {/* 🔥 SERVICES */}
-        <div>
-          <h3 className="text-sm font-semibold mb-4 text-white/80">Services</h3>
-          <ul className="space-y-2 text-white/60 text-sm">
-            <li>Web Development</li>
-            <li>Mobile Apps</li>
-            <li>AI Solutions</li>
-            <li>Cloud & DevOps</li>
-            <li>Performance Marketing</li>
-          </ul>
-        </div>
-
-        {/* 🔥 CONTACT */}
-        <div>
-          <h3 className="text-sm font-semibold mb-4 text-white/80">Contact</h3>
-
-          <div className="space-y-3 text-sm text-white/60">
-            <p className="flex items-center gap-2">
-              <FaEnvelope /> info.nexdiff@gmail.com
+            </Link>
+            <p className="mt-5 max-w-sm text-sm leading-7 text-white/62">
+              We build software, social systems, marketing campaigns, and lead
+              funnels for brands that want a stronger online business.
             </p>
-
             <a
               href="https://wa.me/919001402531"
               target="_blank"
-              className="flex items-center gap-2 hover:text-white transition"
+              rel="noopener noreferrer"
+              className="mt-6 inline-flex items-center gap-2 rounded-lg bg-[#c7f9cc] px-4 py-3 text-sm font-semibold text-[#101312] transition hover:bg-white"
             >
-              <FaWhatsapp /> WhatsApp Chat
+              WhatsApp Chat
+              <ArrowUpRight size={16} />
             </a>
           </div>
 
-          {/* 🔥 SOCIAL ICONS */}
-          <div className="flex gap-3 mt-5">
-            {[
-              { icon: <FaFacebook />, link: "#" },
-              {
-                icon: <FaInstagram />,
-                link: "https://www.instagram.com/nexdiff.in",
-              },
-              {
-                icon: <FaLinkedin />,
-                link: "https://www.linkedin.com/company/nexdiff/",
-              },
-              {
-                icon: <FaGoogle />,
-                link: "https://share.google/3NBEUFrLgUfUMbEVE",
-              },
-            ].map((s, i) => (
-              <a
-                key={i}
-                href={s.link}
-                target="_blank"
-                className="w-9 h-9 flex items-center justify-center rounded-lg 
-                bg-white/5 border border-white/10 text-white/70 
-                hover:text-white hover:border-cyan-400/40 transition"
-              >
-                {s.icon}
+          <div>
+            <h3 className="text-sm font-semibold text-white">Navigation</h3>
+            <ul className="mt-4 space-y-3 text-sm text-white/58">
+              {links.map((link) => (
+                <li key={link.path}>
+                  <Link to={link.path} onClick={handleScrollTop} className="hover:text-white">
+                    {link.name}
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          </div>
+
+          <div>
+            <h3 className="text-sm font-semibold text-white">Services</h3>
+            <ul className="mt-4 space-y-3 text-sm text-white/58">
+              {services.map((service) => (
+                <li key={service}>{service}</li>
+              ))}
+            </ul>
+          </div>
+
+          <div>
+            <h3 className="text-sm font-semibold text-white">Contact</h3>
+            <div className="mt-4 space-y-3 text-sm text-white/62">
+              <a href="mailto:info.nexdiff@gmail.com" className="flex items-center gap-2 hover:text-white">
+                <FaEnvelope /> info.nexdiff@gmail.com
               </a>
-            ))}
+              <a href="https://wa.me/919001402531" target="_blank" rel="noopener noreferrer" className="flex items-center gap-2 hover:text-white">
+                <FaWhatsapp /> +91 9001402531
+              </a>
+            </div>
+            <div className="mt-5 flex gap-2">
+              {socials.map((social) => (
+                <a
+                  key={social.label}
+                  href={social.link}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  aria-label={social.label}
+                  className="flex h-10 w-10 items-center justify-center rounded-lg border border-white/10 bg-white/[0.04] text-white/70 transition hover:border-[#c7f9cc]/60 hover:text-white"
+                >
+                  {social.icon}
+                </a>
+              ))}
+            </div>
           </div>
         </div>
-      </div>
 
-      {/* 🔥 BOTTOM */}
-      <div className="border-t border-white/10 text-center py-5 text-white/40 text-xs sm:text-sm">
-        © {new Date().getFullYear()} NexDiff. All rights reserved.
+        <div className="mt-12 flex flex-col gap-3 border-t border-white/10 pt-6 text-xs text-white/42 sm:flex-row sm:items-center sm:justify-between">
+          <p>© {new Date().getFullYear()} NexDiff. All rights reserved.</p>
+          <p>Software, AI, marketing, and lead growth systems.</p>
+        </div>
       </div>
     </footer>
   );

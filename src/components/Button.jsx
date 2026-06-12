@@ -1,21 +1,34 @@
-import { motion } from "framer-motion";
+import { motion as Motion } from "framer-motion";
 
 const variants = {
-  primary: "bg-gradient-to-r from-purple-600 to-cyan-500 text-white shadow-lg",
-  outline: "border border-white/20 text-white hover:bg-white/10",
-  ghost: "text-white/70 hover:text-white",
+  primary:
+    "border-[#101312] bg-[#101312] text-white shadow-[0_10px_24px_rgba(16,19,18,0.18)] hover:bg-[#202522]",
+  light:
+    "border-white bg-[#f7f3ea] text-[#101312] hover:bg-white",
+  outline:
+    "border-current bg-transparent text-current hover:bg-current/10",
+  ghost: "border-transparent bg-transparent text-current hover:bg-black/5",
 };
 
-const Button = ({ children, variant = "primary", className = "", onClick }) => {
+const Button = ({
+  children,
+  variant = "primary",
+  className = "",
+  type = "button",
+  disabled = false,
+  onClick,
+}) => {
   return (
-    <motion.button
-      whileHover={{ scale: 1.08 }}
-      whileTap={{ scale: 0.95 }}
+    <Motion.button
+      type={type}
+      whileHover={disabled ? undefined : { y: -2 }}
+      whileTap={disabled ? undefined : { scale: 0.98 }}
+      disabled={disabled}
       onClick={onClick}
-      className={`px-6 py-3 rounded-full font-medium transition ${variants[variant]} ${className}`}
+      className={`inline-flex min-h-11 items-center justify-center gap-2 rounded-lg border px-5 py-3 text-sm font-semibold transition disabled:cursor-not-allowed disabled:opacity-60 ${variants[variant]} ${className}`}
     >
       {children}
-    </motion.button>
+    </Motion.button>
   );
 };
 
