@@ -10,6 +10,7 @@ import Pricing from "../pages/Pricing";
 import PlanRequest from "../pages/PlanRequest";
 import PlanPayment from "../pages/PlanPayment";
 import Careers from "../pages/Careers";
+import CaseStudies from "../pages/CaseStudies";
 import MainLayout from "../layouts/MainLayout";
 
 const AppRoutes = () => {
@@ -19,6 +20,7 @@ const AppRoutes = () => {
         <Route path="/" element={<Home />} />
         <Route path="/services" element={<ServicesPage />} />
         <Route path="/service/:id" element={<ServiceDetails />} />
+        <Route path="/case-studies" element={<CaseStudies />} />
         <Route path="/contact" element={<Contact />} />
         <Route path="/about" element={<About />} />
         <Route path="/careers" element={<Careers />} />
