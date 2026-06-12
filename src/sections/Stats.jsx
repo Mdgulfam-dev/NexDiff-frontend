@@ -1,4 +1,5 @@
 import { motion as Motion } from "framer-motion";
+import CountUp from "../components/CountUp";
 
 const stats = [
   { value: "50+", label: "Projects delivered", note: "Web, software, and growth systems" },
@@ -21,7 +22,9 @@ const Stats = () => {
               viewport={{ once: true }}
               className="bg-[#101312] p-6"
             >
-              <p className="text-4xl font-semibold text-[#c7f9cc]">{stat.value}</p>
+              <p className="text-4xl font-semibold text-[#c7f9cc]">
+                <CountUp value={stat.value} />
+              </p>
               <h3 className="mt-3 text-sm font-semibold">{stat.label}</h3>
               <p className="mt-2 text-sm leading-6 text-white/55">{stat.note}</p>
             </Motion.div>

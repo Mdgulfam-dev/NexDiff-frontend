@@ -2,6 +2,7 @@ import { motion as Motion } from "framer-motion";
 import { useNavigate } from "react-router-dom";
 import { ArrowUpRight, CheckCircle2 } from "lucide-react";
 import Button from "../components/Button";
+import CountUp from "../components/CountUp";
 import profile from "../assets/profile.jpg";
 
 const team = [
@@ -93,7 +94,9 @@ const About = () => {
               { value: "4", label: "Core Services" },
             ].map((item) => (
               <div key={item.label} className="rounded-lg border border-[#101312]/10 bg-[#101312] p-6 text-white">
-                <p className="text-4xl font-semibold text-[#c7f9cc]">{item.value}</p>
+                <p className="text-4xl font-semibold text-[#c7f9cc]">
+                  <CountUp value={item.value} />
+                </p>
                 <p className="mt-2 text-sm text-white/58">{item.label}</p>
               </div>
             ))}

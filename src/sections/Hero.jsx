@@ -13,6 +13,7 @@ import {
   TrendingUp,
 } from "lucide-react";
 import Button from "../components/Button";
+import CountUp from "../components/CountUp";
 
 const services = [
   { label: "Software Development", icon: <Code2 size={18} /> },
@@ -129,7 +130,7 @@ const Hero = () => {
                 className="py-4 pr-4 first:pl-0 [&:not(:last-child)]:border-r [&:not(:last-child)]:border-white/10 sm:px-5"
               >
                 <p className="text-2xl font-semibold text-white">
-                  {metric.value}
+                  <CountUp value={metric.value} />
                 </p>
                 <p className="mt-1 text-xs text-white/55 sm:text-sm">
                   {metric.label}
