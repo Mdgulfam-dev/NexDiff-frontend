@@ -6,7 +6,7 @@ import {
   FaLinkedin,
   FaWhatsapp,
 } from "react-icons/fa";
-import { ArrowUpRight } from "lucide-react";
+import { ArrowUpRight, MapPin } from "lucide-react";
 import { Link } from "react-router-dom";
 import logo from "../assets/logo.png";
 
@@ -33,6 +33,9 @@ const socials = [
   { icon: <FaLinkedin />, link: "https://www.linkedin.com/company/nexdiff/", label: "LinkedIn" },
   { icon: <FaGoogle />, link: "https://share.google/3NBEUFrLgUfUMbEVE", label: "Google" },
 ];
+
+const officeAddress = "A-192 Sarita, New Delhi - 110076";
+const officeMapUrl = "https://maps.app.goo.gl/28Li6YPu6D6dQmNm7";
 
 const Footer = () => {
   const handleScrollTop = () => window.scrollTo({ top: 0, behavior: "smooth" });
@@ -93,6 +96,9 @@ const Footer = () => {
               </a>
               <a href="https://wa.me/919001402531" target="_blank" rel="noopener noreferrer" className="flex items-center gap-2 hover:text-white">
                 <FaWhatsapp /> +91 9001402531
+              </a>
+              <a href={officeMapUrl} target="_blank" rel="noopener noreferrer" className="flex items-start gap-2 hover:text-white">
+                <MapPin size={15} className="mt-0.5 shrink-0" /> {officeAddress}
               </a>
             </div>
             <div className="mt-5 flex gap-2">
