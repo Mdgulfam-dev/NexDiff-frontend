@@ -25,6 +25,10 @@ export const sendCareerApplication = (data) => API.post("/careers", data);
 export const sendPricingRequest = (data) => API.post("/pricing-requests", data);
 
 export const adminLogin = (data) => API.post("/admin/login", data);
+export const getAdminUsers = () => API.get("/admin/users");
+export const createAdminUser = (data) => API.post("/admin/users", data);
+export const updateAdminUser = (id, data) => API.patch(`/admin/users/${id}`, data);
+export const deleteAdminUser = (id) => API.delete(`/admin/users/${id}`);
 export const getAdminSubmissions = (type = "all") =>
   API.get("/admin/submissions", {
     params: type === "all" ? {} : { type },

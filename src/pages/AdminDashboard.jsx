@@ -18,14 +18,18 @@ import { useNavigate } from "react-router-dom";
 import Button from "../components/Button";
 import {
   createAdminBlogPost,
+  createAdminUser,
   createAdminJobPost,
   deleteAdminBlogPost,
+  deleteAdminUser,
   deleteAdminJobPost,
   deleteAdminTestimonial,
+  getAdminUsers,
   getAdminBlogPosts,
   getAdminJobPosts,
   getAdminSubmissions,
   getAdminTestimonials,
+  updateAdminUser,
   updateAdminTestimonialStatus,
   updateSubmissionStatus,
 } from "../api/api";
@@ -129,6 +133,19 @@ const emptyJobForm = {
   type: "",
   location: "",
   focus: "",
+};
+
+const emptyUserForm = {
+  username: "",
+  password: "",
+  role: "executive",
+  active: true,
+};
+
+const roleLabels = {
+  admin: "Admin",
+  executive: "Executive",
+  manager: "Manager",
 };
 
 const pageSize = 8;
@@ -255,6 +272,7 @@ const AdminDashboard = () => {
   const userRole = storedUser?.role || "admin";
   const canManageLeads = ["admin", "manager"].includes(userRole);
   const canManageContent = ["admin", "executive"].includes(userRole);
+  const canManageUsers = userRole === "admin";
   const [activeSection, setActiveSection] = useState(canManageLeads ? "leads" : "content");
   const [activeLeadTab, setActiveLeadTab] = useState("all");
   const [leadStatusFilter, setLeadStatusFilter] = useState("all");
@@ -278,6 +296,10 @@ const AdminDashboard = () => {
   const [jobForm, setJobForm] = useState(emptyJobForm);
   const [contentStatus, setContentStatus] = useState("");
   const [contentLoading, setContentLoading] = useState(false);
+  const [adminUsers, setAdminUsers] = useState([]);
+  const [userForm, setUserForm] = useState(emptyUserForm);
+  const [userStatus, setUserStatus] = useState("");
+  const [userLoading, setUserLoading] = useState(false);
 
   const totalLeads = useMemo(
     () => Object.values(counts).reduce((sum, count) => sum + count, 0),
@@ -376,6 +398,26 @@ const AdminDashboard = () => {
     }
   };
 
+  const loadUsers = async () => {
+    if (!canManageUsers) {
+      return;
+    }
+
+    try {
+      setUserStatus("");
+      const response = await getAdminUsers();
+      setAdminUsers(response.data.users);
+    } catch (error) {
+      if (error.response?.status === 401) {
+        localStorage.removeItem("nexdiff_admin_token");
+        navigate("/admin/login");
+        return;
+      }
+
+      setUserStatus(error.response?.data?.message || "Unable to load admin users.");
+    }
+  };
+
   useEffect(() => {
     if (!localStorage.getItem("nexdiff_admin_token")) {
       navigate("/admin/login");
@@ -405,6 +447,14 @@ const AdminDashboard = () => {
   }, []);
 
   useEffect(() => {
+    if (!localStorage.getItem("nexdiff_admin_token")) {
+      return;
+    }
+
+    loadUsers();
+  }, []);
+
+  useEffect(() => {
     if (activeSection === "leads" && !canManageLeads) {
       setActiveSection("content");
     }
@@ -412,7 +462,11 @@ const AdminDashboard = () => {
     if (activeSection === "content" && !canManageContent) {
       setActiveSection("leads");
     }
-  }, [activeSection, canManageContent, canManageLeads]);
+
+    if (activeSection === "users" && !canManageUsers) {
+      setActiveSection(canManageLeads ? "leads" : "content");
+    }
+  }, [activeSection, canManageContent, canManageLeads, canManageUsers]);
 
   useEffect(() => {
     setLeadPage(1);
@@ -544,6 +598,75 @@ const AdminDashboard = () => {
     }
   };
 
+  const createUser = async (event) => {
+    event.preventDefault();
+
+    if (!canManageUsers) {
+      setUserStatus("Only Admin can manage logins.");
+      return;
+    }
+
+    try {
+      setUserLoading(true);
+      setUserStatus("");
+      const response = await createAdminUser(userForm);
+      setAdminUsers((current) => [...current, response.data.user]);
+      setUserForm(emptyUserForm);
+      setUserStatus("Login user created.");
+    } catch (error) {
+      setUserStatus(error.response?.data?.message || "Unable to create login user.");
+    } finally {
+      setUserLoading(false);
+    }
+  };
+
+  const saveUser = async (id, updates) => {
+    if (!canManageUsers) {
+      setUserStatus("Only Admin can manage logins.");
+      return;
+    }
+
+    try {
+      setUserStatus("");
+      const response = await updateAdminUser(id, updates);
+      setAdminUsers((current) =>
+        current.map((user) => (user._id === id ? response.data.user : user)),
+      );
+      setUserStatus("Login user updated.");
+    } catch (error) {
+      setUserStatus(error.response?.data?.message || "Unable to update login user.");
+    }
+  };
+
+  const resetUserPassword = async (id) => {
+    const password = window.prompt("Enter new password. Minimum 6 characters.");
+
+    if (!password) {
+      return;
+    }
+
+    await saveUser(id, { password });
+  };
+
+  const removeUser = async (id) => {
+    if (!canManageUsers) {
+      setUserStatus("Only Admin can manage logins.");
+      return;
+    }
+
+    if (!window.confirm("Delete this login user?")) {
+      return;
+    }
+
+    try {
+      await deleteAdminUser(id);
+      setAdminUsers((current) => current.filter((user) => user._id !== id));
+      setUserStatus("Login user deleted.");
+    } catch (error) {
+      setUserStatus(error.response?.data?.message || "Unable to delete login user.");
+    }
+  };
+
   const changeStatus = async (id, nextStatus) => {
     if (!canManageLeads) {
       setStatus("You do not have access to manage leads.");
@@ -563,6 +686,11 @@ const AdminDashboard = () => {
   const refreshActiveSection = () => {
     if (activeSection === "leads") {
       loadSubmissions(activeLeadTab);
+      return;
+    }
+
+    if (activeSection === "users") {
+      loadUsers();
       return;
     }
 
@@ -619,11 +747,18 @@ const AdminDashboard = () => {
                 detail: `${blogPosts.length} blogs · ${jobPosts.length} jobs · ${testimonials.length} reviews`,
                 icon: FileText,
               },
+              {
+                id: "users",
+                label: "Users",
+                detail: `${adminUsers.length} dashboard logins`,
+                icon: UserRoundCheck,
+              },
             ]
               .filter(
                 (section) =>
                   (section.id === "leads" && canManageLeads) ||
-                  (section.id === "content" && canManageContent),
+                  (section.id === "content" && canManageContent) ||
+                  (section.id === "users" && canManageUsers),
               )
               .map((section) => {
                 const Icon = section.icon;
@@ -810,6 +945,143 @@ const AdminDashboard = () => {
                   totalItems={filteredLeads.length}
                   onChange={setLeadPage}
                 />
+              </div>
+            </section>
+          ) : activeSection === "users" ? (
+            <section className="mt-8">
+              <form
+                onSubmit={createUser}
+                className="light-card min-w-0 rounded-lg p-4 sm:p-5"
+              >
+                <div className="flex min-w-0 items-center gap-3">
+                  <UserRoundCheck size={21} className="shrink-0 text-[#16837a]" />
+                  <div className="min-w-0">
+                    <h2 className="text-xl font-semibold">Create dashboard login</h2>
+                    <p className="mt-1 text-sm leading-6 text-[#101312]/58">
+                      Admin gets all access. Executive manages blogs and jobs.
+                      Manager manages leads only.
+                    </p>
+                  </div>
+                </div>
+
+                {userStatus && (
+                  <div className="mt-5 break-words rounded-lg border border-[#16837a]/20 bg-[#16837a]/10 px-4 py-3 text-sm font-medium text-[#0f5f58]">
+                    {userStatus}
+                  </div>
+                )}
+
+                <div className="mt-5 grid min-w-0 gap-3 lg:grid-cols-[1fr_1fr_170px_130px]">
+                  <input
+                    type="text"
+                    placeholder="Username"
+                    value={userForm.username}
+                    onChange={(event) =>
+                      setUserForm({ ...userForm, username: event.target.value })
+                    }
+                    className="min-w-0 rounded-lg border border-[#101312]/10 bg-[#f7f3ea] px-4 py-3 outline-none focus:border-[#101312]"
+                  />
+                  <input
+                    type="password"
+                    placeholder="Password"
+                    value={userForm.password}
+                    onChange={(event) =>
+                      setUserForm({ ...userForm, password: event.target.value })
+                    }
+                    className="min-w-0 rounded-lg border border-[#101312]/10 bg-[#f7f3ea] px-4 py-3 outline-none focus:border-[#101312]"
+                  />
+                  <select
+                    value={userForm.role}
+                    onChange={(event) =>
+                      setUserForm({ ...userForm, role: event.target.value })
+                    }
+                    className="min-w-0 rounded-lg border border-[#101312]/10 bg-[#f7f3ea] px-4 py-3 text-sm font-semibold outline-none focus:border-[#101312]"
+                  >
+                    {Object.entries(roleLabels).map(([value, label]) => (
+                      <option key={value} value={value}>
+                        {label}
+                      </option>
+                    ))}
+                  </select>
+                  <label className="flex min-h-12 items-center gap-3 rounded-lg border border-[#101312]/10 bg-[#f7f3ea] px-4 py-3 text-sm font-semibold">
+                    <input
+                      type="checkbox"
+                      checked={userForm.active}
+                      onChange={(event) =>
+                        setUserForm({ ...userForm, active: event.target.checked })
+                      }
+                    />
+                    Active
+                  </label>
+                </div>
+
+                <Button type="submit" className="mt-5 w-full sm:w-auto" disabled={userLoading}>
+                  <Plus size={17} />
+                  {userLoading ? "Creating..." : "Create User"}
+                </Button>
+              </form>
+
+              <div className="mt-5 grid min-w-0 gap-3">
+                {adminUsers.length === 0 ? (
+                  <div className="light-card rounded-lg p-6 text-sm font-medium text-[#101312]/60">
+                    No MongoDB dashboard users yet. Your .env login still works as fallback.
+                  </div>
+                ) : (
+                  adminUsers.map((user) => (
+                    <article
+                      key={user._id}
+                      className="light-card grid min-w-0 gap-4 overflow-hidden rounded-lg p-4 lg:grid-cols-[1fr_170px_150px_96px] lg:items-center"
+                    >
+                      <div className="min-w-0">
+                        <h3 className="break-words text-lg font-semibold">
+                          {user.username}
+                        </h3>
+                        <p className="mt-1 text-sm capitalize text-[#101312]/58">
+                          {roleLabels[user.role] || user.role} ·{" "}
+                          {user.active ? "Active" : "Inactive"}
+                        </p>
+                      </div>
+                      <select
+                        value={user.role}
+                        onChange={(event) => saveUser(user._id, { role: event.target.value })}
+                        className="min-w-0 rounded-lg border border-[#101312]/10 bg-[#f7f3ea] px-4 py-3 text-sm font-semibold outline-none"
+                      >
+                        {Object.entries(roleLabels).map(([value, label]) => (
+                          <option key={value} value={value}>
+                            {label}
+                          </option>
+                        ))}
+                      </select>
+                      <button
+                        type="button"
+                        onClick={() => saveUser(user._id, { active: !user.active })}
+                        className={`inline-flex min-h-11 items-center justify-center rounded-lg border px-4 py-2 text-sm font-semibold ${
+                          user.active
+                            ? "border-[#101312]/10 bg-[#f7f3ea] text-[#101312]"
+                            : "border-[#16837a]/20 bg-[#16837a]/10 text-[#0f5f58]"
+                        }`}
+                      >
+                        {user.active ? "Disable" : "Enable"}
+                      </button>
+                      <div className="flex gap-2 lg:justify-end">
+                        <button
+                          type="button"
+                          onClick={() => resetUserPassword(user._id)}
+                          className="inline-flex min-h-11 flex-1 items-center justify-center rounded-lg border border-[#101312]/10 bg-white px-3 py-2 text-sm font-semibold text-[#101312] lg:flex-none"
+                        >
+                          Reset
+                        </button>
+                        <button
+                          type="button"
+                          onClick={() => removeUser(user._id)}
+                          className="inline-flex h-11 w-11 shrink-0 items-center justify-center rounded-lg border border-[#e05f2f]/20 bg-white text-[#e05f2f]"
+                          aria-label="Delete user"
+                        >
+                          <Trash2 size={17} />
+                        </button>
+                      </div>
+                    </article>
+                  ))
+                )}
               </div>
             </section>
           ) : (
