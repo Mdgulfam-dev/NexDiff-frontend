@@ -90,7 +90,7 @@ const About = () => {
             {[
               { value: "50+", label: "Projects Delivered" },
               { value: "30+", label: "Happy Clients" },
-              { value: "4", label: "Core Services" },
+              { value: "10+", label: "Service Areas" },
             ].map((item) => (
               <div key={item.label} className="rounded-lg border border-[#101312]/10 bg-[#101312] p-6 text-white">
                 <p className="text-4xl font-semibold text-[#c7f9cc]">
