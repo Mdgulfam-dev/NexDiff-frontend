@@ -33,10 +33,16 @@ const linkGroups = [
 ];
 
 const services = [
-  "Software Development",
+  "Web Development",
+  "Mobile App Development",
+  "UI/UX Design",
   "Social Media Handling",
   "Digital Marketing",
   "Lead Generation",
+  "SEO Optimization",
+  "E-commerce Solutions",
+  "Cloud Solutions",
+  "Google Ads Services",
 ];
 
 const socials = [

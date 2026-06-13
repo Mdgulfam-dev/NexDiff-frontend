@@ -5,10 +5,16 @@ import Button from "../components/Button";
 import { sendContactForm } from "../api/api";
 
 const services = [
-  "Software Development",
+  "Web Development",
+  "Mobile App Development",
+  "UI/UX Design",
   "Social Media Handling",
   "Digital Marketing",
   "Lead Generation",
+  "SEO Optimization",
+  "E-commerce Solutions",
+  "Cloud Solutions",
+  "Google Ads Services",
 ];
 
 const budgets = ["Rs 10k-20k", "Rs 20k-50k", "Rs 50k+"];

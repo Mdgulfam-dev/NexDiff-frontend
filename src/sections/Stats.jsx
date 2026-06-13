@@ -4,7 +4,7 @@ import CountUp from "../components/CountUp";
 const stats = [
   { value: "50+", label: "Projects delivered", note: "Web, software, and growth systems" },
   { value: "30+", label: "Brands served", note: "Local businesses and startups" },
-  { value: "4", label: "Core services", note: "Build, content, ads, and leads" },
+  { value: "10+", label: "Service areas", note: "Web, apps, design, cloud, ads, and leads" },
   { value: "2+", label: "Years experience", note: "Practical product execution" },
 ];
 

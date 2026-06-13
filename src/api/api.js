@@ -44,10 +44,12 @@ export const submitTestimonial = (data) => API.post("/testimonials", data);
 
 export const getAdminBlogPosts = () => API.get("/admin/blogs");
 export const createAdminBlogPost = (data) => API.post("/admin/blogs", data);
+export const updateAdminBlogPost = (id, data) => API.patch(`/admin/blogs/${id}`, data);
 export const deleteAdminBlogPost = (id) => API.delete(`/admin/blogs/${id}`);
 
 export const getAdminJobPosts = () => API.get("/admin/jobs");
 export const createAdminJobPost = (data) => API.post("/admin/jobs", data);
+export const updateAdminJobPost = (id, data) => API.patch(`/admin/jobs/${id}`, data);
 export const deleteAdminJobPost = (id) => API.delete(`/admin/jobs/${id}`);
 
 export const getAdminTestimonials = () => API.get("/admin/testimonials");
