@@ -92,7 +92,7 @@ const labelMap = {
 
 const visibleFields = {
   contact: ["name", "email", "service", "budget", "urgency", "message"],
-  career: ["name", "phone", "email", "role", "experience", "portfolio", "message"],
+  career: ["name", "phone", "email", "role", "experience", "portfolio", "resume", "message"],
   pricing: [
     "planName",
     "packageLabel",
@@ -138,7 +138,27 @@ const formatValue = (value) => {
     return value ? "Yes" : "No";
   }
 
+  if (value && typeof value === "object") {
+    return value.name || JSON.stringify(value);
+  }
+
   return value || "Not specified";
+};
+
+const renderFieldValue = (field, value) => {
+  if (field === "resume" && value?.dataUrl) {
+    return (
+      <a
+        href={value.dataUrl}
+        download={value.name || "resume"}
+        className="inline-flex min-h-10 items-center justify-center rounded-lg border border-[#101312] bg-[#101312] px-4 py-2 text-sm font-semibold text-white"
+      >
+        Download Resume
+      </a>
+    );
+  }
+
+  return formatValue(value);
 };
 
 const getTitle = (submission) => {
@@ -716,7 +736,7 @@ const AdminDashboard = () => {
                                   {labelMap[field] || field}
                                 </p>
                                 <p className="mt-2 whitespace-pre-wrap break-words text-sm leading-6 text-[#101312]/76">
-                                  {formatValue(submission.data[field])}
+                                  {renderFieldValue(field, submission.data[field])}
                                 </p>
                               </div>
                             ))}

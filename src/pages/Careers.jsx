@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import {
   ArrowUpRight,
   BriefcaseBusiness,
@@ -6,33 +6,13 @@ import {
   Clock3,
   GraduationCap,
   MapPin,
+  Paperclip,
   Send,
   Sparkles,
   Users,
 } from "lucide-react";
 import Button from "../components/Button";
 import { getJobPosts, sendCareerApplication } from "../api/api";
-
-const defaultOpenings = [
-  {
-    title: "Frontend Developer Intern",
-    type: "Internship",
-    location: "Remote / Delhi NCR",
-    focus: "React, responsive UI, landing pages, dashboards",
-  },
-  {
-    title: "Social Media Growth Intern",
-    type: "Internship",
-    location: "Remote",
-    focus: "Content planning, captions, trends, account audits",
-  },
-  {
-    title: "Digital Marketing Associate",
-    type: "Part-time / Project",
-    location: "Remote",
-    focus: "Campaign planning, lead generation, reporting",
-  },
-];
 
 const benefits = [
   "Work on real business websites, funnels, and growth systems",
@@ -49,14 +29,17 @@ const process = [
 ];
 
 const Careers = () => {
-  const [openings, setOpenings] = useState(defaultOpenings);
+  const formRef = useRef(null);
+  const [openings, setOpenings] = useState([]);
+  const [jobsLoading, setJobsLoading] = useState(true);
   const [form, setForm] = useState({
     name: "",
     phone: "",
     email: "",
-    role: defaultOpenings[0].title,
+    role: "",
     experience: "",
     portfolio: "",
+    resume: null,
     message: "",
   });
   const [status, setStatus] = useState("");
@@ -65,13 +48,17 @@ const Careers = () => {
   useEffect(() => {
     getJobPosts()
       .then((response) => {
-        if (response.data.jobs.length > 0) {
-          setOpenings(response.data.jobs);
-          setForm((current) => ({ ...current, role: response.data.jobs[0].title }));
-        }
+        setOpenings(response.data.jobs);
+        setForm((current) => ({
+          ...current,
+          role: current.role || response.data.jobs[0]?.title || "",
+        }));
       })
       .catch(() => {
-        setOpenings(defaultOpenings);
+        setOpenings([]);
+      })
+      .finally(() => {
+        setJobsLoading(false);
       });
   }, []);
 
@@ -80,11 +67,51 @@ const Careers = () => {
     setStatus("");
   };
 
+  const selectJob = (title) => {
+    updateField("role", title);
+    formRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
+  };
+
+  const handleResumeUpload = (file) => {
+    if (!file) {
+      updateField("resume", null);
+      return;
+    }
+
+    const allowedTypes = [
+      "application/pdf",
+      "application/msword",
+      "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+    ];
+
+    if (!allowedTypes.includes(file.type)) {
+      setStatus("Please upload a PDF, DOC, or DOCX resume.");
+      return;
+    }
+
+    if (file.size > 2 * 1024 * 1024) {
+      setStatus("Please upload a resume smaller than 2 MB.");
+      return;
+    }
+
+    const reader = new FileReader();
+    reader.onload = () => {
+      updateField("resume", {
+        name: file.name,
+        type: file.type,
+        size: file.size,
+        dataUrl: reader.result,
+      });
+    };
+    reader.onerror = () => setStatus("Could not read the resume file. Please try again.");
+    reader.readAsDataURL(file);
+  };
+
   const handleSubmit = async (event) => {
     event.preventDefault();
 
-    if (!form.name || !form.phone || !form.role || !form.experience) {
-      setStatus("Please complete your name, phone, role, and experience.");
+    if (!form.name || !form.phone || !form.role || !form.experience || !form.resume) {
+      setStatus("Please complete your name, phone, role, experience, and resume.");
       return;
     }
 
@@ -96,9 +123,10 @@ const Careers = () => {
         name: "",
         phone: "",
         email: "",
-        role: openings[0]?.title || defaultOpenings[0].title,
+        role: openings[0]?.title || "",
         experience: "",
         portfolio: "",
+        resume: null,
         message: "",
       });
     } catch (error) {
@@ -182,13 +210,22 @@ const Careers = () => {
               </h2>
             </div>
             <p className="max-w-xl text-sm leading-7 text-[#101312]/62">
-              These roles are flexible starting points. If your skill fits
-              NexDiff work, apply even if your exact title is not listed.
+              Choose an open role from the current listings and submit your
+              profile with a resume.
             </p>
           </div>
 
           <div className="mt-8 grid gap-5 lg:grid-cols-3">
-              {openings.map((job) => (
+            {jobsLoading ? (
+              <div className="col-span-full rounded-lg border border-[#101312]/10 bg-[#f7f3ea] p-6 text-sm font-medium text-[#101312]/60">
+                Loading open roles...
+              </div>
+            ) : openings.length === 0 ? (
+              <div className="col-span-full rounded-lg border border-[#101312]/10 bg-[#f7f3ea] p-6 text-sm font-medium text-[#101312]/60">
+                No open roles are available right now.
+              </div>
+            ) : (
+              openings.map((job) => (
               <article key={job._id || job.title} className="light-card rounded-lg p-6">
                 <div className="flex items-start justify-between gap-4">
                   <span className="rounded-lg bg-[#f7f3ea] px-3 py-2 text-xs font-semibold text-[#e05f2f]">
@@ -204,14 +241,15 @@ const Careers = () => {
                 <p className="mt-4 text-sm leading-7 text-[#101312]/65">{job.focus}</p>
                 <button
                   type="button"
-                  onClick={() => updateField("role", job.title)}
+                  onClick={() => selectJob(job.title)}
                   className="mt-6 inline-flex min-h-11 w-full items-center justify-center gap-2 rounded-lg border border-[#101312] bg-[#101312] px-4 py-3 text-sm font-semibold text-white transition hover:bg-[#202522]"
                 >
-                  Select Role
+                  Apply
                   <ArrowUpRight size={16} />
                 </button>
               </article>
-            ))}
+              ))
+            )}
           </div>
         </div>
       </section>
@@ -242,7 +280,7 @@ const Careers = () => {
             </div>
           </div>
 
-          <form onSubmit={handleSubmit} className="light-card rounded-lg p-5 sm:p-7">
+          <form ref={formRef} onSubmit={handleSubmit} className="light-card rounded-lg p-5 sm:p-7">
             <div className="flex items-center gap-3">
               <Send size={22} className="text-[#16837a]" />
               <h2 className="text-2xl font-semibold">Apply now</h2>
@@ -281,12 +319,12 @@ const Careers = () => {
                 onChange={(event) => updateField("role", event.target.value)}
                 className="rounded-lg border border-[#101312]/10 bg-[#f7f3ea] px-4 py-3 outline-none transition focus:border-[#101312]"
               >
+                <option value="">Select role *</option>
                 {openings.map((job) => (
-                  <option key={job.title} value={job.title}>
+                  <option key={job._id || job.title} value={job.title}>
                     {job.title}
                   </option>
                 ))}
-                <option value="Other">Other</option>
               </select>
             </div>
 
@@ -305,6 +343,20 @@ const Careers = () => {
               onChange={(event) => updateField("portfolio", event.target.value)}
               className="mt-4 w-full rounded-lg border border-[#101312]/10 bg-[#f7f3ea] px-4 py-3 outline-none transition focus:border-[#101312]"
             />
+
+            <label className="mt-4 flex cursor-pointer flex-col rounded-lg border border-dashed border-[#101312]/20 bg-[#f7f3ea] px-4 py-5 transition hover:border-[#101312]/40">
+              <span className="inline-flex items-center gap-2 text-sm font-semibold text-[#101312]">
+                <Paperclip size={17} />
+                {form.resume ? form.resume.name : "Upload resume *"}
+              </span>
+              <span className="mt-1 text-xs text-[#101312]/52">PDF, DOC, or DOCX up to 2 MB</span>
+              <input
+                type="file"
+                accept=".pdf,.doc,.docx,application/pdf,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document"
+                onChange={(event) => handleResumeUpload(event.target.files?.[0])}
+                className="sr-only"
+              />
+            </label>
 
             <textarea
               rows="5"

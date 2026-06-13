@@ -2,25 +2,24 @@ import { useEffect, useMemo, useState } from "react";
 import { Link } from "react-router-dom";
 import { Helmet } from "react-helmet-async";
 import { ArrowUpRight, Search } from "lucide-react";
-import blogs from "../data/blogs";
 import { getBlogPosts } from "../api/api";
-
-const defaultCategories = ["Development", "AI", "DevOps", "Business"];
 
 const Blog = () => {
   const [active, setActive] = useState("All");
   const [search, setSearch] = useState("");
-  const [posts, setPosts] = useState(blogs);
+  const [posts, setPosts] = useState([]);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     getBlogPosts()
       .then((response) => {
-        if (response.data.posts.length > 0) {
-          setPosts(response.data.posts);
-        }
+        setPosts(response.data.posts);
       })
       .catch(() => {
-        setPosts(blogs);
+        setPosts([]);
+      })
+      .finally(() => {
+        setLoading(false);
       });
   }, []);
 
@@ -39,7 +38,7 @@ const Blog = () => {
   }, [search, active, posts]);
 
   const categories = useMemo(
-    () => ["All", ...new Set([...defaultCategories, ...posts.map((post) => post.category)])],
+    () => ["All", ...new Set(posts.map((post) => post.category))],
     [posts],
   );
 
@@ -125,7 +124,11 @@ const Blog = () => {
           </div>
 
           <div className="mt-8 grid gap-4 md:grid-cols-3">
-            {filteredBlogs.length > 0 ? (
+            {loading ? (
+              <div className="col-span-full rounded-lg border border-[#101312]/10 bg-white p-8 text-center">
+                <p className="text-[#101312]/60">Loading articles...</p>
+              </div>
+            ) : filteredBlogs.length > 0 ? (
               filteredBlogs.map((blog) => (
                 <Link
                   key={blog._id || blog.id}

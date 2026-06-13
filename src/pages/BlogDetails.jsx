@@ -4,30 +4,38 @@ import ReactMarkdown from "react-markdown";
 import { Prism as SyntaxHighlighter } from "react-syntax-highlighter";
 import { oneDark } from "react-syntax-highlighter/dist/esm/styles/prism";
 import { ArrowLeft, ArrowUpRight, BookOpen, Clock3 } from "lucide-react";
-import blogs from "../data/blogs";
 import { getBlogPost, getBlogPosts } from "../api/api";
 
 const BlogDetails = () => {
   const { id } = useParams();
-  const fallbackBlog = blogs.find((item) => String(item.slug || item.id) === id);
-  const [blog, setBlog] = useState(fallbackBlog);
-  const [allBlogs, setAllBlogs] = useState(blogs);
+  const [blog, setBlog] = useState(null);
+  const [allBlogs, setAllBlogs] = useState([]);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    setBlog(fallbackBlog);
+    setLoading(true);
 
     getBlogPost(id)
       .then((response) => setBlog(response.data.post))
-      .catch(() => setBlog(fallbackBlog));
+      .catch(() => setBlog(null))
+      .finally(() => setLoading(false));
 
     getBlogPosts()
       .then((response) => {
-        if (response.data.posts.length > 0) {
-          setAllBlogs(response.data.posts);
-        }
+        setAllBlogs(response.data.posts);
       })
-      .catch(() => setAllBlogs(blogs));
+      .catch(() => setAllBlogs([]));
   }, [id]);
+
+  if (loading) {
+    return (
+      <main className="page-shell section-pad">
+        <div className="container-wide">
+          <p className="text-[#101312]/60">Loading blog...</p>
+        </div>
+      </main>
+    );
+  }
 
   if (!blog) {
     return (
