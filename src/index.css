@@ -10,12 +10,18 @@
   }
 
   html {
+    width: 100%;
+    max-width: 100%;
     scroll-behavior: smooth;
+    overflow-x: hidden;
   }
 
   body {
+    width: 100%;
+    max-width: 100%;
     margin: 0;
     min-width: 320px;
+    overflow-x: hidden;
     background: #f7f3ea;
     font-family:
       Poppins, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont,
@@ -43,6 +49,12 @@
 
   img {
     max-width: 100%;
+  }
+
+  #root {
+    width: 100%;
+    max-width: 100%;
+    overflow-x: hidden;
   }
 }
 

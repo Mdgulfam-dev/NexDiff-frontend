@@ -39,13 +39,13 @@ const Hero = () => {
   const navigate = useNavigate();
 
   return (
-    <section className="relative min-h-screen overflow-hidden bg-[#101312] text-white pt-24 sm:pt-28">
+    <section className="relative min-h-screen w-full overflow-hidden bg-[#101312] pt-20 text-white sm:pt-28">
       <div className="absolute inset-0 bg-[linear-gradient(to_right,rgba(255,255,255,0.055)_1px,transparent_1px),linear-gradient(to_bottom,rgba(255,255,255,0.045)_1px,transparent_1px)] bg-[size:56px_56px]" />
       <div className="absolute inset-x-0 top-0 h-40 bg-gradient-to-b from-[#1f2937]/80 to-transparent" />
       <div className="absolute right-[-18%] top-20 h-[520px] w-[520px] rotate-12 border border-[#f97316]/20 bg-[rgba(249,115,22,0.06)]" />
       <div className="absolute left-[-14%] bottom-[-18%] h-[420px] w-[420px] -rotate-12 border border-[#84cc16]/20 bg-[rgba(132,204,22,0.06)]" />
 
-      <div className="relative z-10 mx-auto grid min-h-[calc(100vh-7rem)] w-full max-w-7xl grid-cols-1 items-center gap-12 px-4 pb-16 sm:px-6 lg:grid-cols-[1.02fr_0.98fr] lg:px-8">
+      <div className="relative z-10 mx-auto grid min-h-[calc(100vh-5rem)] w-full max-w-7xl grid-cols-1 items-center gap-10 overflow-hidden px-4 pb-12 sm:min-h-[calc(100vh-7rem)] sm:px-6 sm:pb-16 lg:grid-cols-[1.02fr_0.98fr] lg:overflow-visible lg:px-8">
         <Motion.div
           initial="hidden"
           animate="visible"
@@ -53,17 +53,19 @@ const Hero = () => {
             hidden: {},
             visible: { transition: { staggerChildren: 0.12 } },
           }}
-          className="max-w-3xl"
+          className="max-w-3xl min-w-0"
         >
           <Motion.div
             variants={{
               hidden: { opacity: 0, y: 18 },
               visible: { opacity: 1, y: 0 },
             }}
-            className="mb-5 inline-flex items-center gap-2 border border-white/10 bg-white/[0.07] px-3 py-2 text-xs font-medium text-[#c7f9cc] backdrop-blur"
+            className="mb-5 inline-flex max-w-full items-center gap-2 border border-white/10 bg-white/[0.07] px-3 py-2 text-[11px] font-medium leading-5 text-[#c7f9cc] backdrop-blur sm:text-xs"
           >
-            <Sparkles size={15} />
-            Brands turn online with one growth partner
+            <Sparkles size={15} className="shrink-0" />
+            <span className="min-w-0 truncate">
+              Brands turn online with one growth partner
+            </span>
           </Motion.div>
 
           <Motion.h1
@@ -71,7 +73,7 @@ const Hero = () => {
               hidden: { opacity: 0, y: 24 },
               visible: { opacity: 1, y: 0 },
             }}
-            className="max-w-4xl text-4xl font-semibold leading-[1.05] tracking-normal text-white sm:text-5xl lg:text-7xl"
+            className="max-w-4xl text-[2.35rem] font-semibold leading-[1.08] tracking-normal text-white min-[380px]:text-[2.55rem] sm:text-5xl lg:text-7xl"
           >
             Nex
             <span
@@ -170,9 +172,9 @@ const Hero = () => {
           initial={{ opacity: 0, y: 28, scale: 0.97 }}
           animate={{ opacity: 1, y: 0, scale: 1 }}
           transition={{ duration: 0.7, delay: 0.15 }}
-          className="relative"
+          className="relative min-w-0"
         >
-          <div className="border border-white/10 bg-[#f6f1e8] p-2 text-[#101312] shadow-[0_32px_90px_rgba(0,0,0,0.38)]">
+          <div className="max-w-full overflow-hidden border border-white/10 bg-[#f6f1e8] p-2 text-[#101312] shadow-[0_32px_90px_rgba(0,0,0,0.38)]">
             <div className="flex items-center justify-between border-b border-[#101312]/10 px-4 py-3">
               <div className="flex items-center gap-2">
                 <span className="h-2.5 w-2.5 bg-[#ef4444]" />
