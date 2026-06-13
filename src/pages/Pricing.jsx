@@ -2,16 +2,14 @@ import { useNavigate } from "react-router-dom";
 import {
   ArrowRight,
   BadgeCheck,
-  CalendarDays,
   CheckCircle2,
   Clock3,
   HelpCircle,
-  SearchCheck,
   ShieldCheck,
   Sparkles,
-  Target,
 } from "lucide-react";
 import Button from "../components/Button";
+import { analysisPlans } from "../data/pricingPlans";
 
 const plans = [
   {
@@ -65,48 +63,6 @@ const addOns = [
   "Lead generation campaigns",
   "Custom software modules",
   "Analytics and tracking setup",
-];
-
-const analysisPlans = [
-  {
-    name: "Free Social Media Analysis",
-    price: "Free",
-    note: "One-time",
-    icon: <SearchCheck size={21} />,
-    description:
-      "Users answer a few questions so NexDiff can review the account and share practical improvement points.",
-    features: [
-      "Account start date, niche, platform, content type, and goals review",
-      "What is working and where the account has friction",
-      "Suggested improvements and actionable recommendations",
-    ],
-  },
-  {
-    name: "Premium Social Media Analysis",
-    price: "Rs 499 / Rs 799",
-    note: "1-month or 2-month calendar",
-    icon: <CalendarDays size={21} />,
-    description:
-      "Includes everything from the free analysis plus a ready content calendar for consistent posting.",
-    features: [
-      "Complete social media analysis",
-      "1-month content calendar for Rs 499",
-      "2-month content calendar option for Rs 799",
-    ],
-  },
-  {
-    name: "Marketing Strategy for Startups",
-    price: "Rs 999",
-    note: "Startup roadmap",
-    icon: <Target size={21} />,
-    description:
-      "A startup-focused marketing strategy built around the right platforms, channels, and growth path.",
-    features: [
-      "Suitable online platforms for your niche",
-      "Online and offline marketing strategy",
-      "Influencer marketing strategy and growth roadmap",
-    ],
-  },
 ];
 
 const faqs = [
@@ -279,39 +235,11 @@ const Pricing = () => {
 
           <div className="mt-8 grid gap-5 lg:grid-cols-3">
             {analysisPlans.map((plan) => (
-              <article key={plan.name} className="light-card rounded-lg p-6">
-                <div className="flex items-start justify-between gap-4">
-                  <span className="flex h-12 w-12 items-center justify-center rounded-lg bg-[#f7f3ea] text-[#e05f2f]">
-                    {plan.icon}
-                  </span>
-                  <span className="rounded-lg border border-[#101312]/10 px-3 py-2 text-xs font-semibold text-[#101312]/62">
-                    {plan.note}
-                  </span>
-                </div>
-
-                <h3 className="mt-5 text-xl font-semibold">{plan.name}</h3>
-                <p className="mt-3 text-3xl font-semibold">{plan.price}</p>
-                <p className="mt-3 text-sm leading-7 text-[#101312]/62">
-                  {plan.description}
-                </p>
-
-                <div className="mt-6 space-y-3 border-t border-[#101312]/10 pt-5">
-                  {plan.features.map((feature) => (
-                    <div key={feature} className="flex gap-3">
-                      <CheckCircle2 size={18} className="mt-0.5 shrink-0 text-[#16837a]" />
-                      <p className="text-sm leading-6 text-[#101312]/68">{feature}</p>
-                    </div>
-                  ))}
-                </div>
-
-                <Button
-                  onClick={() => navigate("/contact")}
-                  variant="outline"
-                  className="mt-7 w-full bg-[#f7f3ea]"
-                >
-                  Request This Plan
-                </Button>
-              </article>
+              <AnalysisPlanCard
+                key={plan.name}
+                plan={plan}
+                onRequest={() => navigate(`/pricing/request?plan=${plan.id}`)}
+              />
             ))}
           </div>
         </div>
@@ -356,6 +284,46 @@ const Pricing = () => {
         </div>
       </section>
     </main>
+  );
+};
+
+const AnalysisPlanCard = ({ plan, onRequest }) => {
+  const Icon = plan.icon;
+
+  return (
+    <article className="light-card rounded-lg p-6">
+      <div className="flex items-start justify-between gap-4">
+        <span className="flex h-12 w-12 items-center justify-center rounded-lg bg-[#f7f3ea] text-[#e05f2f]">
+          <Icon size={21} />
+        </span>
+        <span className="rounded-lg border border-[#101312]/10 px-3 py-2 text-xs font-semibold text-[#101312]/62">
+          {plan.note}
+        </span>
+      </div>
+
+      <h3 className="mt-5 text-xl font-semibold">{plan.name}</h3>
+      <p className="mt-3 text-3xl font-semibold">{plan.price}</p>
+      <p className="mt-3 text-sm leading-7 text-[#101312]/62">
+        {plan.description}
+      </p>
+
+      <div className="mt-6 space-y-3 border-t border-[#101312]/10 pt-5">
+        {plan.features.map((feature) => (
+          <div key={feature} className="flex gap-3">
+            <CheckCircle2 size={18} className="mt-0.5 shrink-0 text-[#16837a]" />
+            <p className="text-sm leading-6 text-[#101312]/68">{feature}</p>
+          </div>
+        ))}
+      </div>
+
+      <Button
+        onClick={onRequest}
+        variant="outline"
+        className="mt-7 w-full bg-[#f7f3ea]"
+      >
+        Request This Plan
+      </Button>
+    </article>
   );
 };
 

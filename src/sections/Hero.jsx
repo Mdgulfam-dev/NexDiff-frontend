@@ -13,6 +13,7 @@ import {
   TrendingUp,
 } from "lucide-react";
 import Button from "../components/Button";
+import CountUp from "../components/CountUp";
 
 const services = [
   { label: "Software Development", icon: <Code2 size={18} /> },
@@ -72,7 +73,17 @@ const Hero = () => {
             }}
             className="max-w-4xl text-4xl font-semibold leading-[1.05] tracking-normal text-white sm:text-5xl lg:text-7xl"
           >
-            NexDiff turns brands into{" "}
+            Nex
+            <span
+              style={{
+                fontFeatureSettings: '"liga" 0',
+                fontVariantLigatures: "none",
+                letterSpacing: "0.035em",
+              }}
+            >
+              Diff
+            </span>{" "}
+            turns brands into{" "}
             <span className="text-[#c7f9cc]">online growth engines.</span>
           </Motion.h1>
 
@@ -114,6 +125,19 @@ const Hero = () => {
             >
               View Services
             </Button>
+
+            <Button
+              variant="outline"
+              onClick={() =>
+                navigate("/pricing/request?plan=free-social-media-analysis")
+              }
+              className="inline-flex items-center justify-center gap-2 rounded-md border-[#c7f9cc]/50 bg-[#c7f9cc]/10 text-[#c7f9cc] hover:bg-[#c7f9cc]/18"
+            >
+              Get Free Audit
+              <span className="rounded-md bg-[#c7f9cc] px-2 py-0.5 text-xs font-semibold text-[#101312]">
+                0 cost
+              </span>
+            </Button>
           </Motion.div>
 
           <Motion.div
@@ -129,7 +153,7 @@ const Hero = () => {
                 className="py-4 pr-4 first:pl-0 [&:not(:last-child)]:border-r [&:not(:last-child)]:border-white/10 sm:px-5"
               >
                 <p className="text-2xl font-semibold text-white">
-                  {metric.value}
+                  <CountUp value={metric.value} />
                 </p>
                 <p className="mt-1 text-xs text-white/55 sm:text-sm">
                   {metric.label}

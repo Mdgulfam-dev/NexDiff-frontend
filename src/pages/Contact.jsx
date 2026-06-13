@@ -2,6 +2,7 @@ import { useState } from "react";
 import { Mail, MapPin, Phone, ShieldCheck } from "lucide-react";
 import { FaWhatsapp } from "react-icons/fa";
 import Button from "../components/Button";
+import { sendContactForm } from "../api/api";
 
 const services = [
   "Software Development",
@@ -12,6 +13,11 @@ const services = [
 
 const budgets = ["Rs 10k-20k", "Rs 20k-50k", "Rs 50k+"];
 const urgency = ["Urgent", "1-2 Weeks", "Flexible"];
+const officeAddress = "A-192 Sarita, New Delhi - 110076";
+const officeMapUrl = "https://maps.app.goo.gl/28Li6YPu6D6dQmNm7";
+const officeMapEmbedUrl = `https://www.google.com/maps?q=${encodeURIComponent(
+  officeAddress,
+)}&output=embed`;
 
 const Contact = () => {
   const [step, setStep] = useState(1);
@@ -41,26 +47,9 @@ const Contact = () => {
       setLoading(true);
       setStatus("");
 
-      const message = `
-New Lead from Website
+      await sendContactForm(form);
 
-Name: ${form.name}
-Email: ${form.email}
-
-Service: ${form.service}
-Budget: ${form.budget || "Not specified"}
-Urgency: ${form.urgency || "Not specified"}
-
-Message:
-${form.message || "N/A"}
-      `;
-
-      window.open(
-        `https://wa.me/919001402531?text=${encodeURIComponent(message)}`,
-        "_blank",
-      );
-
-      setStatus("Opening WhatsApp with your project details.");
+      setStatus("Thanks. Your project brief has been saved and our team will contact you soon.");
       setStep(1);
       setForm({
         name: "",
@@ -70,8 +59,8 @@ ${form.message || "N/A"}
         urgency: "",
         message: "",
       });
-    } catch {
-      setStatus("Something went wrong. Please try again.");
+    } catch (error) {
+      setStatus(error.response?.data?.message || "Something went wrong. Please try again.");
     } finally {
       setLoading(false);
     }
@@ -108,14 +97,32 @@ ${form.message || "N/A"}
 
             <div className="mt-8 grid gap-3">
               {[
-                { icon: <Phone size={18} />, text: "+91 9001402531" },
-                { icon: <Mail size={18} />, text: "info.nexdiff@gmail.com" },
-                { icon: <MapPin size={18} />, text: "Delhi, India" },
+                {
+                  icon: <Phone size={18} />,
+                  text: "+91 9001402531",
+                  href: "tel:+919001402531",
+                },
+                {
+                  icon: <Mail size={18} />,
+                  text: "info.nexdiff@gmail.com",
+                  href: "mailto:info.nexdiff@gmail.com",
+                },
+                {
+                  icon: <MapPin size={18} />,
+                  text: officeAddress,
+                  href: officeMapUrl,
+                },
               ].map((item) => (
-                <div key={item.text} className="light-card flex items-center gap-3 rounded-lg p-4">
+                <a
+                  key={item.text}
+                  href={item.href}
+                  target={item.href ? "_blank" : undefined}
+                  rel={item.href ? "noopener noreferrer" : undefined}
+                  className="light-card flex items-center gap-3 rounded-lg p-4 transition hover:-translate-y-0.5"
+                >
                   <span className="text-[#16837a]">{item.icon}</span>
                   <span className="text-sm font-medium text-[#101312]/72">{item.text}</span>
-                </div>
+                </a>
               ))}
             </div>
 
@@ -126,6 +133,30 @@ ${form.message || "N/A"}
                   {item}
                 </span>
               ))}
+            </div>
+
+            <div className="light-card mt-6 overflow-hidden rounded-lg">
+              <iframe
+                title="NexDiff office location"
+                src={officeMapEmbedUrl}
+                loading="lazy"
+                referrerPolicy="no-referrer-when-downgrade"
+                className="h-52 w-full border-0"
+              />
+              <div className="flex flex-col gap-3 p-4 sm:flex-row sm:items-center sm:justify-between">
+                <div>
+                  <p className="text-sm font-semibold text-[#101312]">Visit our office</p>
+                  <p className="mt-1 text-sm text-[#101312]/60">{officeAddress}</p>
+                </div>
+                <a
+                  href={officeMapUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex min-h-11 items-center justify-center rounded-lg border border-[#101312] bg-[#101312] px-4 py-3 text-sm font-semibold text-white transition hover:bg-[#202522]"
+                >
+                  Open Maps
+                </a>
+              </div>
             </div>
 
             <button

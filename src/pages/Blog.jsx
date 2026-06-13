@@ -1,19 +1,32 @@
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { Link } from "react-router-dom";
 import { Helmet } from "react-helmet-async";
 import { ArrowUpRight, Search } from "lucide-react";
-import blogs from "../data/blogs";
-
-const categories = ["All", "Development", "AI", "DevOps", "Business"];
+import { getBlogPosts } from "../api/api";
 
 const Blog = () => {
   const [active, setActive] = useState("All");
   const [search, setSearch] = useState("");
+  const [posts, setPosts] = useState([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    getBlogPosts()
+      .then((response) => {
+        setPosts(response.data.posts);
+      })
+      .catch(() => {
+        setPosts([]);
+      })
+      .finally(() => {
+        setLoading(false);
+      });
+  }, []);
 
   const filteredBlogs = useMemo(() => {
     const searchText = search.trim().toLowerCase();
 
-    return blogs.filter((blog) => {
+    return posts.filter((blog) => {
       const matchCategory = active === "All" || blog.category === active;
       const matchSearch =
         blog.title.toLowerCase().includes(searchText) ||
@@ -22,9 +35,14 @@ const Blog = () => {
 
       return matchCategory && matchSearch;
     });
-  }, [search, active]);
+  }, [search, active, posts]);
 
-  const featured = blogs[0];
+  const categories = useMemo(
+    () => ["All", ...new Set(posts.map((post) => post.category))],
+    [posts],
+  );
+
+  const featured = posts[0];
 
   return (
     <main className="page-shell">
@@ -106,10 +124,14 @@ const Blog = () => {
           </div>
 
           <div className="mt-8 grid gap-4 md:grid-cols-3">
-            {filteredBlogs.length > 0 ? (
+            {loading ? (
+              <div className="col-span-full rounded-lg border border-[#101312]/10 bg-white p-8 text-center">
+                <p className="text-[#101312]/60">Loading articles...</p>
+              </div>
+            ) : filteredBlogs.length > 0 ? (
               filteredBlogs.map((blog) => (
                 <Link
-                  key={blog.id}
+                  key={blog._id || blog.id}
                   to={`/blog/${blog.slug || blog.id}`}
                   className="light-card group overflow-hidden rounded-lg transition hover:-translate-y-1"
                 >

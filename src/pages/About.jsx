@@ -2,6 +2,7 @@ import { motion as Motion } from "framer-motion";
 import { useNavigate } from "react-router-dom";
 import { ArrowUpRight, CheckCircle2 } from "lucide-react";
 import Button from "../components/Button";
+import CountUp from "../components/CountUp";
 import profile from "../assets/profile.jpg";
 
 const team = [
@@ -72,23 +73,16 @@ const About = () => {
             </div>
 
             <div className="light-card rounded-lg p-5">
-              <div className="flex flex-col gap-5 sm:flex-row">
-                <img
-                  src={profile}
-                  alt="Md Gulfam"
-                  className="h-28 w-28 rounded-lg object-cover"
-                />
-                <div>
-                  <p className="text-xs font-semibold uppercase tracking-[0.16em] text-[#e05f2f]">
-                    Founder
-                  </p>
-                  <h2 className="mt-2 text-2xl font-semibold">Md Gulfam</h2>
-                  <p className="mt-3 text-sm leading-7 text-[#101312]/65">
-                    A full-stack developer and tech entrepreneur focused on
-                    building scalable applications, automation-ready systems,
-                    and digital products that solve real business problems.
-                  </p>
-                </div>
+              <div>
+                <p className="text-xs font-semibold uppercase tracking-[0.16em] text-[#e05f2f]">
+                  Growth partner
+                </p>
+                <h2 className="mt-2 text-2xl font-semibold">Built around business outcomes</h2>
+                <p className="mt-3 text-sm leading-7 text-[#101312]/65">
+                  We plan, build, launch, and improve digital systems that help
+                  businesses look credible online, capture enquiries, and manage
+                  growth with less scattered effort.
+                </p>
               </div>
             </div>
           </div>
@@ -100,7 +94,9 @@ const About = () => {
               { value: "4", label: "Core Services" },
             ].map((item) => (
               <div key={item.label} className="rounded-lg border border-[#101312]/10 bg-[#101312] p-6 text-white">
-                <p className="text-4xl font-semibold text-[#c7f9cc]">{item.value}</p>
+                <p className="text-4xl font-semibold text-[#c7f9cc]">
+                  <CountUp value={item.value} />
+                </p>
                 <p className="mt-2 text-sm text-white/58">{item.label}</p>
               </div>
             ))}

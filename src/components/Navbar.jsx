@@ -7,8 +7,10 @@ import logo from "../assets/logo.png";
 const navLinks = [
   { name: "Home", path: "/" },
   { name: "Services", path: "/services" },
+  { name: "Work", path: "/case-studies" },
   { name: "Pricing", path: "/pricing" },
   { name: "About", path: "/about" },
+  { name: "Careers", path: "/careers" },
   { name: "Blog", path: "/blog" },
   { name: "Contact", path: "/contact" },
 ];
@@ -28,10 +30,37 @@ const Navbar = () => {
   return (
     <nav className="fixed inset-x-0 top-0 z-50 border-b border-[#101312]/10 bg-[#f7f3ea]/88 text-[#101312] backdrop-blur-xl">
       <div className="container-wide flex h-20 items-center justify-between px-4 sm:px-6 lg:px-8">
-        <Link to="/" className="flex items-center gap-3" onClick={() => setIsOpen(false)}>
-          <img src={logo} alt="NexDiff" className="h-11 w-11 object-contain" />
-          <span className="text-lg font-semibold tracking-normal">
-            Nex<span className="text-[#e05f2f]">Diff</span>
+        <Link
+          to="/"
+          className="group flex min-w-0 items-center gap-2.5"
+          onClick={() => setIsOpen(false)}
+          aria-label="NexDiff home"
+        >
+          <span className="flex h-12 w-12 shrink-0 items-center justify-center rounded-lg border border-[#101312]/10 bg-white shadow-[0_8px_22px_rgba(16,19,18,0.08)] transition group-hover:-translate-y-0.5">
+            <img
+              src={logo}
+              alt=""
+              className="h-9 w-9 object-contain"
+              aria-hidden="true"
+            />
+          </span>
+          <span className="flex flex-col leading-none">
+            <span className="font-['Poppins'] text-xl font-bold tracking-[0.01em] text-[#101312]">
+              Nex
+              <span
+                className="text-[#e05f2f]"
+                style={{
+                  fontFeatureSettings: '"liga" 0',
+                  fontVariantLigatures: "none",
+                  letterSpacing: "0.045em",
+                }}
+              >
+                Diff
+              </span>
+            </span>
+            <span className="mt-1 hidden text-[10px] font-semibold uppercase tracking-[0.18em] text-[#101312]/42 sm:block">
+              Growth Systems
+            </span>
           </span>
         </Link>
 
