@@ -28,24 +28,24 @@ const Navbar = () => {
   }, [isOpen]);
 
   return (
-    <nav className="fixed inset-x-0 top-0 z-50 border-b border-[#101312]/10 bg-[#f7f3ea]/88 text-[#101312] backdrop-blur-xl">
-      <div className="container-wide flex h-20 items-center justify-between px-4 sm:px-6 lg:px-8">
+    <nav className="fixed inset-x-0 top-0 z-50 border-b border-[#101312]/10 bg-[#f7f3ea]/92 text-[#101312] backdrop-blur-xl">
+      <div className="container-wide flex h-16 items-center justify-between gap-3 px-4 sm:h-20 sm:px-6 lg:px-8">
         <Link
           to="/"
-          className="group flex min-w-0 items-center gap-2.5"
+          className="group flex min-w-0 flex-1 items-center gap-2.5 lg:flex-none"
           onClick={() => setIsOpen(false)}
           aria-label="NexDiff home"
         >
-          <span className="flex h-12 w-12 shrink-0 items-center justify-center rounded-lg border border-[#101312]/10 bg-white shadow-[0_8px_22px_rgba(16,19,18,0.08)] transition group-hover:-translate-y-0.5">
+          <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-lg border border-[#101312]/10 bg-white shadow-[0_8px_22px_rgba(16,19,18,0.08)] transition group-hover:-translate-y-0.5 sm:h-12 sm:w-12">
             <img
               src={logo}
               alt=""
-              className="h-9 w-9 object-contain"
+              className="h-8 w-8 object-contain sm:h-9 sm:w-9"
               aria-hidden="true"
             />
           </span>
-          <span className="flex flex-col leading-none">
-            <span className="font-['Poppins'] text-xl font-bold tracking-[0.01em] text-[#101312]">
+          <span className="flex min-w-0 flex-col leading-none">
+            <span className="truncate font-['Poppins'] text-lg font-bold tracking-[0.01em] text-[#101312] sm:text-xl">
               Nex
               <span
                 className="text-[#e05f2f]"
@@ -96,7 +96,7 @@ const Navbar = () => {
           type="button"
           aria-label={isOpen ? "Close menu" : "Open menu"}
           onClick={() => setIsOpen((value) => !value)}
-          className="inline-flex h-11 w-11 items-center justify-center rounded-lg border border-[#101312]/10 bg-white lg:hidden"
+          className="inline-flex h-11 w-11 shrink-0 items-center justify-center rounded-lg border border-[#101312]/10 bg-white lg:hidden"
         >
           {isOpen ? <X size={22} /> : <Menu size={22} />}
         </button>
@@ -108,9 +108,9 @@ const Navbar = () => {
             initial={{ opacity: 0, y: -12 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -12 }}
-            className="border-t border-[#101312]/10 bg-[#f7f3ea] px-4 py-5 shadow-2xl lg:hidden"
+            className="fixed inset-x-0 top-16 max-h-[calc(100vh-4rem)] overflow-y-auto border-t border-[#101312]/10 bg-[#f7f3ea] px-4 py-4 shadow-2xl sm:top-20 sm:max-h-[calc(100vh-5rem)] lg:hidden"
           >
-            <div className="flex flex-col gap-2">
+            <div className="mx-auto flex max-w-7xl flex-col gap-2">
               {navLinks.map((link) => {
                 const isActive = location.pathname === link.path;
 

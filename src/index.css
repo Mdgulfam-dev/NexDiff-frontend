@@ -48,7 +48,7 @@
 
 @layer components {
   .page-shell {
-    @apply min-h-screen bg-[#f7f3ea] text-[#101312] pt-24;
+    @apply min-h-screen bg-[#f7f3ea] text-[#101312] pt-20 sm:pt-24;
   }
 
   .section-pad {
