@@ -66,7 +66,7 @@ const PlanRequest = () => {
       key={value}
       type="button"
       onClick={() => toggleMultiField(field, value)}
-      className={`rounded-lg border px-4 py-3 text-left text-sm font-semibold transition ${
+      className={`min-w-0 break-words rounded-lg border px-4 py-3 text-left text-sm font-semibold transition ${
         form[field].includes(value)
           ? "border-[#101312] bg-[#101312] text-white"
           : hasError(field)
@@ -81,7 +81,7 @@ const PlanRequest = () => {
   const hasError = (field) => invalidFields.includes(field);
 
   const fieldClass = (field) =>
-    `rounded-lg border bg-[#f7f3ea] px-4 py-3 outline-none transition ${
+    `min-w-0 rounded-lg border bg-[#f7f3ea] px-4 py-3 outline-none transition ${
       hasError(field)
         ? "border-[#e05f2f] ring-2 ring-[#e05f2f]/15 placeholder:text-[#9b3e1f]/70"
         : "border-[#101312]/10 focus:border-[#101312]"
@@ -128,12 +128,12 @@ const PlanRequest = () => {
   };
 
   return (
-    <main className="page-shell">
+    <main className="page-shell overflow-hidden">
       <section className="section-pad">
-        <div className="container-wide grid gap-10 lg:grid-cols-[0.78fr_1.22fr]">
-          <aside>
+        <div className="container-wide grid min-w-0 gap-10 lg:grid-cols-[0.78fr_1.22fr]">
+          <aside className="min-w-0">
             <p className="eyebrow">Plan request</p>
-            <h1 className="mt-4 max-w-3xl text-4xl font-semibold leading-tight sm:text-5xl">
+            <h1 className="mt-4 max-w-3xl text-3xl font-semibold leading-tight sm:text-5xl">
               Tell us about your business and current problem.
             </h1>
             <p className="mt-5 max-w-xl text-sm leading-7 text-[#101312]/65 sm:text-base">
@@ -141,13 +141,13 @@ const PlanRequest = () => {
               understand your goals, and prepare the right analysis or strategy.
             </p>
 
-            <div className="light-card mt-8 rounded-lg p-5">
-              <div className="flex items-start gap-3">
+            <div className="light-card mt-8 min-w-0 rounded-lg p-5">
+              <div className="flex min-w-0 items-start gap-3">
                 <span className="flex h-11 w-11 items-center justify-center rounded-lg bg-[#f7f3ea] text-[#e05f2f]">
                   <SelectedPlanIcon size={21} />
                 </span>
-                <div>
-                  <h2 className="text-lg font-semibold">{selectedPlan.name}</h2>
+                <div className="min-w-0">
+                  <h2 className="break-words text-lg font-semibold">{selectedPlan.name}</h2>
                   <p className="mt-1 text-sm font-semibold text-[#101312]/62">
                     {planOption ? `Rs ${planOption.amount}` : selectedPlan.price}
                   </p>
@@ -156,23 +156,23 @@ const PlanRequest = () => {
 
               <div className="mt-5 space-y-3">
                 {selectedPlan.features.map((feature) => (
-                  <div key={feature} className="flex gap-3">
+                  <div key={feature} className="flex min-w-0 gap-3">
                     <CheckCircle2 size={17} className="mt-0.5 shrink-0 text-[#16837a]" />
-                    <p className="text-sm leading-6 text-[#101312]/65">{feature}</p>
+                    <p className="min-w-0 break-words text-sm leading-6 text-[#101312]/65">{feature}</p>
                   </div>
                 ))}
               </div>
             </div>
           </aside>
 
-          <form onSubmit={handleSubmit} className="light-card rounded-lg p-5 sm:p-7">
-            <div className="flex items-center gap-3">
-              <Building2 size={22} className="text-[#16837a]" />
+          <form onSubmit={handleSubmit} className="light-card min-w-0 rounded-lg p-5 sm:p-7">
+            <div className="flex min-w-0 items-center gap-3">
+              <Building2 size={22} className="shrink-0 text-[#16837a]" />
               <h2 className="text-2xl font-semibold">Business details</h2>
             </div>
 
             {status && (
-              <div className="mt-5 rounded-lg border border-[#e05f2f]/20 bg-[#e05f2f]/10 px-4 py-3 text-sm font-medium text-[#9b3e1f]">
+              <div className="mt-5 break-words rounded-lg border border-[#e05f2f]/20 bg-[#e05f2f]/10 px-4 py-3 text-sm font-medium text-[#9b3e1f]">
                 {status}
               </div>
             )}
@@ -180,19 +180,19 @@ const PlanRequest = () => {
             {selectedPlan.options && (
               <div className="mt-6">
                 <p className="text-sm font-semibold text-[#101312]/68">Select package</p>
-                <div className="mt-3 grid gap-3 sm:grid-cols-2">
+                <div className="mt-3 grid min-w-0 gap-3 sm:grid-cols-2">
                   {selectedPlan.options.map((option) => (
                     <button
                       key={option.label}
                       type="button"
                       onClick={() => setPlanOption(option)}
-                      className={`rounded-lg border px-4 py-3 text-left transition ${
+                      className={`min-w-0 rounded-lg border px-4 py-3 text-left transition ${
                         planOption?.label === option.label
                           ? "border-[#101312] bg-[#101312] text-white"
                           : "border-[#101312]/10 bg-[#f7f3ea] text-[#101312]"
                       }`}
                     >
-                      <span className="block text-sm font-semibold">{option.label}</span>
+                      <span className="block break-words text-sm font-semibold">{option.label}</span>
                       <span className="mt-1 block text-sm opacity-70">Rs {option.amount}</span>
                     </button>
                   ))}
@@ -200,7 +200,7 @@ const PlanRequest = () => {
               </div>
             )}
 
-            <div className="mt-6 grid gap-4 sm:grid-cols-2">
+            <div className="mt-6 grid min-w-0 gap-4 sm:grid-cols-2">
               <input
                 type="text"
                 placeholder="Your name *"
@@ -220,7 +220,7 @@ const PlanRequest = () => {
                 placeholder="Email"
                 value={form.email}
                 onChange={(event) => updateField("email", event.target.value)}
-                className="rounded-lg border border-[#101312]/10 bg-[#f7f3ea] px-4 py-3 outline-none transition focus:border-[#101312]"
+                className="min-w-0 rounded-lg border border-[#101312]/10 bg-[#f7f3ea] px-4 py-3 outline-none transition focus:border-[#101312]"
               />
               <input
                 type="text"
@@ -241,7 +241,7 @@ const PlanRequest = () => {
                 placeholder="Account start date"
                 value={form.accountStartDate}
                 onChange={(event) => updateField("accountStartDate", event.target.value)}
-                className="rounded-lg border border-[#101312]/10 bg-[#f7f3ea] px-4 py-3 outline-none transition focus:border-[#101312]"
+                className="min-w-0 rounded-lg border border-[#101312]/10 bg-[#f7f3ea] px-4 py-3 outline-none transition focus:border-[#101312]"
               />
             </div>
 
@@ -252,7 +252,7 @@ const PlanRequest = () => {
                   Platform *
                 </p>
               </div>
-              <div className="mt-3 grid gap-3 sm:grid-cols-3">
+              <div className="mt-3 grid min-w-0 gap-3 sm:grid-cols-3">
                 {platforms.map((platform) => optionButton("platform", platform))}
               </div>
             </div>
@@ -262,15 +262,15 @@ const PlanRequest = () => {
               placeholder="Profile or website link"
               value={form.profileLink}
               onChange={(event) => updateField("profileLink", event.target.value)}
-              className="mt-4 w-full rounded-lg border border-[#101312]/10 bg-[#f7f3ea] px-4 py-3 outline-none transition focus:border-[#101312]"
+              className="mt-4 w-full min-w-0 rounded-lg border border-[#101312]/10 bg-[#f7f3ea] px-4 py-3 outline-none transition focus:border-[#101312]"
             />
 
-            <div className="mt-6 grid gap-6 lg:grid-cols-2">
+            <div className="mt-6 grid min-w-0 gap-6 lg:grid-cols-2">
               <div className={sectionClass("contentType")}>
                 <p className={`text-sm font-semibold ${hasError("contentType") ? "text-[#9b3e1f]" : "text-[#101312]/68"}`}>
                   Content type *
                 </p>
-                <div className="mt-3 grid gap-3">
+                <div className="mt-3 grid min-w-0 gap-3">
                   {contentTypes.map((type) => optionButton("contentType", type))}
                 </div>
               </div>
@@ -278,13 +278,13 @@ const PlanRequest = () => {
                 <p className={`text-sm font-semibold ${hasError("goal") ? "text-[#9b3e1f]" : "text-[#101312]/68"}`}>
                   Main goal *
                 </p>
-                <div className="mt-3 grid gap-3">
+                <div className="mt-3 grid min-w-0 gap-3">
                   {goals.map((goal) => optionButton("goal", goal))}
                 </div>
               </div>
             </div>
 
-            <div className="mt-6 grid gap-4">
+            <div className="mt-6 grid min-w-0 gap-4">
               <textarea
                 rows="4"
                 placeholder="What issue are you facing right now? *"
