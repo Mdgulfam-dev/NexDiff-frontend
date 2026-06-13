@@ -28,8 +28,8 @@ const Navbar = () => {
   }, [isOpen]);
 
   return (
-    <nav className="fixed inset-x-0 top-0 z-50 border-b border-[#101312]/10 bg-[#f7f3ea]/92 text-[#101312] backdrop-blur-xl">
-      <div className="container-wide flex h-16 items-center justify-between gap-3 px-4 sm:h-20 sm:px-6 lg:px-8">
+    <nav className="fixed inset-x-0 top-0 z-50 overflow-x-clip border-b border-[#101312]/10 bg-[#f7f3ea]/92 text-[#101312] backdrop-blur-xl">
+      <div className="container-wide flex h-16 w-full max-w-full items-center justify-between gap-3 px-4 sm:h-20 sm:px-6 lg:px-8">
         <Link
           to="/"
           className="group flex min-w-0 flex-1 items-center gap-2.5 lg:flex-none"
