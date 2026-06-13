@@ -173,6 +173,14 @@ const paginate = (items, page) => {
   return items.slice(start, start + pageSize);
 };
 
+const getStoredUser = () => {
+  try {
+    return JSON.parse(localStorage.getItem("nexdiff_admin_user") || "null");
+  } catch {
+    return null;
+  }
+};
+
 const Pagination = ({ page, totalItems, onChange }) => {
   const totalPages = Math.max(1, Math.ceil(totalItems / pageSize));
 
@@ -211,7 +219,11 @@ const Pagination = ({ page, totalItems, onChange }) => {
 
 const AdminDashboard = () => {
   const navigate = useNavigate();
-  const [activeSection, setActiveSection] = useState("leads");
+  const storedUser = getStoredUser();
+  const userRole = storedUser?.role || "admin";
+  const canManageLeads = ["admin", "manager"].includes(userRole);
+  const canManageContent = ["admin", "executive"].includes(userRole);
+  const [activeSection, setActiveSection] = useState(canManageLeads ? "leads" : "content");
   const [activeLeadTab, setActiveLeadTab] = useState("all");
   const [leadStatusFilter, setLeadStatusFilter] = useState("all");
   const [leadSearch, setLeadSearch] = useState("");
@@ -276,6 +288,10 @@ const AdminDashboard = () => {
   );
 
   const loadSubmissions = async (type = activeLeadTab) => {
+    if (!canManageLeads) {
+      return;
+    }
+
     try {
       setLoading(true);
       setStatus("");
@@ -296,6 +312,10 @@ const AdminDashboard = () => {
   };
 
   const loadContent = async () => {
+    if (!canManageContent) {
+      return;
+    }
+
     try {
       setContentStatus("");
       const [blogsResponse, jobsResponse] = await Promise.all([
@@ -322,6 +342,11 @@ const AdminDashboard = () => {
       return;
     }
 
+    if (!canManageLeads) {
+      setActiveSection("content");
+      return;
+    }
+
     loadSubmissions(activeLeadTab);
     setLeadPage(1);
     setExpandedLeadId("");
@@ -332,8 +357,22 @@ const AdminDashboard = () => {
       return;
     }
 
+    if (!canManageContent) {
+      return;
+    }
+
     loadContent();
   }, []);
+
+  useEffect(() => {
+    if (activeSection === "leads" && !canManageLeads) {
+      setActiveSection("content");
+    }
+
+    if (activeSection === "content" && !canManageContent) {
+      setActiveSection("leads");
+    }
+  }, [activeSection, canManageContent, canManageLeads]);
 
   useEffect(() => {
     setLeadPage(1);
@@ -345,6 +384,11 @@ const AdminDashboard = () => {
 
   const createBlogPost = async (event) => {
     event.preventDefault();
+
+    if (!canManageContent) {
+      setContentStatus("You do not have access to manage content.");
+      return;
+    }
 
     try {
       setContentLoading(true);
@@ -365,6 +409,11 @@ const AdminDashboard = () => {
   const createJobPost = async (event) => {
     event.preventDefault();
 
+    if (!canManageContent) {
+      setContentStatus("You do not have access to manage content.");
+      return;
+    }
+
     try {
       setContentLoading(true);
       setContentStatus("");
@@ -382,6 +431,11 @@ const AdminDashboard = () => {
   };
 
   const removeBlogPost = async (id) => {
+    if (!canManageContent) {
+      setContentStatus("You do not have access to manage content.");
+      return;
+    }
+
     if (!window.confirm("Delete this blog post?")) {
       return;
     }
@@ -396,6 +450,11 @@ const AdminDashboard = () => {
   };
 
   const removeJobPost = async (id) => {
+    if (!canManageContent) {
+      setContentStatus("You do not have access to manage content.");
+      return;
+    }
+
     if (!window.confirm("Delete this job post?")) {
       return;
     }
@@ -410,6 +469,11 @@ const AdminDashboard = () => {
   };
 
   const changeStatus = async (id, nextStatus) => {
+    if (!canManageLeads) {
+      setStatus("You do not have access to manage leads.");
+      return;
+    }
+
     try {
       const response = await updateSubmissionStatus(id, nextStatus);
       setSubmissions((current) =>
@@ -431,6 +495,7 @@ const AdminDashboard = () => {
 
   const logout = () => {
     localStorage.removeItem("nexdiff_admin_token");
+    localStorage.removeItem("nexdiff_admin_user");
     navigate("/admin/login");
   };
 
@@ -440,13 +505,17 @@ const AdminDashboard = () => {
         <div className="container-wide">
           <div className="flex flex-col gap-5 lg:flex-row lg:items-end lg:justify-between">
             <div>
-              <p className="eyebrow">Admin dashboard</p>
+              <p className="eyebrow">{userRole} dashboard</p>
               <h1 className="mt-3 text-4xl font-semibold leading-tight sm:text-5xl">
                 Manage NexDiff.
               </h1>
               <p className="mt-3 max-w-2xl text-sm leading-7 text-[#101312]/60">
-                Handle leads, applications, pricing requests, blog posts, and career openings.
+                Handle leads, applications, pricing requests, blog posts, and
+                career openings.
               </p>
+              {/* <p className="mt-2 text-sm font-semibold capitalize text-[#16837a]">
+                Role: {userRole}
+              </p> */}
             </div>
             <div className="flex flex-wrap gap-3">
               <Button variant="outline" onClick={refreshActiveSection}>
@@ -462,30 +531,50 @@ const AdminDashboard = () => {
 
           <div className="mt-8 grid gap-3 rounded-lg border border-[#101312]/10 bg-white p-2 sm:grid-cols-2">
             {[
-              { id: "leads", label: "Leads", detail: `${totalLeads} total records`, icon: LayoutDashboard },
-              { id: "content", label: "Content", detail: `${blogPosts.length} blogs · ${jobPosts.length} jobs`, icon: FileText },
-            ].map((section) => {
-              const Icon = section.icon;
+              {
+                id: "leads",
+                label: "Leads",
+                detail: `${totalLeads} total records`,
+                icon: LayoutDashboard,
+              },
+              {
+                id: "content",
+                label: "Content",
+                detail: `${blogPosts.length} blogs · ${jobPosts.length} jobs`,
+                icon: FileText,
+              },
+            ]
+              .filter(
+                (section) =>
+                  (section.id === "leads" && canManageLeads) ||
+                  (section.id === "content" && canManageContent),
+              )
+              .map((section) => {
+                const Icon = section.icon;
 
-              return (
-                <button
-                  type="button"
-                  key={section.id}
-                  onClick={() => setActiveSection(section.id)}
-                  className={`flex items-center gap-3 rounded-lg border px-4 py-3 text-left transition ${
-                    activeSection === section.id
-                      ? "border-[#101312] bg-[#101312] text-white"
-                      : "border-transparent bg-[#f7f3ea] text-[#101312]"
-                  }`}
-                >
-                  <Icon size={19} />
-                  <span>
-                    <span className="block text-sm font-semibold">{section.label}</span>
-                    <span className="mt-0.5 block text-xs opacity-65">{section.detail}</span>
-                  </span>
-                </button>
-              );
-            })}
+                return (
+                  <button
+                    type="button"
+                    key={section.id}
+                    onClick={() => setActiveSection(section.id)}
+                    className={`flex items-center gap-3 rounded-lg border px-4 py-3 text-left transition ${
+                      activeSection === section.id
+                        ? "border-[#101312] bg-[#101312] text-white"
+                        : "border-transparent bg-[#f7f3ea] text-[#101312]"
+                    }`}
+                  >
+                    <Icon size={19} />
+                    <span>
+                      <span className="block text-sm font-semibold">
+                        {section.label}
+                      </span>
+                      <span className="mt-0.5 block text-xs opacity-65">
+                        {section.detail}
+                      </span>
+                    </span>
+                  </button>
+                );
+              })}
           </div>
 
           {activeSection === "leads" ? (
@@ -493,7 +582,8 @@ const AdminDashboard = () => {
               <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
                 {leadTabs.map((tab) => {
                   const Icon = tab.icon;
-                  const count = tab.id === "all" ? totalLeads : counts[tab.id] || 0;
+                  const count =
+                    tab.id === "all" ? totalLeads : counts[tab.id] || 0;
 
                   return (
                     <button
@@ -507,8 +597,12 @@ const AdminDashboard = () => {
                       }`}
                     >
                       <Icon size={19} />
-                      <span className="mt-4 block text-2xl font-semibold">{count}</span>
-                      <span className="mt-1 block text-sm opacity-70">{tab.label}</span>
+                      <span className="mt-4 block text-2xl font-semibold">
+                        {count}
+                      </span>
+                      <span className="mt-1 block text-sm opacity-70">
+                        {tab.label}
+                      </span>
                     </button>
                   );
                 })}
@@ -562,30 +656,45 @@ const AdminDashboard = () => {
                     const isExpanded = expandedLeadId === submission._id;
 
                     return (
-                      <article key={submission._id} className="light-card rounded-lg p-4">
+                      <article
+                        key={submission._id}
+                        className="light-card rounded-lg p-4"
+                      >
                         <div className="grid gap-4 lg:grid-cols-[1fr_170px_150px] lg:items-center">
                           <button
                             type="button"
-                            onClick={() => setExpandedLeadId(isExpanded ? "" : submission._id)}
+                            onClick={() =>
+                              setExpandedLeadId(
+                                isExpanded ? "" : submission._id,
+                              )
+                            }
                             className="min-w-0 text-left"
                           >
                             <div className="flex flex-wrap items-center gap-2">
                               <span className="rounded-lg bg-[#f7f3ea] px-3 py-1 text-xs font-semibold uppercase tracking-[0.12em] text-[#101312]/62">
                                 {submission.type}
                               </span>
-                              <span className={`rounded-lg border px-3 py-1 text-xs font-semibold ${statusStyles[submission.status] || statusStyles.closed}`}>
+                              <span
+                                className={`rounded-lg border px-3 py-1 text-xs font-semibold ${statusStyles[submission.status] || statusStyles.closed}`}
+                              >
                                 {getStatusLabel(submission.status)}
                               </span>
                             </div>
-                            <h2 className="mt-3 truncate text-lg font-semibold">{getTitle(submission)}</h2>
-                            <p className="mt-1 truncate text-sm text-[#101312]/58">{getLeadMeta(submission)}</p>
+                            <h2 className="mt-3 truncate text-lg font-semibold">
+                              {getTitle(submission)}
+                            </h2>
+                            <p className="mt-1 truncate text-sm text-[#101312]/58">
+                              {getLeadMeta(submission)}
+                            </p>
                           </button>
                           <p className="text-sm font-medium text-[#101312]/52">
                             {new Date(submission.createdAt).toLocaleString()}
                           </p>
                           <select
                             value={submission.status}
-                            onChange={(event) => changeStatus(submission._id, event.target.value)}
+                            onChange={(event) =>
+                              changeStatus(submission._id, event.target.value)
+                            }
                             className="rounded-lg border border-[#101312]/10 bg-[#f7f3ea] px-4 py-3 text-sm font-semibold outline-none"
                           >
                             {leadStatuses.map((item) => (
@@ -599,7 +708,10 @@ const AdminDashboard = () => {
                         {isExpanded && (
                           <div className="mt-5 grid gap-3 md:grid-cols-2 xl:grid-cols-3">
                             {visibleFields[submission.type].map((field) => (
-                              <div key={field} className="rounded-lg border border-[#101312]/10 bg-[#f7f3ea] p-4">
+                              <div
+                                key={field}
+                                className="rounded-lg border border-[#101312]/10 bg-[#f7f3ea] p-4"
+                              >
                                 <p className="text-xs font-semibold uppercase tracking-[0.14em] text-[#101312]/42">
                                   {labelMap[field] || field}
                                 </p>
@@ -617,15 +729,29 @@ const AdminDashboard = () => {
               </div>
 
               <div className="mt-5">
-                <Pagination page={leadPage} totalItems={filteredLeads.length} onChange={setLeadPage} />
+                <Pagination
+                  page={leadPage}
+                  totalItems={filteredLeads.length}
+                  onChange={setLeadPage}
+                />
               </div>
             </section>
           ) : (
             <section className="mt-8">
               <div className="grid gap-3 rounded-lg border border-[#101312]/10 bg-white p-2 sm:grid-cols-2">
                 {[
-                  { id: "blogs", label: "Blog posts", count: blogPosts.length, icon: FileText },
-                  { id: "jobs", label: "Career jobs", count: jobPosts.length, icon: BriefcaseBusiness },
+                  {
+                    id: "blogs",
+                    label: "Blog posts",
+                    count: blogPosts.length,
+                    icon: FileText,
+                  },
+                  {
+                    id: "jobs",
+                    label: "Career jobs",
+                    count: jobPosts.length,
+                    icon: BriefcaseBusiness,
+                  },
                 ].map((tab) => {
                   const Icon = tab.icon;
 
@@ -642,9 +768,13 @@ const AdminDashboard = () => {
                     >
                       <span className="inline-flex items-center gap-3">
                         <Icon size={18} />
-                        <span className="text-sm font-semibold">{tab.label}</span>
+                        <span className="text-sm font-semibold">
+                          {tab.label}
+                        </span>
                       </span>
-                      <span className="text-sm font-semibold opacity-70">{tab.count}</span>
+                      <span className="text-sm font-semibold opacity-70">
+                        {tab.count}
+                      </span>
                     </button>
                   );
                 })}
@@ -690,7 +820,10 @@ const AdminDashboard = () => {
               )}
 
               {contentMode === "blogs" && showBlogForm && (
-                <form onSubmit={createBlogPost} className="light-card mt-5 rounded-lg p-5">
+                <form
+                  onSubmit={createBlogPost}
+                  className="light-card mt-5 rounded-lg p-5"
+                >
                   <div className="flex items-center gap-3">
                     <FileText size={21} className="text-[#16837a]" />
                     <h3 className="text-xl font-semibold">Add blog post</h3>
@@ -700,7 +833,9 @@ const AdminDashboard = () => {
                       type="text"
                       placeholder="Blog title"
                       value={blogForm.title}
-                      onChange={(event) => setBlogForm({ ...blogForm, title: event.target.value })}
+                      onChange={(event) =>
+                        setBlogForm({ ...blogForm, title: event.target.value })
+                      }
                       className="rounded-lg border border-[#101312]/10 bg-[#f7f3ea] px-4 py-3 outline-none focus:border-[#101312]"
                     />
                     <div className="grid gap-3 sm:grid-cols-2">
@@ -708,14 +843,24 @@ const AdminDashboard = () => {
                         type="text"
                         placeholder="Category"
                         value={blogForm.category}
-                        onChange={(event) => setBlogForm({ ...blogForm, category: event.target.value })}
+                        onChange={(event) =>
+                          setBlogForm({
+                            ...blogForm,
+                            category: event.target.value,
+                          })
+                        }
                         className="rounded-lg border border-[#101312]/10 bg-[#f7f3ea] px-4 py-3 outline-none focus:border-[#101312]"
                       />
                       <input
                         type="url"
                         placeholder="Image URL"
                         value={blogForm.image}
-                        onChange={(event) => setBlogForm({ ...blogForm, image: event.target.value })}
+                        onChange={(event) =>
+                          setBlogForm({
+                            ...blogForm,
+                            image: event.target.value,
+                          })
+                        }
                         className="rounded-lg border border-[#101312]/10 bg-[#f7f3ea] px-4 py-3 outline-none focus:border-[#101312]"
                       />
                     </div>
@@ -723,18 +868,29 @@ const AdminDashboard = () => {
                       rows="3"
                       placeholder="Short description"
                       value={blogForm.desc}
-                      onChange={(event) => setBlogForm({ ...blogForm, desc: event.target.value })}
+                      onChange={(event) =>
+                        setBlogForm({ ...blogForm, desc: event.target.value })
+                      }
                       className="rounded-lg border border-[#101312]/10 bg-[#f7f3ea] px-4 py-3 outline-none focus:border-[#101312]"
                     />
                     <textarea
                       rows="8"
                       placeholder="Full blog content in Markdown"
                       value={blogForm.content}
-                      onChange={(event) => setBlogForm({ ...blogForm, content: event.target.value })}
+                      onChange={(event) =>
+                        setBlogForm({
+                          ...blogForm,
+                          content: event.target.value,
+                        })
+                      }
                       className="rounded-lg border border-[#101312]/10 bg-[#f7f3ea] px-4 py-3 outline-none focus:border-[#101312]"
                     />
                   </div>
-                  <Button type="submit" className="mt-5 w-full" disabled={contentLoading}>
+                  <Button
+                    type="submit"
+                    className="mt-5 w-full"
+                    disabled={contentLoading}
+                  >
                     <Plus size={17} />
                     Publish Blog
                   </Button>
@@ -742,7 +898,10 @@ const AdminDashboard = () => {
               )}
 
               {contentMode === "jobs" && showJobForm && (
-                <form onSubmit={createJobPost} className="light-card mt-5 rounded-lg p-5">
+                <form
+                  onSubmit={createJobPost}
+                  className="light-card mt-5 rounded-lg p-5"
+                >
                   <div className="flex items-center gap-3">
                     <BriefcaseBusiness size={21} className="text-[#16837a]" />
                     <h3 className="text-xl font-semibold">Add career job</h3>
@@ -752,7 +911,9 @@ const AdminDashboard = () => {
                       type="text"
                       placeholder="Job title"
                       value={jobForm.title}
-                      onChange={(event) => setJobForm({ ...jobForm, title: event.target.value })}
+                      onChange={(event) =>
+                        setJobForm({ ...jobForm, title: event.target.value })
+                      }
                       className="rounded-lg border border-[#101312]/10 bg-[#f7f3ea] px-4 py-3 outline-none focus:border-[#101312]"
                     />
                     <div className="grid gap-3 sm:grid-cols-2">
@@ -760,14 +921,21 @@ const AdminDashboard = () => {
                         type="text"
                         placeholder="Job type"
                         value={jobForm.type}
-                        onChange={(event) => setJobForm({ ...jobForm, type: event.target.value })}
+                        onChange={(event) =>
+                          setJobForm({ ...jobForm, type: event.target.value })
+                        }
                         className="rounded-lg border border-[#101312]/10 bg-[#f7f3ea] px-4 py-3 outline-none focus:border-[#101312]"
                       />
                       <input
                         type="text"
                         placeholder="Location"
                         value={jobForm.location}
-                        onChange={(event) => setJobForm({ ...jobForm, location: event.target.value })}
+                        onChange={(event) =>
+                          setJobForm({
+                            ...jobForm,
+                            location: event.target.value,
+                          })
+                        }
                         className="rounded-lg border border-[#101312]/10 bg-[#f7f3ea] px-4 py-3 outline-none focus:border-[#101312]"
                       />
                     </div>
@@ -775,11 +943,17 @@ const AdminDashboard = () => {
                       rows="6"
                       placeholder="Role focus / skills / short description"
                       value={jobForm.focus}
-                      onChange={(event) => setJobForm({ ...jobForm, focus: event.target.value })}
+                      onChange={(event) =>
+                        setJobForm({ ...jobForm, focus: event.target.value })
+                      }
                       className="rounded-lg border border-[#101312]/10 bg-[#f7f3ea] px-4 py-3 outline-none focus:border-[#101312]"
                     />
                   </div>
-                  <Button type="submit" className="mt-5 w-full" disabled={contentLoading}>
+                  <Button
+                    type="submit"
+                    className="mt-5 w-full"
+                    disabled={contentLoading}
+                  >
                     <Plus size={17} />
                     Publish Job
                   </Button>
@@ -793,10 +967,15 @@ const AdminDashboard = () => {
                   </div>
                 ) : (
                   pagedContent.map((item) => (
-                    <article key={item._id} className="light-card rounded-lg p-4">
+                    <article
+                      key={item._id}
+                      className="light-card rounded-lg p-4"
+                    >
                       <div className="grid gap-4 lg:grid-cols-[1fr_180px_52px] lg:items-center">
                         <div className="min-w-0">
-                          <p className="truncate text-lg font-semibold">{item.title}</p>
+                          <p className="truncate text-lg font-semibold">
+                            {item.title}
+                          </p>
                           <p className="mt-1 truncate text-sm text-[#101312]/58">
                             {contentMode === "blogs"
                               ? `${item.category} · /blog/${item.slug}`
@@ -814,7 +993,11 @@ const AdminDashboard = () => {
                               : removeJobPost(item._id)
                           }
                           className="inline-flex h-11 w-11 items-center justify-center rounded-lg border border-[#e05f2f]/20 bg-white text-[#e05f2f]"
-                          aria-label={contentMode === "blogs" ? "Delete blog post" : "Delete job post"}
+                          aria-label={
+                            contentMode === "blogs"
+                              ? "Delete blog post"
+                              : "Delete job post"
+                          }
                         >
                           <Trash2 size={17} />
                         </button>
@@ -825,7 +1008,11 @@ const AdminDashboard = () => {
               </div>
 
               <div className="mt-5">
-                <Pagination page={contentPage} totalItems={filteredContent.length} onChange={setContentPage} />
+                <Pagination
+                  page={contentPage}
+                  totalItems={filteredContent.length}
+                  onChange={setContentPage}
+                />
               </div>
             </section>
           )}

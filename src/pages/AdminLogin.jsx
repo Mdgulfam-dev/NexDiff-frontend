@@ -18,6 +18,7 @@ const AdminLogin = () => {
       setStatus("");
       const response = await adminLogin(form);
       localStorage.setItem("nexdiff_admin_token", response.data.token);
+      localStorage.setItem("nexdiff_admin_user", JSON.stringify(response.data.user));
       navigate("/admin/dashboard");
     } catch (error) {
       setStatus(
