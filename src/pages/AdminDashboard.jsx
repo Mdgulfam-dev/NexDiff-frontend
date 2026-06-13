@@ -576,13 +576,13 @@ const AdminDashboard = () => {
   };
 
   return (
-    <main className="page-shell">
+    <main className="page-shell overflow-hidden">
       <section className="px-4 py-8 sm:px-6 lg:px-8">
-        <div className="container-wide">
-          <div className="flex flex-col gap-5 lg:flex-row lg:items-end lg:justify-between">
-            <div>
+        <div className="container-wide min-w-0">
+          <div className="flex min-w-0 flex-col gap-5 lg:flex-row lg:items-end lg:justify-between">
+            <div className="min-w-0">
               <p className="eyebrow">{userRole} dashboard</p>
-              <h1 className="mt-3 text-4xl font-semibold leading-tight sm:text-5xl">
+              <h1 className="mt-3 text-3xl font-semibold leading-tight sm:text-5xl">
                 Manage NexDiff.
               </h1>
               <p className="mt-3 max-w-2xl text-sm leading-7 text-[#101312]/60">
@@ -593,19 +593,19 @@ const AdminDashboard = () => {
                 Role: {userRole}
               </p> */}
             </div>
-            <div className="flex flex-wrap gap-3">
-              <Button variant="outline" onClick={refreshActiveSection}>
+            <div className="grid gap-3 sm:flex sm:flex-wrap">
+              <Button variant="outline" onClick={refreshActiveSection} className="w-full sm:w-auto">
                 <RefreshCw size={17} />
                 Refresh
               </Button>
-              <Button onClick={logout}>
+              <Button onClick={logout} className="w-full sm:w-auto">
                 <LogOut size={17} />
                 Logout
               </Button>
             </div>
           </div>
 
-          <div className="mt-8 grid gap-3 rounded-lg border border-[#101312]/10 bg-white p-2 sm:grid-cols-2">
+          <div className="mt-8 grid min-w-0 gap-3 rounded-lg border border-[#101312]/10 bg-white p-2 sm:grid-cols-2">
             {[
               {
                 id: "leads",
@@ -633,18 +633,18 @@ const AdminDashboard = () => {
                     type="button"
                     key={section.id}
                     onClick={() => setActiveSection(section.id)}
-                    className={`flex items-center gap-3 rounded-lg border px-4 py-3 text-left transition ${
+                    className={`flex min-w-0 items-center gap-3 rounded-lg border px-4 py-3 text-left transition ${
                       activeSection === section.id
                         ? "border-[#101312] bg-[#101312] text-white"
                         : "border-transparent bg-[#f7f3ea] text-[#101312]"
                     }`}
                   >
-                    <Icon size={19} />
-                    <span>
+                    <Icon size={19} className="shrink-0" />
+                    <span className="min-w-0">
                       <span className="block text-sm font-semibold">
                         {section.label}
                       </span>
-                      <span className="mt-0.5 block text-xs opacity-65">
+                      <span className="mt-0.5 block break-words text-xs opacity-65">
                         {section.detail}
                       </span>
                     </span>
@@ -655,7 +655,7 @@ const AdminDashboard = () => {
 
           {activeSection === "leads" ? (
             <section className="mt-8">
-              <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+              <div className="grid min-w-0 gap-4 sm:grid-cols-2 lg:grid-cols-4">
                 {leadTabs.map((tab) => {
                   const Icon = tab.icon;
                   const count =
@@ -666,7 +666,7 @@ const AdminDashboard = () => {
                       type="button"
                       key={tab.id}
                       onClick={() => setActiveLeadTab(tab.id)}
-                      className={`rounded-lg border p-4 text-left transition ${
+                      className={`min-w-0 rounded-lg border p-4 text-left transition ${
                         activeLeadTab === tab.id
                           ? "border-[#101312] bg-[#101312] text-white"
                           : "border-[#101312]/10 bg-white text-[#101312]"
@@ -684,8 +684,8 @@ const AdminDashboard = () => {
                 })}
               </div>
 
-              <div className="mt-5 grid gap-3 rounded-lg border border-[#101312]/10 bg-white p-4 lg:grid-cols-[1fr_180px]">
-                <label className="relative block">
+              <div className="mt-5 grid min-w-0 gap-3 rounded-lg border border-[#101312]/10 bg-white p-4 lg:grid-cols-[1fr_180px]">
+                <label className="relative block min-w-0">
                   <Search
                     className="absolute left-4 top-1/2 -translate-y-1/2 text-[#101312]/36"
                     size={18}
@@ -695,13 +695,13 @@ const AdminDashboard = () => {
                     placeholder="Search name, email, phone, business, message"
                     value={leadSearch}
                     onChange={(event) => setLeadSearch(event.target.value)}
-                    className="w-full rounded-lg border border-[#101312]/10 bg-[#f7f3ea] py-3 pl-11 pr-4 outline-none focus:border-[#101312]"
+                    className="w-full min-w-0 rounded-lg border border-[#101312]/10 bg-[#f7f3ea] py-3 pl-11 pr-4 text-sm outline-none focus:border-[#101312]"
                   />
                 </label>
                 <select
                   value={leadStatusFilter}
                   onChange={(event) => setLeadStatusFilter(event.target.value)}
-                  className="rounded-lg border border-[#101312]/10 bg-[#f7f3ea] px-4 py-3 text-sm font-semibold outline-none focus:border-[#101312]"
+                  className="min-w-0 rounded-lg border border-[#101312]/10 bg-[#f7f3ea] px-4 py-3 text-sm font-semibold outline-none focus:border-[#101312]"
                 >
                   <option value="all">All status</option>
                   {leadStatuses.map((item) => (
@@ -718,7 +718,7 @@ const AdminDashboard = () => {
                 </div>
               )}
 
-              <div className="mt-5 grid gap-3">
+              <div className="mt-5 grid min-w-0 gap-3">
                 {loading ? (
                   <div className="light-card rounded-lg p-6 text-sm font-medium text-[#101312]/60">
                     Loading submissions...
@@ -734,7 +734,7 @@ const AdminDashboard = () => {
                     return (
                       <article
                         key={submission._id}
-                        className="light-card rounded-lg p-4"
+                        className="light-card min-w-0 overflow-hidden rounded-lg p-4"
                       >
                         <div className="grid gap-4 lg:grid-cols-[1fr_170px_150px] lg:items-center">
                           <button
@@ -782,11 +782,11 @@ const AdminDashboard = () => {
                         </div>
 
                         {isExpanded && (
-                          <div className="mt-5 grid gap-3 md:grid-cols-2 xl:grid-cols-3">
+                          <div className="mt-5 grid min-w-0 gap-3 md:grid-cols-2 xl:grid-cols-3">
                             {visibleFields[submission.type].map((field) => (
                               <div
                                 key={field}
-                                className="rounded-lg border border-[#101312]/10 bg-[#f7f3ea] p-4"
+                                className="min-w-0 rounded-lg border border-[#101312]/10 bg-[#f7f3ea] p-4"
                               >
                                 <p className="text-xs font-semibold uppercase tracking-[0.14em] text-[#101312]/42">
                                   {labelMap[field] || field}
@@ -814,7 +814,7 @@ const AdminDashboard = () => {
             </section>
           ) : (
             <section className="mt-8">
-              <div className="grid gap-3 rounded-lg border border-[#101312]/10 bg-white p-2 sm:grid-cols-2">
+              <div className="grid min-w-0 gap-3 rounded-lg border border-[#101312]/10 bg-white p-2 sm:grid-cols-2 lg:grid-cols-3">
                 {[
                   {
                     id: "blogs",
@@ -842,19 +842,19 @@ const AdminDashboard = () => {
                       type="button"
                       key={tab.id}
                       onClick={() => setContentMode(tab.id)}
-                      className={`flex items-center justify-between rounded-lg border px-4 py-3 text-left transition ${
+                      className={`flex min-w-0 items-center justify-between gap-3 rounded-lg border px-4 py-3 text-left transition ${
                         contentMode === tab.id
                           ? "border-[#101312] bg-[#101312] text-white"
                           : "border-transparent bg-[#f7f3ea] text-[#101312]"
                       }`}
                     >
-                      <span className="inline-flex items-center gap-3">
-                        <Icon size={18} />
-                        <span className="text-sm font-semibold">
+                      <span className="inline-flex min-w-0 items-center gap-3">
+                        <Icon size={18} className="shrink-0" />
+                        <span className="truncate text-sm font-semibold">
                           {tab.label}
                         </span>
                       </span>
-                      <span className="text-sm font-semibold opacity-70">
+                      <span className="shrink-0 text-sm font-semibold opacity-70">
                         {tab.count}
                       </span>
                     </button>
@@ -862,8 +862,8 @@ const AdminDashboard = () => {
                 })}
               </div>
 
-              <div className="mt-5 grid gap-3 rounded-lg border border-[#101312]/10 bg-white p-4 lg:grid-cols-[1fr_auto_auto]">
-                <label className="relative block">
+              <div className="mt-5 grid min-w-0 gap-3 rounded-lg border border-[#101312]/10 bg-white p-4 lg:grid-cols-[1fr_auto_auto]">
+                <label className="relative block min-w-0">
                   <Search
                     className="absolute left-4 top-1/2 -translate-y-1/2 text-[#101312]/36"
                     size={18}
@@ -873,15 +873,16 @@ const AdminDashboard = () => {
                     placeholder="Search title, category, location, description"
                     value={contentSearch}
                     onChange={(event) => setContentSearch(event.target.value)}
-                    className="w-full rounded-lg border border-[#101312]/10 bg-[#f7f3ea] py-3 pl-11 pr-4 outline-none focus:border-[#101312]"
+                    className="w-full min-w-0 rounded-lg border border-[#101312]/10 bg-[#f7f3ea] py-3 pl-11 pr-4 text-sm outline-none focus:border-[#101312]"
                   />
                 </label>
-                <Button variant="outline" onClick={loadContent}>
+                <Button variant="outline" onClick={loadContent} className="w-full lg:w-auto">
                   <RefreshCw size={17} />
                   Reload
                 </Button>
                 {contentMode !== "reviews" && (
                   <Button
+                    className="w-full lg:w-auto"
                     onClick={() => {
                       if (contentMode === "blogs") {
                         setShowBlogForm((value) => !value);
@@ -906,13 +907,13 @@ const AdminDashboard = () => {
               {contentMode === "blogs" && showBlogForm && (
                 <form
                   onSubmit={createBlogPost}
-                  className="light-card mt-5 rounded-lg p-5"
+                  className="light-card mt-5 min-w-0 rounded-lg p-4 sm:p-5"
                 >
-                  <div className="flex items-center gap-3">
-                    <FileText size={21} className="text-[#16837a]" />
+                  <div className="flex min-w-0 items-center gap-3">
+                    <FileText size={21} className="shrink-0 text-[#16837a]" />
                     <h3 className="text-xl font-semibold">Add blog post</h3>
                   </div>
-                  <div className="mt-5 grid gap-3">
+                  <div className="mt-5 grid min-w-0 gap-3">
                     <input
                       type="text"
                       placeholder="Blog title"
@@ -920,9 +921,9 @@ const AdminDashboard = () => {
                       onChange={(event) =>
                         setBlogForm({ ...blogForm, title: event.target.value })
                       }
-                      className="rounded-lg border border-[#101312]/10 bg-[#f7f3ea] px-4 py-3 outline-none focus:border-[#101312]"
+                      className="min-w-0 rounded-lg border border-[#101312]/10 bg-[#f7f3ea] px-4 py-3 outline-none focus:border-[#101312]"
                     />
-                    <div className="grid gap-3 sm:grid-cols-2">
+                    <div className="grid min-w-0 gap-3 sm:grid-cols-2">
                       <input
                         type="text"
                         placeholder="Category"
@@ -933,7 +934,7 @@ const AdminDashboard = () => {
                             category: event.target.value,
                           })
                         }
-                        className="rounded-lg border border-[#101312]/10 bg-[#f7f3ea] px-4 py-3 outline-none focus:border-[#101312]"
+                        className="min-w-0 rounded-lg border border-[#101312]/10 bg-[#f7f3ea] px-4 py-3 outline-none focus:border-[#101312]"
                       />
                       <input
                         type="url"
@@ -945,7 +946,7 @@ const AdminDashboard = () => {
                             image: event.target.value,
                           })
                         }
-                        className="rounded-lg border border-[#101312]/10 bg-[#f7f3ea] px-4 py-3 outline-none focus:border-[#101312]"
+                        className="min-w-0 rounded-lg border border-[#101312]/10 bg-[#f7f3ea] px-4 py-3 outline-none focus:border-[#101312]"
                       />
                     </div>
                     <textarea
@@ -955,7 +956,7 @@ const AdminDashboard = () => {
                       onChange={(event) =>
                         setBlogForm({ ...blogForm, desc: event.target.value })
                       }
-                      className="rounded-lg border border-[#101312]/10 bg-[#f7f3ea] px-4 py-3 outline-none focus:border-[#101312]"
+                      className="min-w-0 rounded-lg border border-[#101312]/10 bg-[#f7f3ea] px-4 py-3 outline-none focus:border-[#101312]"
                     />
                     <textarea
                       rows="8"
@@ -967,7 +968,7 @@ const AdminDashboard = () => {
                           content: event.target.value,
                         })
                       }
-                      className="rounded-lg border border-[#101312]/10 bg-[#f7f3ea] px-4 py-3 outline-none focus:border-[#101312]"
+                      className="min-w-0 rounded-lg border border-[#101312]/10 bg-[#f7f3ea] px-4 py-3 outline-none focus:border-[#101312]"
                     />
                   </div>
                   <Button
@@ -984,13 +985,13 @@ const AdminDashboard = () => {
               {contentMode === "jobs" && showJobForm && (
                 <form
                   onSubmit={createJobPost}
-                  className="light-card mt-5 rounded-lg p-5"
+                  className="light-card mt-5 min-w-0 rounded-lg p-4 sm:p-5"
                 >
-                  <div className="flex items-center gap-3">
-                    <BriefcaseBusiness size={21} className="text-[#16837a]" />
+                  <div className="flex min-w-0 items-center gap-3">
+                    <BriefcaseBusiness size={21} className="shrink-0 text-[#16837a]" />
                     <h3 className="text-xl font-semibold">Add career job</h3>
                   </div>
-                  <div className="mt-5 grid gap-3">
+                  <div className="mt-5 grid min-w-0 gap-3">
                     <input
                       type="text"
                       placeholder="Job title"
@@ -998,9 +999,9 @@ const AdminDashboard = () => {
                       onChange={(event) =>
                         setJobForm({ ...jobForm, title: event.target.value })
                       }
-                      className="rounded-lg border border-[#101312]/10 bg-[#f7f3ea] px-4 py-3 outline-none focus:border-[#101312]"
+                      className="min-w-0 rounded-lg border border-[#101312]/10 bg-[#f7f3ea] px-4 py-3 outline-none focus:border-[#101312]"
                     />
-                    <div className="grid gap-3 sm:grid-cols-2">
+                    <div className="grid min-w-0 gap-3 sm:grid-cols-2">
                       <input
                         type="text"
                         placeholder="Job type"
@@ -1008,7 +1009,7 @@ const AdminDashboard = () => {
                         onChange={(event) =>
                           setJobForm({ ...jobForm, type: event.target.value })
                         }
-                        className="rounded-lg border border-[#101312]/10 bg-[#f7f3ea] px-4 py-3 outline-none focus:border-[#101312]"
+                        className="min-w-0 rounded-lg border border-[#101312]/10 bg-[#f7f3ea] px-4 py-3 outline-none focus:border-[#101312]"
                       />
                       <input
                         type="text"
@@ -1020,7 +1021,7 @@ const AdminDashboard = () => {
                             location: event.target.value,
                           })
                         }
-                        className="rounded-lg border border-[#101312]/10 bg-[#f7f3ea] px-4 py-3 outline-none focus:border-[#101312]"
+                        className="min-w-0 rounded-lg border border-[#101312]/10 bg-[#f7f3ea] px-4 py-3 outline-none focus:border-[#101312]"
                       />
                     </div>
                     <textarea
@@ -1030,7 +1031,7 @@ const AdminDashboard = () => {
                       onChange={(event) =>
                         setJobForm({ ...jobForm, focus: event.target.value })
                       }
-                      className="rounded-lg border border-[#101312]/10 bg-[#f7f3ea] px-4 py-3 outline-none focus:border-[#101312]"
+                      className="min-w-0 rounded-lg border border-[#101312]/10 bg-[#f7f3ea] px-4 py-3 outline-none focus:border-[#101312]"
                     />
                   </div>
                   <Button
@@ -1044,14 +1045,14 @@ const AdminDashboard = () => {
                 </form>
               )}
 
-              <div className="mt-5 grid gap-3">
+              <div className="mt-5 grid min-w-0 gap-3">
                 {filteredContent.length === 0 ? (
                   <div className="light-card rounded-lg p-6 text-sm font-medium text-[#101312]/60">
                     No matching content found.
                   </div>
                 ) : (
                   pagedContent.map((item) => (
-                    <article key={item._id} className="light-card rounded-lg p-4">
+                    <article key={item._id} className="light-card min-w-0 overflow-hidden rounded-lg p-4">
                       {contentMode === "reviews" ? (
                         <div className="grid gap-4 lg:grid-cols-[1fr_170px_120px] lg:items-start">
                           <div className="min-w-0">
@@ -1067,17 +1068,17 @@ const AdminDashboard = () => {
                                 {item.status}
                               </span>
                             </div>
-                            <p className="mt-1 text-sm text-[#101312]/58">
+                            <p className="mt-1 break-words text-sm text-[#101312]/58">
                               {item.role} · {item.service} · {item.rating} stars
                             </p>
-                            <p className="mt-3 rounded-lg border border-[#101312]/10 bg-[#f7f3ea] p-3 text-sm leading-7 text-[#101312]/68">
+                            <p className="mt-3 break-words rounded-lg border border-[#101312]/10 bg-[#f7f3ea] p-3 text-sm leading-7 text-[#101312]/68">
                               {item.feedback}
                             </p>
                           </div>
                           <select
                             value={item.status}
                             onChange={(event) => changeTestimonialStatus(item._id, event.target.value)}
-                            className="rounded-lg border border-[#101312]/10 bg-[#f7f3ea] px-4 py-3 text-sm font-semibold outline-none"
+                            className="min-w-0 rounded-lg border border-[#101312]/10 bg-[#f7f3ea] px-4 py-3 text-sm font-semibold outline-none"
                           >
                             <option value="pending">Pending</option>
                             <option value="approved">Approved</option>
@@ -1095,10 +1096,10 @@ const AdminDashboard = () => {
                       ) : (
                         <div className="grid gap-4 lg:grid-cols-[1fr_180px_52px] lg:items-start">
                           <div className="min-w-0">
-                            <p className="text-lg font-semibold leading-snug">
+                            <p className="break-words text-lg font-semibold leading-snug">
                               {item.title}
                             </p>
-                            <p className="mt-1 truncate text-sm text-[#101312]/58">
+                            <p className="mt-1 break-words text-sm text-[#101312]/58">
                               {contentMode === "blogs"
                                 ? `${item.category} · /blog/${item.slug}`
                                 : `${item.jobId || "No Job ID"} · ${item.type} · ${item.location}`}
@@ -1110,9 +1111,9 @@ const AdminDashboard = () => {
                                 </p>
                                 <ul className="mt-2 space-y-1.5">
                                   {getJobDetailLines(item.focus).slice(0, 4).map((line) => (
-                                    <li key={line} className="flex gap-2 text-sm leading-6 text-[#101312]/68">
+                                    <li key={line} className="flex min-w-0 gap-2 text-sm leading-6 text-[#101312]/68">
                                       <span className="mt-2 h-1.5 w-1.5 shrink-0 rounded-full bg-[#16837a]" />
-                                      <span>{line.replace(/^[-•]\s*/, "")}</span>
+                                      <span className="min-w-0 break-words">{line.replace(/^[-•]\s*/, "")}</span>
                                     </li>
                                   ))}
                                 </ul>
