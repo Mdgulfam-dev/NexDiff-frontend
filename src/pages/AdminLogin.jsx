@@ -31,10 +31,10 @@ const AdminLogin = () => {
   };
 
   return (
-    <main className="page-shell">
+    <main className="page-shell overflow-hidden">
       <section className="section-pad">
-        <div className="container-wide flex min-h-[68vh] items-center justify-center">
-          <form onSubmit={handleSubmit} className="light-card w-full max-w-md rounded-lg p-6 sm:p-8">
+        <div className="container-wide flex min-h-[68vh] min-w-0 items-center justify-center">
+          <form onSubmit={handleSubmit} className="light-card w-full min-w-0 max-w-md rounded-lg p-5 sm:p-8">
             <span className="flex h-12 w-12 items-center justify-center rounded-lg bg-[#101312] text-white">
               <LockKeyhole size={22} />
             </span>
@@ -44,25 +44,25 @@ const AdminLogin = () => {
             </p>
 
             {status && (
-              <div className="mt-5 rounded-lg border border-[#e05f2f]/20 bg-[#e05f2f]/10 px-4 py-3 text-sm font-medium text-[#9b3e1f]">
+              <div className="mt-5 break-words rounded-lg border border-[#e05f2f]/20 bg-[#e05f2f]/10 px-4 py-3 text-sm font-medium text-[#9b3e1f]">
                 {status}
               </div>
             )}
 
-            <div className="mt-6 grid gap-4">
+            <div className="mt-6 grid min-w-0 gap-4">
               <input
                 type="text"
                 placeholder="Username"
                 value={form.username}
                 onChange={(event) => setForm({ ...form, username: event.target.value })}
-                className="rounded-lg border border-[#101312]/10 bg-[#f7f3ea] px-4 py-3 outline-none transition focus:border-[#101312]"
+                className="min-w-0 rounded-lg border border-[#101312]/10 bg-[#f7f3ea] px-4 py-3 outline-none transition focus:border-[#101312]"
               />
               <input
                 type="password"
                 placeholder="Password"
                 value={form.password}
                 onChange={(event) => setForm({ ...form, password: event.target.value })}
-                className="rounded-lg border border-[#101312]/10 bg-[#f7f3ea] px-4 py-3 outline-none transition focus:border-[#101312]"
+                className="min-w-0 rounded-lg border border-[#101312]/10 bg-[#f7f3ea] px-4 py-3 outline-none transition focus:border-[#101312]"
               />
             </div>
 
