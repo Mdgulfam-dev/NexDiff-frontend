@@ -1,4 +1,5 @@
 import Hero from "../sections/Hero";
+import ServiceMarquee from "../sections/ServiceMarquee";
 import Services from "../sections/Services";
 import CTA from "../sections/CTA";
 import Testimonials from "../components/Testimonials";
@@ -11,6 +12,7 @@ const Home = () => {
   return (
     <>
       <Hero />
+      <ServiceMarquee />
       <Stats />
       <Services />
       <TechStack />
