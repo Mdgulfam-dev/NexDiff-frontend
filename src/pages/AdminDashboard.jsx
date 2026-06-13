@@ -1,8 +1,26 @@
 import { useEffect, useMemo, useState } from "react";
-import { BriefcaseBusiness, Inbox, LogOut, RefreshCw, UserRoundCheck } from "lucide-react";
+import {
+  BriefcaseBusiness,
+  FileText,
+  Inbox,
+  LogOut,
+  Plus,
+  RefreshCw,
+  Trash2,
+  UserRoundCheck,
+} from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import Button from "../components/Button";
-import { getAdminSubmissions, updateSubmissionStatus } from "../api/api";
+import {
+  createAdminBlogPost,
+  createAdminJobPost,
+  deleteAdminBlogPost,
+  deleteAdminJobPost,
+  getAdminBlogPosts,
+  getAdminJobPosts,
+  getAdminSubmissions,
+  updateSubmissionStatus,
+} from "../api/api";
 
 const tabs = [
   { id: "all", label: "All", icon: Inbox },
@@ -88,6 +106,21 @@ const visibleFields = {
   ],
 };
 
+const emptyBlogForm = {
+  title: "",
+  category: "",
+  image: "",
+  desc: "",
+  content: "",
+};
+
+const emptyJobForm = {
+  title: "",
+  type: "",
+  location: "",
+  focus: "",
+};
+
 const AdminDashboard = () => {
   const navigate = useNavigate();
   const [activeTab, setActiveTab] = useState("all");
@@ -95,6 +128,12 @@ const AdminDashboard = () => {
   const [counts, setCounts] = useState({});
   const [status, setStatus] = useState("");
   const [loading, setLoading] = useState(true);
+  const [blogPosts, setBlogPosts] = useState([]);
+  const [jobPosts, setJobPosts] = useState([]);
+  const [blogForm, setBlogForm] = useState(emptyBlogForm);
+  const [jobForm, setJobForm] = useState(emptyJobForm);
+  const [contentStatus, setContentStatus] = useState("");
+  const [contentLoading, setContentLoading] = useState(false);
 
   const total = useMemo(
     () => Object.values(counts).reduce((sum, count) => sum + count, 0),
@@ -121,6 +160,26 @@ const AdminDashboard = () => {
     }
   };
 
+  const loadContent = async () => {
+    try {
+      const [blogsResponse, jobsResponse] = await Promise.all([
+        getAdminBlogPosts(),
+        getAdminJobPosts(),
+      ]);
+
+      setBlogPosts(blogsResponse.data.posts);
+      setJobPosts(jobsResponse.data.jobs);
+    } catch (error) {
+      if (error.response?.status === 401) {
+        localStorage.removeItem("nexdiff_admin_token");
+        navigate("/admin/login");
+        return;
+      }
+
+      setContentStatus(error.response?.data?.message || "Unable to load admin content.");
+    }
+  };
+
   useEffect(() => {
     if (!localStorage.getItem("nexdiff_admin_token")) {
       navigate("/admin/login");
@@ -129,6 +188,68 @@ const AdminDashboard = () => {
 
     loadSubmissions(activeTab);
   }, [activeTab]);
+
+  useEffect(() => {
+    if (!localStorage.getItem("nexdiff_admin_token")) {
+      return;
+    }
+
+    loadContent();
+  }, []);
+
+  const createBlogPost = async (event) => {
+    event.preventDefault();
+
+    try {
+      setContentLoading(true);
+      setContentStatus("");
+      const response = await createAdminBlogPost(blogForm);
+      setBlogPosts((current) => [response.data.post, ...current]);
+      setBlogForm(emptyBlogForm);
+      setContentStatus("Blog post published.");
+    } catch (error) {
+      setContentStatus(error.response?.data?.message || "Unable to publish blog post.");
+    } finally {
+      setContentLoading(false);
+    }
+  };
+
+  const createJobPost = async (event) => {
+    event.preventDefault();
+
+    try {
+      setContentLoading(true);
+      setContentStatus("");
+      const response = await createAdminJobPost(jobForm);
+      setJobPosts((current) => [response.data.job, ...current]);
+      setJobForm(emptyJobForm);
+      setContentStatus("Job post published.");
+    } catch (error) {
+      setContentStatus(error.response?.data?.message || "Unable to publish job post.");
+    } finally {
+      setContentLoading(false);
+    }
+  };
+
+  const removeBlogPost = async (id) => {
+    try {
+      await deleteAdminBlogPost(id);
+      setBlogPosts((current) => current.filter((post) => post._id !== id));
+      setContentStatus("Blog post deleted.");
+    } catch (error) {
+      setContentStatus(error.response?.data?.message || "Unable to delete blog post.");
+    }
+  };
+
+  const removeJobPost = async (id) => {
+    try {
+      await deleteAdminJobPost(id);
+      setJobPosts((current) => current.filter((job) => job._id !== id));
+      setContentStatus("Job post deleted.");
+    } catch (error) {
+      setContentStatus(error.response?.data?.message || "Unable to delete job post.");
+    }
+  };
 
   const changeStatus = async (id, nextStatus) => {
     try {
@@ -256,6 +377,182 @@ const AdminDashboard = () => {
               ))
             )}
           </div>
+
+          <section className="mt-12">
+            <div className="flex flex-col gap-3 md:flex-row md:items-end md:justify-between">
+              <div>
+                <p className="eyebrow">Content manager</p>
+                <h2 className="mt-3 text-3xl font-semibold">Blog and career posts.</h2>
+              </div>
+              <Button variant="outline" onClick={loadContent}>
+                <RefreshCw size={17} />
+                Reload Content
+              </Button>
+            </div>
+
+            {contentStatus && (
+              <div className="mt-6 rounded-lg border border-[#16837a]/20 bg-[#16837a]/10 px-4 py-3 text-sm font-medium text-[#0f5f58]">
+                {contentStatus}
+              </div>
+            )}
+
+            <div className="mt-6 grid gap-6 xl:grid-cols-2">
+              <form onSubmit={createBlogPost} className="light-card rounded-lg p-5">
+                <div className="flex items-center gap-3">
+                  <FileText size={21} className="text-[#16837a]" />
+                  <h3 className="text-xl font-semibold">Add blog post</h3>
+                </div>
+                <div className="mt-5 grid gap-3">
+                  <input
+                    type="text"
+                    placeholder="Blog title"
+                    value={blogForm.title}
+                    onChange={(event) => setBlogForm({ ...blogForm, title: event.target.value })}
+                    className="rounded-lg border border-[#101312]/10 bg-[#f7f3ea] px-4 py-3 outline-none focus:border-[#101312]"
+                  />
+                  <div className="grid gap-3 sm:grid-cols-2">
+                    <input
+                      type="text"
+                      placeholder="Category"
+                      value={blogForm.category}
+                      onChange={(event) => setBlogForm({ ...blogForm, category: event.target.value })}
+                      className="rounded-lg border border-[#101312]/10 bg-[#f7f3ea] px-4 py-3 outline-none focus:border-[#101312]"
+                    />
+                    <input
+                      type="url"
+                      placeholder="Image URL"
+                      value={blogForm.image}
+                      onChange={(event) => setBlogForm({ ...blogForm, image: event.target.value })}
+                      className="rounded-lg border border-[#101312]/10 bg-[#f7f3ea] px-4 py-3 outline-none focus:border-[#101312]"
+                    />
+                  </div>
+                  <textarea
+                    rows="3"
+                    placeholder="Short description"
+                    value={blogForm.desc}
+                    onChange={(event) => setBlogForm({ ...blogForm, desc: event.target.value })}
+                    className="rounded-lg border border-[#101312]/10 bg-[#f7f3ea] px-4 py-3 outline-none focus:border-[#101312]"
+                  />
+                  <textarea
+                    rows="8"
+                    placeholder="Full blog content in Markdown"
+                    value={blogForm.content}
+                    onChange={(event) => setBlogForm({ ...blogForm, content: event.target.value })}
+                    className="rounded-lg border border-[#101312]/10 bg-[#f7f3ea] px-4 py-3 outline-none focus:border-[#101312]"
+                  />
+                </div>
+                <Button type="submit" className="mt-5 w-full" disabled={contentLoading}>
+                  <Plus size={17} />
+                  Publish Blog
+                </Button>
+              </form>
+
+              <form onSubmit={createJobPost} className="light-card rounded-lg p-5">
+                <div className="flex items-center gap-3">
+                  <BriefcaseBusiness size={21} className="text-[#16837a]" />
+                  <h3 className="text-xl font-semibold">Add career job</h3>
+                </div>
+                <div className="mt-5 grid gap-3">
+                  <input
+                    type="text"
+                    placeholder="Job title"
+                    value={jobForm.title}
+                    onChange={(event) => setJobForm({ ...jobForm, title: event.target.value })}
+                    className="rounded-lg border border-[#101312]/10 bg-[#f7f3ea] px-4 py-3 outline-none focus:border-[#101312]"
+                  />
+                  <div className="grid gap-3 sm:grid-cols-2">
+                    <input
+                      type="text"
+                      placeholder="Job type"
+                      value={jobForm.type}
+                      onChange={(event) => setJobForm({ ...jobForm, type: event.target.value })}
+                      className="rounded-lg border border-[#101312]/10 bg-[#f7f3ea] px-4 py-3 outline-none focus:border-[#101312]"
+                    />
+                    <input
+                      type="text"
+                      placeholder="Location"
+                      value={jobForm.location}
+                      onChange={(event) => setJobForm({ ...jobForm, location: event.target.value })}
+                      className="rounded-lg border border-[#101312]/10 bg-[#f7f3ea] px-4 py-3 outline-none focus:border-[#101312]"
+                    />
+                  </div>
+                  <textarea
+                    rows="6"
+                    placeholder="Role focus / skills / short description"
+                    value={jobForm.focus}
+                    onChange={(event) => setJobForm({ ...jobForm, focus: event.target.value })}
+                    className="rounded-lg border border-[#101312]/10 bg-[#f7f3ea] px-4 py-3 outline-none focus:border-[#101312]"
+                  />
+                </div>
+                <Button type="submit" className="mt-5 w-full" disabled={contentLoading}>
+                  <Plus size={17} />
+                  Publish Job
+                </Button>
+              </form>
+            </div>
+
+            <div className="mt-6 grid gap-6 xl:grid-cols-2">
+              <div className="light-card rounded-lg p-5">
+                <h3 className="text-lg font-semibold">Blog posts</h3>
+                <div className="mt-4 grid gap-3">
+                  {blogPosts.length === 0 ? (
+                    <p className="text-sm text-[#101312]/58">No MongoDB blog posts yet.</p>
+                  ) : (
+                    blogPosts.map((post) => (
+                      <div key={post._id} className="rounded-lg border border-[#101312]/10 bg-[#f7f3ea] p-4">
+                        <div className="flex items-start justify-between gap-3">
+                          <div>
+                            <p className="text-sm font-semibold">{post.title}</p>
+                            <p className="mt-1 text-xs uppercase tracking-[0.12em] text-[#101312]/45">
+                              {post.category}
+                            </p>
+                          </div>
+                          <button
+                            type="button"
+                            onClick={() => removeBlogPost(post._id)}
+                            className="inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-lg border border-[#e05f2f]/20 bg-white text-[#e05f2f]"
+                            aria-label="Delete blog post"
+                          >
+                            <Trash2 size={16} />
+                          </button>
+                        </div>
+                      </div>
+                    ))
+                  )}
+                </div>
+              </div>
+
+              <div className="light-card rounded-lg p-5">
+                <h3 className="text-lg font-semibold">Career jobs</h3>
+                <div className="mt-4 grid gap-3">
+                  {jobPosts.length === 0 ? (
+                    <p className="text-sm text-[#101312]/58">No MongoDB career jobs yet.</p>
+                  ) : (
+                    jobPosts.map((job) => (
+                      <div key={job._id} className="rounded-lg border border-[#101312]/10 bg-[#f7f3ea] p-4">
+                        <div className="flex items-start justify-between gap-3">
+                          <div>
+                            <p className="text-sm font-semibold">{job.title}</p>
+                            <p className="mt-1 text-xs text-[#101312]/52">
+                              {job.type} · {job.location}
+                            </p>
+                          </div>
+                          <button
+                            type="button"
+                            onClick={() => removeJobPost(job._id)}
+                            className="inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-lg border border-[#e05f2f]/20 bg-white text-[#e05f2f]"
+                            aria-label="Delete job post"
+                          >
+                            <Trash2 size={16} />
+                          </button>
+                        </div>
+                      </div>
+                    ))
+                  )}
+                </div>
+              </div>
+            </div>
+          </section>
         </div>
       </section>
     </main>

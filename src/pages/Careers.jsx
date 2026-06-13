@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import {
   ArrowUpRight,
   BriefcaseBusiness,
@@ -11,9 +11,9 @@ import {
   Users,
 } from "lucide-react";
 import Button from "../components/Button";
-import { sendCareerApplication } from "../api/api";
+import { getJobPosts, sendCareerApplication } from "../api/api";
 
-const openings = [
+const defaultOpenings = [
   {
     title: "Frontend Developer Intern",
     type: "Internship",
@@ -49,17 +49,31 @@ const process = [
 ];
 
 const Careers = () => {
+  const [openings, setOpenings] = useState(defaultOpenings);
   const [form, setForm] = useState({
     name: "",
     phone: "",
     email: "",
-    role: openings[0].title,
+    role: defaultOpenings[0].title,
     experience: "",
     portfolio: "",
     message: "",
   });
   const [status, setStatus] = useState("");
   const [loading, setLoading] = useState(false);
+
+  useEffect(() => {
+    getJobPosts()
+      .then((response) => {
+        if (response.data.jobs.length > 0) {
+          setOpenings(response.data.jobs);
+          setForm((current) => ({ ...current, role: response.data.jobs[0].title }));
+        }
+      })
+      .catch(() => {
+        setOpenings(defaultOpenings);
+      });
+  }, []);
 
   const updateField = (field, value) => {
     setForm((current) => ({ ...current, [field]: value }));
@@ -82,7 +96,7 @@ const Careers = () => {
         name: "",
         phone: "",
         email: "",
-        role: openings[0].title,
+        role: openings[0]?.title || defaultOpenings[0].title,
         experience: "",
         portfolio: "",
         message: "",
@@ -174,8 +188,8 @@ const Careers = () => {
           </div>
 
           <div className="mt-8 grid gap-5 lg:grid-cols-3">
-            {openings.map((job) => (
-              <article key={job.title} className="light-card rounded-lg p-6">
+              {openings.map((job) => (
+              <article key={job._id || job.title} className="light-card rounded-lg p-6">
                 <div className="flex items-start justify-between gap-4">
                   <span className="rounded-lg bg-[#f7f3ea] px-3 py-2 text-xs font-semibold text-[#e05f2f]">
                     {job.type}

@@ -1,13 +1,33 @@
+import { useEffect, useState } from "react";
 import { Link, useParams } from "react-router-dom";
 import ReactMarkdown from "react-markdown";
 import { Prism as SyntaxHighlighter } from "react-syntax-highlighter";
 import { oneDark } from "react-syntax-highlighter/dist/esm/styles/prism";
 import { ArrowLeft, ArrowUpRight, BookOpen, Clock3 } from "lucide-react";
 import blogs from "../data/blogs";
+import { getBlogPost, getBlogPosts } from "../api/api";
 
 const BlogDetails = () => {
   const { id } = useParams();
-  const blog = blogs.find((item) => String(item.slug || item.id) === id);
+  const fallbackBlog = blogs.find((item) => String(item.slug || item.id) === id);
+  const [blog, setBlog] = useState(fallbackBlog);
+  const [allBlogs, setAllBlogs] = useState(blogs);
+
+  useEffect(() => {
+    setBlog(fallbackBlog);
+
+    getBlogPost(id)
+      .then((response) => setBlog(response.data.post))
+      .catch(() => setBlog(fallbackBlog));
+
+    getBlogPosts()
+      .then((response) => {
+        if (response.data.posts.length > 0) {
+          setAllBlogs(response.data.posts);
+        }
+      })
+      .catch(() => setAllBlogs(blogs));
+  }, [id]);
 
   if (!blog) {
     return (
@@ -22,8 +42,8 @@ const BlogDetails = () => {
     );
   }
 
-  const related = blogs.filter(
-    (item) => item.category === blog.category && item.id !== blog.id,
+  const related = allBlogs.filter(
+    (item) => item.category === blog.category && String(item.slug || item.id) !== String(blog.slug || blog.id),
   );
   const readTime = Math.ceil(blog.content.trim().split(/\s+/).length / 200);
 
@@ -202,7 +222,7 @@ const BlogDetails = () => {
             <div className="mt-6 grid gap-4 md:grid-cols-2">
               {related.slice(0, 2).map((item) => (
                 <Link
-                  key={item.id}
+                  key={item._id || item.id}
                   to={`/blog/${item.slug || item.id}`}
                   className="light-card rounded-lg p-5 transition hover:-translate-y-1"
                 >

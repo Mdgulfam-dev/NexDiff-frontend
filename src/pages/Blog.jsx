@@ -1,19 +1,33 @@
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { Link } from "react-router-dom";
 import { Helmet } from "react-helmet-async";
 import { ArrowUpRight, Search } from "lucide-react";
 import blogs from "../data/blogs";
+import { getBlogPosts } from "../api/api";
 
-const categories = ["All", "Development", "AI", "DevOps", "Business"];
+const defaultCategories = ["Development", "AI", "DevOps", "Business"];
 
 const Blog = () => {
   const [active, setActive] = useState("All");
   const [search, setSearch] = useState("");
+  const [posts, setPosts] = useState(blogs);
+
+  useEffect(() => {
+    getBlogPosts()
+      .then((response) => {
+        if (response.data.posts.length > 0) {
+          setPosts(response.data.posts);
+        }
+      })
+      .catch(() => {
+        setPosts(blogs);
+      });
+  }, []);
 
   const filteredBlogs = useMemo(() => {
     const searchText = search.trim().toLowerCase();
 
-    return blogs.filter((blog) => {
+    return posts.filter((blog) => {
       const matchCategory = active === "All" || blog.category === active;
       const matchSearch =
         blog.title.toLowerCase().includes(searchText) ||
@@ -22,9 +36,14 @@ const Blog = () => {
 
       return matchCategory && matchSearch;
     });
-  }, [search, active]);
+  }, [search, active, posts]);
 
-  const featured = blogs[0];
+  const categories = useMemo(
+    () => ["All", ...new Set([...defaultCategories, ...posts.map((post) => post.category)])],
+    [posts],
+  );
+
+  const featured = posts[0];
 
   return (
     <main className="page-shell">
@@ -109,7 +128,7 @@ const Blog = () => {
             {filteredBlogs.length > 0 ? (
               filteredBlogs.map((blog) => (
                 <Link
-                  key={blog.id}
+                  key={blog._id || blog.id}
                   to={`/blog/${blog.slug || blog.id}`}
                   className="light-card group overflow-hidden rounded-lg transition hover:-translate-y-1"
                 >
