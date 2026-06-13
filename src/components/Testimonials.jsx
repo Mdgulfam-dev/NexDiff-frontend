@@ -52,12 +52,12 @@ const Testimonials = () => {
   };
 
   return (
-    <section className="section-pad bg-[#f7f3ea] text-[#101312]">
-      <div className="container-wide">
-        <div className="flex flex-col justify-between gap-6 md:flex-row md:items-end">
-          <div>
+    <section className="section-pad overflow-hidden bg-[#f7f3ea] text-[#101312]">
+      <div className="container-wide min-w-0">
+        <div className="flex min-w-0 flex-col justify-between gap-6 md:flex-row md:items-end">
+          <div className="min-w-0">
             <p className="eyebrow">Client voice</p>
-            <h2 className="mt-3 text-3xl font-semibold sm:text-5xl">
+            <h2 className="mt-3 text-3xl font-semibold leading-tight sm:text-5xl">
               Reviews from NexDiff clients.
             </h2>
             <p className="mt-3 max-w-2xl text-sm leading-7 text-[#101312]/62">
@@ -73,8 +73,8 @@ const Testimonials = () => {
           </button>
         </div>
 
-        <div className="mt-10 grid gap-5 lg:grid-cols-[1.05fr_0.95fr]">
-          <div className="grid gap-4 md:grid-cols-2">
+        <div className="mt-10 grid min-w-0 gap-5 lg:grid-cols-[1.05fr_0.95fr]">
+          <div className="grid min-w-0 gap-4 md:grid-cols-2">
             {testimonials.length === 0 ? (
               <div className="light-card rounded-lg p-6 text-sm leading-7 text-[#101312]/62 md:col-span-2">
                 No approved reviews yet. Be the first to share your experience.
@@ -87,19 +87,19 @@ const Testimonials = () => {
                   whileInView={{ opacity: 1, y: 0 }}
                   transition={{ delay: index * 0.04 }}
                   viewport={{ once: true }}
-                  className="light-card rounded-lg p-6"
+                  className="light-card min-w-0 overflow-hidden rounded-lg p-5 sm:p-6"
                 >
-                  <div className="flex gap-1 text-[#e05f2f]">
+                  <div className="flex flex-wrap gap-1 text-[#e05f2f]">
                     {Array.from({ length: testimonial.rating }).map((_, starIndex) => (
                       <Star key={starIndex} size={17} fill="currentColor" />
                     ))}
                   </div>
-                  <p className="mt-6 text-sm leading-7 text-[#101312]/68">
+                  <p className="mt-6 break-words text-sm leading-7 text-[#101312]/68">
                     "{testimonial.feedback}"
                   </p>
                   <div className="mt-6 border-t border-[#101312]/10 pt-4">
-                    <h3 className="text-sm font-semibold">{testimonial.name}</h3>
-                    <p className="mt-1 text-xs text-[#101312]/50">
+                    <h3 className="break-words text-sm font-semibold">{testimonial.name}</h3>
+                    <p className="mt-1 break-words text-xs text-[#101312]/50">
                       {testimonial.role} · {testimonial.service}
                     </p>
                   </div>
@@ -108,8 +108,8 @@ const Testimonials = () => {
             )}
           </div>
 
-          <form onSubmit={handleSubmit} className="light-card rounded-lg p-5 sm:p-6">
-            <div className="flex items-center gap-3">
+          <form onSubmit={handleSubmit} className="light-card min-w-0 rounded-lg p-5 sm:p-6">
+            <div className="flex min-w-0 items-center gap-3">
               <Send size={21} className="text-[#16837a]" />
               <h3 className="text-xl font-semibold">Write a review</h3>
             </div>
@@ -120,34 +120,34 @@ const Testimonials = () => {
               </div>
             )}
 
-            <div className="mt-5 grid gap-3 sm:grid-cols-2">
+            <div className="mt-5 grid min-w-0 gap-3 sm:grid-cols-2">
               <input
                 type="text"
                 placeholder="Your name *"
                 value={form.name}
                 onChange={(event) => updateField("name", event.target.value)}
-                className="rounded-lg border border-[#101312]/10 bg-[#f7f3ea] px-4 py-3 outline-none focus:border-[#101312]"
+                className="min-w-0 rounded-lg border border-[#101312]/10 bg-[#f7f3ea] px-4 py-3 outline-none focus:border-[#101312]"
               />
               <input
                 type="text"
                 placeholder="Role / business *"
                 value={form.role}
                 onChange={(event) => updateField("role", event.target.value)}
-                className="rounded-lg border border-[#101312]/10 bg-[#f7f3ea] px-4 py-3 outline-none focus:border-[#101312]"
+                className="min-w-0 rounded-lg border border-[#101312]/10 bg-[#f7f3ea] px-4 py-3 outline-none focus:border-[#101312]"
               />
             </div>
-            <div className="mt-3 grid gap-3 sm:grid-cols-[1fr_130px]">
+            <div className="mt-3 grid min-w-0 gap-3 sm:grid-cols-[1fr_130px]">
               <input
                 type="text"
                 placeholder="Service used *"
                 value={form.service}
                 onChange={(event) => updateField("service", event.target.value)}
-                className="rounded-lg border border-[#101312]/10 bg-[#f7f3ea] px-4 py-3 outline-none focus:border-[#101312]"
+                className="min-w-0 rounded-lg border border-[#101312]/10 bg-[#f7f3ea] px-4 py-3 outline-none focus:border-[#101312]"
               />
               <select
                 value={form.rating}
                 onChange={(event) => updateField("rating", Number(event.target.value))}
-                className="rounded-lg border border-[#101312]/10 bg-[#f7f3ea] px-4 py-3 outline-none focus:border-[#101312]"
+                className="min-w-0 rounded-lg border border-[#101312]/10 bg-[#f7f3ea] px-4 py-3 outline-none focus:border-[#101312]"
               >
                 {[5, 4, 3, 2, 1].map((rating) => (
                   <option key={rating} value={rating}>
@@ -161,7 +161,7 @@ const Testimonials = () => {
               placeholder="Write your review *"
               value={form.feedback}
               onChange={(event) => updateField("feedback", event.target.value)}
-              className="mt-3 w-full rounded-lg border border-[#101312]/10 bg-[#f7f3ea] px-4 py-3 outline-none focus:border-[#101312]"
+              className="mt-3 w-full min-w-0 rounded-lg border border-[#101312]/10 bg-[#f7f3ea] px-4 py-3 outline-none focus:border-[#101312]"
             />
             <Button type="submit" className="mt-4 w-full" disabled={loading}>
               {loading ? "Submitting..." : "Submit Review"}

@@ -23,9 +23,15 @@ const CountUp = ({ value, className = "", duration = 1200 }) => {
   const ref = useRef(null);
   const isInView = useInView(ref, { once: true, margin: "-80px" });
   const { prefix, end, suffix, decimals } = useMemo(() => parseValue(value), [value]);
-  const [current, setCurrent] = useState(0);
+  const shouldAnimate = end > 10;
+  const [current, setCurrent] = useState(() => (shouldAnimate ? 0 : end));
 
   useEffect(() => {
+    if (!shouldAnimate) {
+      setCurrent(end);
+      return undefined;
+    }
+
     if (!isInView) return undefined;
 
     let frameId;
@@ -45,7 +51,7 @@ const CountUp = ({ value, className = "", duration = 1200 }) => {
     frameId = requestAnimationFrame(animate);
 
     return () => cancelAnimationFrame(frameId);
-  }, [duration, end, isInView]);
+  }, [duration, end, isInView, shouldAnimate]);
 
   return (
     <span ref={ref} className={className}>
