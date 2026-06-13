@@ -28,6 +28,12 @@ const process = [
   "Offer, onboarding, and project allocation",
 ];
 
+const formatJobDetails = (focus = "") =>
+  focus
+    .split(/\r?\n/)
+    .map((line) => line.trim())
+    .filter(Boolean);
+
 const Careers = () => {
   const formRef = useRef(null);
   const [openings, setOpenings] = useState([]);
@@ -36,6 +42,7 @@ const Careers = () => {
     name: "",
     phone: "",
     email: "",
+    jobId: "",
     role: "",
     experience: "",
     portfolio: "",
@@ -52,6 +59,7 @@ const Careers = () => {
         setForm((current) => ({
           ...current,
           role: current.role || response.data.jobs[0]?.title || "",
+          jobId: current.jobId || response.data.jobs[0]?.jobId || "",
         }));
       })
       .catch(() => {
@@ -67,8 +75,13 @@ const Careers = () => {
     setStatus("");
   };
 
-  const selectJob = (title) => {
-    updateField("role", title);
+  const selectJob = (job) => {
+    setForm((current) => ({
+      ...current,
+      role: job.title,
+      jobId: job.jobId || "",
+    }));
+    setStatus("");
     formRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
   };
 
@@ -123,6 +136,7 @@ const Careers = () => {
         name: "",
         phone: "",
         email: "",
+        jobId: openings[0]?.jobId || "",
         role: openings[0]?.title || "",
         experience: "",
         portfolio: "",
@@ -225,30 +239,63 @@ const Careers = () => {
                 No open roles are available right now.
               </div>
             ) : (
-              openings.map((job) => (
-              <article key={job._id || job.title} className="light-card rounded-lg p-6">
-                <div className="flex items-start justify-between gap-4">
-                  <span className="rounded-lg bg-[#f7f3ea] px-3 py-2 text-xs font-semibold text-[#e05f2f]">
-                    {job.type}
-                  </span>
-                  <BriefcaseBusiness size={20} className="text-[#16837a]" />
-                </div>
-                <h3 className="mt-5 text-xl font-semibold">{job.title}</h3>
-                <div className="mt-4 flex items-center gap-2 text-sm text-[#101312]/58">
-                  <MapPin size={16} />
-                  {job.location}
-                </div>
-                <p className="mt-4 text-sm leading-7 text-[#101312]/65">{job.focus}</p>
-                <button
-                  type="button"
-                  onClick={() => selectJob(job.title)}
-                  className="mt-6 inline-flex min-h-11 w-full items-center justify-center gap-2 rounded-lg border border-[#101312] bg-[#101312] px-4 py-3 text-sm font-semibold text-white transition hover:bg-[#202522]"
-                >
-                  Apply
-                  <ArrowUpRight size={16} />
-                </button>
-              </article>
-              ))
+              openings.map((job) => {
+                const details = formatJobDetails(job.focus);
+
+                return (
+                  <article
+                    key={job._id || job.title}
+                    className="light-card flex min-h-full flex-col rounded-lg p-6"
+                  >
+                    <div className="flex flex-wrap items-center gap-2">
+                      <span className="rounded-lg bg-[#101312] px-3 py-2 text-xs font-semibold text-white">
+                        {job.jobId || "JOB"}
+                      </span>
+                      <span className="rounded-lg bg-[#f7f3ea] px-3 py-2 text-xs font-semibold text-[#e05f2f]">
+                        {job.type}
+                      </span>
+                    </div>
+
+                    <h3 className="mt-5 text-xl font-semibold leading-snug text-[#101312]">
+                      {job.title}
+                    </h3>
+
+                    <div className="mt-4 flex items-center gap-2 rounded-lg border border-[#101312]/10 bg-[#f7f3ea] px-3 py-2 text-sm font-medium text-[#101312]/62">
+                      <MapPin size={16} className="shrink-0 text-[#16837a]" />
+                      <span>{job.location}</span>
+                    </div>
+
+                    <div className="mt-5 flex-1 rounded-lg border border-[#101312]/10 bg-white p-4">
+                      <p className="text-xs font-semibold uppercase tracking-[0.14em] text-[#101312]/42">
+                        Role details
+                      </p>
+                      {details.length > 1 ? (
+                        <ul className="mt-3 space-y-2">
+                          {details.map((line) => (
+                            <li key={line} className="flex gap-2 text-sm leading-6 text-[#101312]/68">
+                              <span className="mt-2 h-1.5 w-1.5 shrink-0 rounded-full bg-[#16837a]" />
+                              <span>{line.replace(/^[-•]\s*/, "")}</span>
+                            </li>
+                          ))}
+                        </ul>
+                      ) : (
+                        <p className="mt-3 text-sm leading-7 text-[#101312]/68">
+                          {job.focus}
+                        </p>
+                      )}
+                    </div>
+
+                    <button
+                      type="button"
+                      onClick={() => selectJob(job)}
+                      className="mt-6 inline-flex min-h-11 w-full items-center justify-center gap-2 rounded-lg border border-[#101312] bg-[#101312] px-4 py-3 text-sm font-semibold text-white transition hover:bg-[#202522]"
+                    >
+                      Apply
+                      <ArrowUpRight size={16} />
+                    </button>
+                  </article>
+                );
+              })
             )}
           </div>
         </div>
@@ -295,6 +342,13 @@ const Careers = () => {
             <div className="mt-6 grid gap-4 sm:grid-cols-2">
               <input
                 type="text"
+                placeholder="Job ID"
+                value={form.jobId}
+                readOnly
+                className="rounded-lg border border-[#101312]/10 bg-[#f7f3ea] px-4 py-3 text-[#101312]/60 outline-none"
+              />
+              <input
+                type="text"
                 placeholder="Your name *"
                 value={form.name}
                 onChange={(event) => updateField("name", event.target.value)}
@@ -316,13 +370,21 @@ const Careers = () => {
               />
               <select
                 value={form.role}
-                onChange={(event) => updateField("role", event.target.value)}
+                onChange={(event) => {
+                  const selectedJob = openings.find((job) => job.title === event.target.value);
+                  setForm((current) => ({
+                    ...current,
+                    role: event.target.value,
+                    jobId: selectedJob?.jobId || "",
+                  }));
+                  setStatus("");
+                }}
                 className="rounded-lg border border-[#101312]/10 bg-[#f7f3ea] px-4 py-3 outline-none transition focus:border-[#101312]"
               >
                 <option value="">Select role *</option>
                 {openings.map((job) => (
-                  <option key={job._id || job.title} value={job.title}>
-                    {job.title}
+                  <option key={job._id || job.jobId || job.title} value={job.title}>
+                    {job.jobId ? `${job.jobId} - ${job.title}` : job.title}
                   </option>
                 ))}
               </select>

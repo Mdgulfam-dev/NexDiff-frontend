@@ -67,6 +67,7 @@ const getStatusLabel = (status) =>
 
 const labelMap = {
   name: "Name",
+  jobId: "Job ID",
   email: "Email",
   phone: "Phone",
   service: "Service",
@@ -92,7 +93,7 @@ const labelMap = {
 
 const visibleFields = {
   contact: ["name", "email", "service", "budget", "urgency", "message"],
-  career: ["name", "phone", "email", "role", "experience", "portfolio", "resume", "message"],
+  career: ["jobId", "name", "phone", "email", "role", "experience", "portfolio", "resume", "message"],
   pricing: [
     "planName",
     "packageLabel",
@@ -167,7 +168,9 @@ const getTitle = (submission) => {
   }
 
   if (submission.type === "career") {
-    return submission.data.role || submission.data.name;
+    return submission.data.jobId
+      ? `${submission.data.jobId} · ${submission.data.role}`
+      : submission.data.role || submission.data.name;
   }
 
   return submission.data.service || submission.data.name;
@@ -187,6 +190,12 @@ const getLeadMeta = (submission) => {
 
 const getSearchableText = (value) =>
   JSON.stringify(value || {}).toLowerCase();
+
+const getJobDetailLines = (focus = "") =>
+  focus
+    .split(/\r?\n/)
+    .map((line) => line.trim())
+    .filter(Boolean);
 
 const paginate = (items, page) => {
   const start = (page - 1) * pageSize;
@@ -960,8 +969,8 @@ const AdminDashboard = () => {
                       />
                     </div>
                     <textarea
-                      rows="6"
-                      placeholder="Role focus / skills / short description"
+                      rows="7"
+                      placeholder={"Role details, one point per line\nExample:\n- Build React dashboards\n- Skills: React, Tailwind, API integration\n- 1+ year experience preferred"}
                       value={jobForm.focus}
                       onChange={(event) =>
                         setJobForm({ ...jobForm, focus: event.target.value })
@@ -991,16 +1000,31 @@ const AdminDashboard = () => {
                       key={item._id}
                       className="light-card rounded-lg p-4"
                     >
-                      <div className="grid gap-4 lg:grid-cols-[1fr_180px_52px] lg:items-center">
+                      <div className="grid gap-4 lg:grid-cols-[1fr_180px_52px] lg:items-start">
                         <div className="min-w-0">
-                          <p className="truncate text-lg font-semibold">
+                          <p className="text-lg font-semibold leading-snug">
                             {item.title}
                           </p>
                           <p className="mt-1 truncate text-sm text-[#101312]/58">
                             {contentMode === "blogs"
                               ? `${item.category} · /blog/${item.slug}`
-                              : `${item.type} · ${item.location}`}
+                              : `${item.jobId || "No Job ID"} · ${item.type} · ${item.location}`}
                           </p>
+                          {contentMode === "jobs" && (
+                            <div className="mt-3 rounded-lg border border-[#101312]/10 bg-[#f7f3ea] p-3">
+                              <p className="text-xs font-semibold uppercase tracking-[0.14em] text-[#101312]/42">
+                                Role details
+                              </p>
+                              <ul className="mt-2 space-y-1.5">
+                                {getJobDetailLines(item.focus).slice(0, 4).map((line) => (
+                                  <li key={line} className="flex gap-2 text-sm leading-6 text-[#101312]/68">
+                                    <span className="mt-2 h-1.5 w-1.5 shrink-0 rounded-full bg-[#16837a]" />
+                                    <span>{line.replace(/^[-•]\s*/, "")}</span>
+                                  </li>
+                                ))}
+                              </ul>
+                            </div>
+                          )}
                         </div>
                         <p className="text-sm font-medium text-[#101312]/52">
                           {new Date(item.createdAt).toLocaleDateString()}
