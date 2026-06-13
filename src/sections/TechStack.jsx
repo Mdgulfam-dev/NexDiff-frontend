@@ -59,10 +59,10 @@ const workflow = [
 ];
 
 const checkpoints = [
-  "Clear business objective before build",
-  "Mobile-first pages and enquiry flow",
-  "Launch-ready content and tracking",
-  "Simple handover and support plan",
+  "Dedicated project manager",
+  "Mobile-first responsive design",
+  "SEO & performance optimized",
+  "Secure and scalable solutions",
 ];
 
 const TechStack = () => {
@@ -78,15 +78,19 @@ const TechStack = () => {
               From business idea to launch-ready growth system.
             </h2>
             <p className="mt-5 max-w-xl text-sm leading-7 text-[#101312]/65 sm:text-base">
-              Instead of showing a list of tools, we show how the work actually
-              moves: understand the goal, plan the product, build it, launch it,
-              and keep improving with real user signals.
+              At NexDiff, we follow a proven process that takes your business
+              from concept to launch and beyond. From strategy and design to
+              development, marketing, and ongoing growth, we build solutions
+              that deliver real business results.
             </p>
 
             <div className="mt-6 space-y-3">
               {checkpoints.map((item) => (
                 <div key={item} className="flex gap-3">
-                  <ShieldCheck size={18} className="mt-0.5 shrink-0 text-[#16837a]" />
+                  <ShieldCheck
+                    size={18}
+                    className="mt-0.5 shrink-0 text-[#16837a]"
+                  />
                   <p className="text-sm leading-6 text-[#101312]/68">{item}</p>
                 </div>
               ))}
@@ -96,7 +100,7 @@ const TechStack = () => {
               onClick={() => navigate("/contact")}
               className="mt-7 inline-flex min-h-11 items-center gap-2 rounded-lg border border-[#101312] bg-[#101312] px-5 py-3 text-sm font-semibold text-white transition hover:-translate-y-0.5"
             >
-              Plan Your Product
+              Plan Your Project
               <ArrowUpRight size={16} />
             </button>
           </div>
@@ -120,7 +124,9 @@ const TechStack = () => {
                       <span className="text-xs font-semibold uppercase tracking-[0.16em] text-[#101312]/42">
                         Step {index + 1}
                       </span>
-                      {index === 2 && <BadgeCheck size={15} className="text-[#16837a]" />}
+                      {index === 2 && (
+                        <BadgeCheck size={15} className="text-[#16837a]" />
+                      )}
                     </div>
                     <h3 className="mt-2 text-lg font-semibold leading-snug">
                       {step.title}
@@ -138,7 +144,10 @@ const TechStack = () => {
                       className="flex items-center justify-between gap-3 rounded-lg bg-[#f7f3ea] px-3 py-2 text-sm font-semibold text-[#101312]/68"
                     >
                       <span>{item}</span>
-                      <ArrowRight size={15} className="shrink-0 text-[#16837a]" />
+                      <ArrowRight
+                        size={15}
+                        className="shrink-0 text-[#16837a]"
+                      />
                     </div>
                   ))}
                 </div>

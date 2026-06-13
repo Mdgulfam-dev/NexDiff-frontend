@@ -94,9 +94,12 @@ const Hero = () => {
             }}
             className="mt-6 max-w-2xl text-base leading-8 text-white/70 sm:text-lg"
           >
-            We build the software, content systems, campaigns, and lead
-            pipelines that help local and growing brands look credible online,
-            attract the right audience, and convert attention into enquiries.
+            NexDiff delivers custom software development, website solutions,
+            digital marketing, SEO, social media management, lead generation,
+            and business automation services. We help startups, local
+            businesses, and growing brands establish a powerful digital
+            presence, attract qualified customers, and accelerate business
+            growth with data-driven strategies.
           </Motion.p>
 
           <Motion.div
@@ -236,14 +239,9 @@ const Hero = () => {
 
                 <div className="mt-7 grid grid-cols-2 gap-3">
                   <div className="border border-[#101312]/10 p-4">
-                    <MousePointerClick
-                      size={20}
-                      className="text-[#f97316]"
-                    />
+                    <MousePointerClick size={20} className="text-[#f97316]" />
                     <p className="mt-3 text-2xl font-semibold">+240%</p>
-                    <p className="text-xs text-[#101312]/55">
-                      enquiry intent
-                    </p>
+                    <p className="text-xs text-[#101312]/55">enquiry intent</p>
                   </div>
                   <div className="border border-[#101312]/10 p-4">
                     <BarChart3 size={20} className="text-[#0891b2]" />
