@@ -29,6 +29,8 @@ export const updateSubmissionStatus = (id, status) =>
 export const getBlogPosts = () => API.get("/blogs");
 export const getBlogPost = (slug) => API.get(`/blogs/${slug}`);
 export const getJobPosts = () => API.get("/jobs");
+export const getTestimonials = () => API.get("/testimonials");
+export const submitTestimonial = (data) => API.post("/testimonials", data);
 
 export const getAdminBlogPosts = () => API.get("/admin/blogs");
 export const createAdminBlogPost = (data) => API.post("/admin/blogs", data);
@@ -37,3 +39,8 @@ export const deleteAdminBlogPost = (id) => API.delete(`/admin/blogs/${id}`);
 export const getAdminJobPosts = () => API.get("/admin/jobs");
 export const createAdminJobPost = (data) => API.post("/admin/jobs", data);
 export const deleteAdminJobPost = (id) => API.delete(`/admin/jobs/${id}`);
+
+export const getAdminTestimonials = () => API.get("/admin/testimonials");
+export const updateAdminTestimonialStatus = (id, status) =>
+  API.patch(`/admin/testimonials/${id}/status`, { status });
+export const deleteAdminTestimonial = (id) => API.delete(`/admin/testimonials/${id}`);

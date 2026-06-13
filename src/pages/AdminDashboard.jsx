@@ -21,9 +21,12 @@ import {
   createAdminJobPost,
   deleteAdminBlogPost,
   deleteAdminJobPost,
+  deleteAdminTestimonial,
   getAdminBlogPosts,
   getAdminJobPosts,
   getAdminSubmissions,
+  getAdminTestimonials,
+  updateAdminTestimonialStatus,
   updateSubmissionStatus,
 } from "../api/api";
 
@@ -270,6 +273,7 @@ const AdminDashboard = () => {
   const [showJobForm, setShowJobForm] = useState(false);
   const [blogPosts, setBlogPosts] = useState([]);
   const [jobPosts, setJobPosts] = useState([]);
+  const [testimonials, setTestimonials] = useState([]);
   const [blogForm, setBlogForm] = useState(emptyBlogForm);
   const [jobForm, setJobForm] = useState(emptyJobForm);
   const [contentStatus, setContentStatus] = useState("");
@@ -301,7 +305,12 @@ const AdminDashboard = () => {
     [filteredLeads, leadPage],
   );
 
-  const activeContentItems = contentMode === "blogs" ? blogPosts : jobPosts;
+  const activeContentItems =
+    contentMode === "blogs"
+      ? blogPosts
+      : contentMode === "jobs"
+        ? jobPosts
+        : testimonials;
   const filteredContent = useMemo(() => {
     const searchText = contentSearch.trim().toLowerCase();
 
@@ -347,13 +356,15 @@ const AdminDashboard = () => {
 
     try {
       setContentStatus("");
-      const [blogsResponse, jobsResponse] = await Promise.all([
+      const [blogsResponse, jobsResponse, testimonialsResponse] = await Promise.all([
         getAdminBlogPosts(),
         getAdminJobPosts(),
+        getAdminTestimonials(),
       ]);
 
       setBlogPosts(blogsResponse.data.posts);
       setJobPosts(jobsResponse.data.jobs);
+      setTestimonials(testimonialsResponse.data.testimonials);
     } catch (error) {
       if (error.response?.status === 401) {
         localStorage.removeItem("nexdiff_admin_token");
@@ -497,6 +508,42 @@ const AdminDashboard = () => {
     }
   };
 
+  const changeTestimonialStatus = async (id, nextStatus) => {
+    if (!canManageContent) {
+      setContentStatus("You do not have access to manage reviews.");
+      return;
+    }
+
+    try {
+      const response = await updateAdminTestimonialStatus(id, nextStatus);
+      setTestimonials((current) =>
+        current.map((item) => (item._id === id ? response.data.testimonial : item)),
+      );
+      setContentStatus("Review status updated.");
+    } catch (error) {
+      setContentStatus(error.response?.data?.message || "Unable to update review.");
+    }
+  };
+
+  const removeTestimonial = async (id) => {
+    if (!canManageContent) {
+      setContentStatus("You do not have access to manage reviews.");
+      return;
+    }
+
+    if (!window.confirm("Delete this review?")) {
+      return;
+    }
+
+    try {
+      await deleteAdminTestimonial(id);
+      setTestimonials((current) => current.filter((item) => item._id !== id));
+      setContentStatus("Review deleted.");
+    } catch (error) {
+      setContentStatus(error.response?.data?.message || "Unable to delete review.");
+    }
+  };
+
   const changeStatus = async (id, nextStatus) => {
     if (!canManageLeads) {
       setStatus("You do not have access to manage leads.");
@@ -569,7 +616,7 @@ const AdminDashboard = () => {
               {
                 id: "content",
                 label: "Content",
-                detail: `${blogPosts.length} blogs · ${jobPosts.length} jobs`,
+                detail: `${blogPosts.length} blogs · ${jobPosts.length} jobs · ${testimonials.length} reviews`,
                 icon: FileText,
               },
             ]
@@ -781,6 +828,12 @@ const AdminDashboard = () => {
                     count: jobPosts.length,
                     icon: BriefcaseBusiness,
                   },
+                  {
+                    id: "reviews",
+                    label: "Reviews",
+                    count: testimonials.length,
+                    icon: MessageSquare,
+                  },
                 ].map((tab) => {
                   const Icon = tab.icon;
 
@@ -827,19 +880,21 @@ const AdminDashboard = () => {
                   <RefreshCw size={17} />
                   Reload
                 </Button>
-                <Button
-                  onClick={() => {
-                    if (contentMode === "blogs") {
-                      setShowBlogForm((value) => !value);
-                      return;
-                    }
+                {contentMode !== "reviews" && (
+                  <Button
+                    onClick={() => {
+                      if (contentMode === "blogs") {
+                        setShowBlogForm((value) => !value);
+                        return;
+                      }
 
-                    setShowJobForm((value) => !value);
-                  }}
-                >
-                  <Plus size={17} />
-                  {contentMode === "blogs" ? "New Blog" : "New Job"}
-                </Button>
+                      setShowJobForm((value) => !value);
+                    }}
+                  >
+                    <Plus size={17} />
+                    {contentMode === "blogs" ? "New Blog" : "New Job"}
+                  </Button>
+                )}
               </div>
 
               {contentStatus && (
@@ -996,56 +1051,95 @@ const AdminDashboard = () => {
                   </div>
                 ) : (
                   pagedContent.map((item) => (
-                    <article
-                      key={item._id}
-                      className="light-card rounded-lg p-4"
-                    >
-                      <div className="grid gap-4 lg:grid-cols-[1fr_180px_52px] lg:items-start">
-                        <div className="min-w-0">
-                          <p className="text-lg font-semibold leading-snug">
-                            {item.title}
-                          </p>
-                          <p className="mt-1 truncate text-sm text-[#101312]/58">
-                            {contentMode === "blogs"
-                              ? `${item.category} · /blog/${item.slug}`
-                              : `${item.jobId || "No Job ID"} · ${item.type} · ${item.location}`}
-                          </p>
-                          {contentMode === "jobs" && (
-                            <div className="mt-3 rounded-lg border border-[#101312]/10 bg-[#f7f3ea] p-3">
-                              <p className="text-xs font-semibold uppercase tracking-[0.14em] text-[#101312]/42">
-                                Role details
-                              </p>
-                              <ul className="mt-2 space-y-1.5">
-                                {getJobDetailLines(item.focus).slice(0, 4).map((line) => (
-                                  <li key={line} className="flex gap-2 text-sm leading-6 text-[#101312]/68">
-                                    <span className="mt-2 h-1.5 w-1.5 shrink-0 rounded-full bg-[#16837a]" />
-                                    <span>{line.replace(/^[-•]\s*/, "")}</span>
-                                  </li>
-                                ))}
-                              </ul>
+                    <article key={item._id} className="light-card rounded-lg p-4">
+                      {contentMode === "reviews" ? (
+                        <div className="grid gap-4 lg:grid-cols-[1fr_170px_120px] lg:items-start">
+                          <div className="min-w-0">
+                            <div className="flex flex-wrap items-center gap-2">
+                              <p className="text-lg font-semibold leading-snug">{item.name}</p>
+                              <span className={`rounded-lg border px-3 py-1 text-xs font-semibold ${
+                                item.status === "approved"
+                                  ? "border-[#16837a]/20 bg-[#16837a]/10 text-[#0f5f58]"
+                                  : item.status === "rejected"
+                                    ? "border-[#e05f2f]/20 bg-[#e05f2f]/10 text-[#9b3e1f]"
+                                    : "border-[#f59e0b]/25 bg-[#f59e0b]/10 text-[#92400e]"
+                              }`}>
+                                {item.status}
+                              </span>
                             </div>
-                          )}
+                            <p className="mt-1 text-sm text-[#101312]/58">
+                              {item.role} · {item.service} · {item.rating} stars
+                            </p>
+                            <p className="mt-3 rounded-lg border border-[#101312]/10 bg-[#f7f3ea] p-3 text-sm leading-7 text-[#101312]/68">
+                              {item.feedback}
+                            </p>
+                          </div>
+                          <select
+                            value={item.status}
+                            onChange={(event) => changeTestimonialStatus(item._id, event.target.value)}
+                            className="rounded-lg border border-[#101312]/10 bg-[#f7f3ea] px-4 py-3 text-sm font-semibold outline-none"
+                          >
+                            <option value="pending">Pending</option>
+                            <option value="approved">Approved</option>
+                            <option value="rejected">Rejected</option>
+                          </select>
+                          <button
+                            type="button"
+                            onClick={() => removeTestimonial(item._id)}
+                            className="inline-flex h-11 w-11 items-center justify-center rounded-lg border border-[#e05f2f]/20 bg-white text-[#e05f2f]"
+                            aria-label="Delete review"
+                          >
+                            <Trash2 size={17} />
+                          </button>
                         </div>
-                        <p className="text-sm font-medium text-[#101312]/52">
-                          {new Date(item.createdAt).toLocaleDateString()}
-                        </p>
-                        <button
-                          type="button"
-                          onClick={() =>
-                            contentMode === "blogs"
-                              ? removeBlogPost(item._id)
-                              : removeJobPost(item._id)
-                          }
-                          className="inline-flex h-11 w-11 items-center justify-center rounded-lg border border-[#e05f2f]/20 bg-white text-[#e05f2f]"
-                          aria-label={
-                            contentMode === "blogs"
-                              ? "Delete blog post"
-                              : "Delete job post"
-                          }
-                        >
-                          <Trash2 size={17} />
-                        </button>
-                      </div>
+                      ) : (
+                        <div className="grid gap-4 lg:grid-cols-[1fr_180px_52px] lg:items-start">
+                          <div className="min-w-0">
+                            <p className="text-lg font-semibold leading-snug">
+                              {item.title}
+                            </p>
+                            <p className="mt-1 truncate text-sm text-[#101312]/58">
+                              {contentMode === "blogs"
+                                ? `${item.category} · /blog/${item.slug}`
+                                : `${item.jobId || "No Job ID"} · ${item.type} · ${item.location}`}
+                            </p>
+                            {contentMode === "jobs" && (
+                              <div className="mt-3 rounded-lg border border-[#101312]/10 bg-[#f7f3ea] p-3">
+                                <p className="text-xs font-semibold uppercase tracking-[0.14em] text-[#101312]/42">
+                                  Role details
+                                </p>
+                                <ul className="mt-2 space-y-1.5">
+                                  {getJobDetailLines(item.focus).slice(0, 4).map((line) => (
+                                    <li key={line} className="flex gap-2 text-sm leading-6 text-[#101312]/68">
+                                      <span className="mt-2 h-1.5 w-1.5 shrink-0 rounded-full bg-[#16837a]" />
+                                      <span>{line.replace(/^[-•]\s*/, "")}</span>
+                                    </li>
+                                  ))}
+                                </ul>
+                              </div>
+                            )}
+                          </div>
+                          <p className="text-sm font-medium text-[#101312]/52">
+                            {new Date(item.createdAt).toLocaleDateString()}
+                          </p>
+                          <button
+                            type="button"
+                            onClick={() =>
+                              contentMode === "blogs"
+                                ? removeBlogPost(item._id)
+                                : removeJobPost(item._id)
+                            }
+                            className="inline-flex h-11 w-11 items-center justify-center rounded-lg border border-[#e05f2f]/20 bg-white text-[#e05f2f]"
+                            aria-label={
+                              contentMode === "blogs"
+                                ? "Delete blog post"
+                                : "Delete job post"
+                            }
+                          >
+                            <Trash2 size={17} />
+                          </button>
+                        </div>
+                      )}
                     </article>
                   ))
                 )}
