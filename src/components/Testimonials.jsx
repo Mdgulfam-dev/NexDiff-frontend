@@ -6,7 +6,7 @@ const testimonials = [
   {
     name: "Amit Sharma",
     role: "Startup Founder",
-    rating: 5,
+    rating: 4,
     image: "https://i.pravatar.cc/100?img=1",
     feedback:
       "NexDiff helped us build a high-performance website that boosted our business growth significantly.",
@@ -22,7 +22,7 @@ const testimonials = [
   {
     name: "Rahul Mehta",
     role: "Entrepreneur",
-    rating: 5,
+    rating: 3,
     image: "https://i.pravatar.cc/100?img=3",
     feedback:
       "The UI, performance, and launch support were excellent. It felt like working with a focused product team.",

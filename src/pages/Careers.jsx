@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from "react";
+import { Link } from "react-router-dom";
 import {
   ArrowUpRight,
   BriefcaseBusiness,
@@ -47,6 +48,7 @@ const Careers = () => {
     experience: "",
     portfolio: "",
     resume: null,
+    acceptedTerms: false,
     message: "",
   });
   const [status, setStatus] = useState("");
@@ -123,8 +125,8 @@ const Careers = () => {
   const handleSubmit = async (event) => {
     event.preventDefault();
 
-    if (!form.name || !form.phone || !form.role || !form.experience || !form.resume) {
-      setStatus("Please complete your name, phone, role, experience, and resume.");
+    if (!form.name || !form.phone || !form.role || !form.experience || !form.resume || !form.acceptedTerms) {
+      setStatus("Please complete your name, phone, role, experience, resume, and accept the terms.");
       return;
     }
 
@@ -141,6 +143,7 @@ const Careers = () => {
         experience: "",
         portfolio: "",
         resume: null,
+        acceptedTerms: false,
         message: "",
       });
     } catch (error) {
@@ -427,6 +430,22 @@ const Careers = () => {
               onChange={(event) => updateField("message", event.target.value)}
               className="mt-4 w-full rounded-lg border border-[#101312]/10 bg-[#f7f3ea] px-4 py-3 outline-none transition focus:border-[#101312]"
             />
+
+            <label className="mt-4 flex items-start gap-3 rounded-lg border border-[#101312]/10 bg-[#f7f3ea] p-4">
+              <input
+                type="checkbox"
+                checked={form.acceptedTerms}
+                onChange={(event) => updateField("acceptedTerms", event.target.checked)}
+                className="mt-1 h-4 w-4 accent-[#101312]"
+              />
+              <span className="text-sm leading-6 text-[#101312]/68">
+                I have read and agree to the{" "}
+                <Link to="/terms" className="font-semibold text-[#e05f2f] underline underline-offset-4">
+                  Terms & Conditions
+                </Link>
+                .
+              </span>
+            </label>
 
             <Button type="submit" className="mt-6 w-full" disabled={loading}>
               {loading ? "Submitting..." : "Submit Application"}

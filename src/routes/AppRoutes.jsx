@@ -11,6 +11,7 @@ import PlanRequest from "../pages/PlanRequest";
 import PlanPayment from "../pages/PlanPayment";
 import Careers from "../pages/Careers";
 import CaseStudies from "../pages/CaseStudies";
+import Terms from "../pages/Terms";
 import MainLayout from "../layouts/MainLayout";
 import AdminLogin from "../pages/AdminLogin";
 import AdminDashboard from "../pages/AdminDashboard";
@@ -26,6 +27,7 @@ const AppRoutes = () => {
         <Route path="/contact" element={<Contact />} />
         <Route path="/about" element={<About />} />
         <Route path="/careers" element={<Careers />} />
+        <Route path="/terms" element={<Terms />} />
         <Route path="/pricing" element={<Pricing />} />
         <Route path="/pricing/request" element={<PlanRequest />} />
         <Route path="/pricing/payment" element={<PlanPayment />} />
