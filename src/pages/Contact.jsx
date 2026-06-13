@@ -2,6 +2,7 @@ import { useState } from "react";
 import { Mail, MapPin, Phone, ShieldCheck } from "lucide-react";
 import { FaWhatsapp } from "react-icons/fa";
 import Button from "../components/Button";
+import { sendContactForm } from "../api/api";
 
 const services = [
   "Software Development",
@@ -46,26 +47,9 @@ const Contact = () => {
       setLoading(true);
       setStatus("");
 
-      const message = `
-New Lead from Website
+      await sendContactForm(form);
 
-Name: ${form.name}
-Email: ${form.email}
-
-Service: ${form.service}
-Budget: ${form.budget || "Not specified"}
-Urgency: ${form.urgency || "Not specified"}
-
-Message:
-${form.message || "N/A"}
-      `;
-
-      window.open(
-        `https://wa.me/919001402531?text=${encodeURIComponent(message)}`,
-        "_blank",
-      );
-
-      setStatus("Opening WhatsApp with your project details.");
+      setStatus("Thanks. Your project brief has been saved and our team will contact you soon.");
       setStep(1);
       setForm({
         name: "",
@@ -75,8 +59,8 @@ ${form.message || "N/A"}
         urgency: "",
         message: "",
       });
-    } catch {
-      setStatus("Something went wrong. Please try again.");
+    } catch (error) {
+      setStatus(error.response?.data?.message || "Something went wrong. Please try again.");
     } finally {
       setLoading(false);
     }

@@ -11,6 +11,7 @@ import {
   Users,
 } from "lucide-react";
 import Button from "../components/Button";
+import { sendCareerApplication } from "../api/api";
 
 const openings = [
   {
@@ -58,13 +59,14 @@ const Careers = () => {
     message: "",
   });
   const [status, setStatus] = useState("");
+  const [loading, setLoading] = useState(false);
 
   const updateField = (field, value) => {
     setForm((current) => ({ ...current, [field]: value }));
     setStatus("");
   };
 
-  const handleSubmit = (event) => {
+  const handleSubmit = async (event) => {
     event.preventDefault();
 
     if (!form.name || !form.phone || !form.role || !form.experience) {
@@ -72,26 +74,24 @@ const Careers = () => {
       return;
     }
 
-    const message = `
-New Career Application
-
-Name: ${form.name}
-Phone: ${form.phone}
-Email: ${form.email || "Not specified"}
-Role: ${form.role}
-Experience: ${form.experience}
-Portfolio: ${form.portfolio || "Not specified"}
-
-Message:
-${form.message || "N/A"}
-    `;
-
-    window.open(
-      `https://wa.me/919001402531?text=${encodeURIComponent(message)}`,
-      "_blank",
-    );
-
-    setStatus("Opening WhatsApp with your application details.");
+    try {
+      setLoading(true);
+      await sendCareerApplication(form);
+      setStatus("Application submitted. Our team will review it from the admin dashboard.");
+      setForm({
+        name: "",
+        phone: "",
+        email: "",
+        role: openings[0].title,
+        experience: "",
+        portfolio: "",
+        message: "",
+      });
+    } catch (error) {
+      setStatus(error.response?.data?.message || "Something went wrong. Please try again.");
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -300,8 +300,8 @@ ${form.message || "N/A"}
               className="mt-4 w-full rounded-lg border border-[#101312]/10 bg-[#f7f3ea] px-4 py-3 outline-none transition focus:border-[#101312]"
             />
 
-            <Button type="submit" className="mt-6 w-full">
-              Submit Application
+            <Button type="submit" className="mt-6 w-full" disabled={loading}>
+              {loading ? "Submitting..." : "Submit Application"}
               <Clock3 size={17} />
             </Button>
           </form>

@@ -12,6 +12,8 @@ import PlanPayment from "../pages/PlanPayment";
 import Careers from "../pages/Careers";
 import CaseStudies from "../pages/CaseStudies";
 import MainLayout from "../layouts/MainLayout";
+import AdminLogin from "../pages/AdminLogin";
+import AdminDashboard from "../pages/AdminDashboard";
 
 const AppRoutes = () => {
   return (
@@ -30,6 +32,8 @@ const AppRoutes = () => {
         <Route path="/blog" element={<Blog />} />
         <Route path="/blog/:id" element={<BlogDetails />} />
       </Route>
+      <Route path="/admin/login" element={<AdminLogin />} />
+      <Route path="/admin/dashboard" element={<AdminDashboard />} />
     </Routes>
   );
 };

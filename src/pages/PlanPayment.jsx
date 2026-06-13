@@ -2,6 +2,7 @@ import { useMemo, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { CheckCircle2, Copy, CreditCard, FileImage, ShieldCheck } from "lucide-react";
 import Button from "../components/Button";
+import { sendPricingRequest } from "../api/api";
 import { UPI_ID, getAnalysisPlanById } from "../data/pricingPlans";
 
 const PlanPayment = () => {
@@ -17,6 +18,7 @@ const PlanPayment = () => {
   const [screenshot, setScreenshot] = useState(null);
   const [status, setStatus] = useState("");
   const [copied, setCopied] = useState(false);
+  const [loading, setLoading] = useState(false);
 
   const hasRequest = Boolean(request?.form);
   const isFree = amount === 0;
@@ -31,7 +33,7 @@ const PlanPayment = () => {
     }
   };
 
-  const handleSubmit = (event) => {
+  const handleSubmit = async (event) => {
     event.preventDefault();
 
     if (!hasRequest) {
@@ -44,43 +46,28 @@ const PlanPayment = () => {
       return;
     }
 
-    const message = `
-New Pricing Plan Request
+    try {
+      setLoading(true);
+      await sendPricingRequest({
+        planId: selectedPlan.id,
+        planName: selectedPlan.name,
+        packageLabel: selectedOption?.label || selectedPlan.note,
+        amount,
+        isFree,
+        paymentScreenshotName: isFree ? "" : screenshot.name,
+        ...request.form,
+      });
 
-Plan: ${selectedPlan.name}
-Package: ${selectedOption?.label || selectedPlan.note}
-Amount: ${isFree ? "Free" : `Rs ${amount}`}
-
-Name: ${request.form.name}
-Phone: ${request.form.phone}
-Email: ${request.form.email || "Not specified"}
-Business: ${request.form.businessName}
-Niche: ${request.form.niche}
-Account Start Date: ${request.form.accountStartDate || "Not specified"}
-Platform: ${request.form.platform.join(", ")}
-Profile Link: ${request.form.profileLink || "Not specified"}
-Content Type: ${request.form.contentType.join(", ")}
-Goal: ${request.form.goal.join(", ")}
-
-Issue:
-${request.form.issue}
-
-Requirement:
-${request.form.requirement}
-
-Payment Screenshot: ${isFree ? "Not required" : screenshot.name}
-    `;
-
-    window.open(
-      `https://wa.me/919001402531?text=${encodeURIComponent(message)}`,
-      "_blank",
-    );
-
-    setStatus(
-      isFree
-        ? "Request submitted. WhatsApp is opening with your details."
-        : "Payment proof submitted. WhatsApp is opening with your details.",
-    );
+      setStatus(
+        isFree
+          ? "Request submitted. Our team will review it from the admin dashboard."
+          : "Payment proof submitted. Our team will verify it from the admin dashboard.",
+      );
+    } catch (error) {
+      setStatus(error.response?.data?.message || "Something went wrong. Please try again.");
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -195,8 +182,8 @@ Payment Screenshot: ${isFree ? "Not required" : screenshot.name}
               >
                 Back to Form
               </Button>
-              <Button type="submit">
-                Submit Request
+              <Button type="submit" disabled={loading}>
+                {loading ? "Submitting..." : "Submit Request"}
               </Button>
             </div>
           </form>
