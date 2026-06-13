@@ -16,21 +16,21 @@ import Button from "../components/Button";
 import CountUp from "../components/CountUp";
 
 const services = [
-  { label: "Software Development", icon: <Code2 size={18} /> },
+  { label: "Web Development", icon: <Code2 size={18} /> },
   { label: "Social Media Handling", icon: <MessageSquareShare size={18} /> },
   { label: "Digital Marketing", icon: <Megaphone size={18} /> },
   { label: "Lead Generation", icon: <Target size={18} /> },
 ];
 
 const metrics = [
-  { value: "4", label: "Core services" },
+  { value: "10+", label: "Service areas" },
   { value: "30+", label: "Brands served" },
   { value: "3x", label: "Growth focus" },
 ];
 
 const pipeline = [
   "Brand audit",
-  "Website or software build",
+  "Website or app build",
   "Content and ads engine",
   "Qualified leads",
 ];

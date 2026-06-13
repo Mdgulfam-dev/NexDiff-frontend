@@ -2,9 +2,15 @@ import { motion as Motion } from "framer-motion";
 import { useNavigate } from "react-router-dom";
 import {
   ArrowUpRight,
+  Cloud,
   Code2,
+  LineChart,
   Megaphone,
   MessageSquareShare,
+  Palette,
+  Smartphone,
+  Search,
+  ShoppingCart,
   Target,
 } from "lucide-react";
 import services from "../data/services";
@@ -14,6 +20,12 @@ const icons = {
   social: <MessageSquareShare />,
   megaphone: <Megaphone />,
   target: <Target />,
+  seo: <Search />,
+  commerce: <ShoppingCart />,
+  cloud: <Cloud />,
+  ads: <LineChart />,
+  mobile: <Smartphone />,
+  design: <Palette />,
 };
 
 const Services = () => {
@@ -42,9 +54,9 @@ const Services = () => {
           </div>
 
           <p className="max-w-2xl text-sm leading-7 text-[#101312]/70 sm:text-base">
-            NexDiff connects the four things most businesses need to grow
-            online: a strong digital product, active social presence, marketing
-            campaigns, and a lead system that captures demand.
+            NexDiff connects the services most businesses need to grow online:
+            web development, apps, UI/UX, marketing, SEO, ads, cloud systems,
+            and lead funnels that capture demand.
           </p>
         </Motion.div>
 

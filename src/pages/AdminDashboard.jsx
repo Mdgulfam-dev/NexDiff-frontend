@@ -3,6 +3,7 @@ import {
   BriefcaseBusiness,
   ChevronLeft,
   ChevronRight,
+  Edit3,
   FileText,
   Inbox,
   LayoutDashboard,
@@ -30,6 +31,8 @@ import {
   getAdminSubmissions,
   getAdminTestimonials,
   updateAdminUser,
+  updateAdminBlogPost,
+  updateAdminJobPost,
   updateAdminTestimonialStatus,
   updateSubmissionStatus,
 } from "../api/api";
@@ -126,6 +129,7 @@ const emptyBlogForm = {
   image: "",
   desc: "",
   content: "",
+  published: true,
 };
 
 const emptyJobForm = {
@@ -133,6 +137,7 @@ const emptyJobForm = {
   type: "",
   location: "",
   focus: "",
+  published: true,
 };
 
 const emptyUserForm = {
@@ -294,6 +299,8 @@ const AdminDashboard = () => {
   const [testimonials, setTestimonials] = useState([]);
   const [blogForm, setBlogForm] = useState(emptyBlogForm);
   const [jobForm, setJobForm] = useState(emptyJobForm);
+  const [editingBlogId, setEditingBlogId] = useState("");
+  const [editingJobId, setEditingJobId] = useState("");
   const [contentStatus, setContentStatus] = useState("");
   const [contentLoading, setContentLoading] = useState(false);
   const [adminUsers, setAdminUsers] = useState([]);
@@ -487,14 +494,22 @@ const AdminDashboard = () => {
     try {
       setContentLoading(true);
       setContentStatus("");
-      const response = await createAdminBlogPost(blogForm);
-      setBlogPosts((current) => [response.data.post, ...current]);
+      const response = editingBlogId
+        ? await updateAdminBlogPost(editingBlogId, blogForm)
+        : await createAdminBlogPost(blogForm);
+
+      setBlogPosts((current) =>
+        editingBlogId
+          ? current.map((post) => (post._id === editingBlogId ? response.data.post : post))
+          : [response.data.post, ...current],
+      );
       setBlogForm(emptyBlogForm);
+      setEditingBlogId("");
       setShowBlogForm(false);
       setContentMode("blogs");
-      setContentStatus("Blog post published.");
+      setContentStatus(editingBlogId ? "Blog post updated." : "Blog post saved.");
     } catch (error) {
-      setContentStatus(error.response?.data?.message || "Unable to publish blog post.");
+      setContentStatus(error.response?.data?.message || "Unable to save blog post.");
     } finally {
       setContentLoading(false);
     }
@@ -511,16 +526,109 @@ const AdminDashboard = () => {
     try {
       setContentLoading(true);
       setContentStatus("");
-      const response = await createAdminJobPost(jobForm);
-      setJobPosts((current) => [response.data.job, ...current]);
+      const response = editingJobId
+        ? await updateAdminJobPost(editingJobId, jobForm)
+        : await createAdminJobPost(jobForm);
+
+      setJobPosts((current) =>
+        editingJobId
+          ? current.map((job) => (job._id === editingJobId ? response.data.job : job))
+          : [response.data.job, ...current],
+      );
       setJobForm(emptyJobForm);
+      setEditingJobId("");
       setShowJobForm(false);
       setContentMode("jobs");
-      setContentStatus("Job post published.");
+      setContentStatus(editingJobId ? "Job post updated." : "Job post saved.");
     } catch (error) {
-      setContentStatus(error.response?.data?.message || "Unable to publish job post.");
+      setContentStatus(error.response?.data?.message || "Unable to save job post.");
     } finally {
       setContentLoading(false);
+    }
+  };
+
+  const startEditBlog = (post) => {
+    setContentMode("blogs");
+    setEditingBlogId(post._id);
+    setBlogForm({
+      title: post.title || "",
+      category: post.category || "",
+      image: post.image || "",
+      desc: post.desc || "",
+      content: post.content || "",
+      published: post.published !== false,
+    });
+    setShowBlogForm(true);
+    setShowJobForm(false);
+    setEditingJobId("");
+    setContentStatus("");
+  };
+
+  const startEditJob = (job) => {
+    setContentMode("jobs");
+    setEditingJobId(job._id);
+    setJobForm({
+      title: job.title || "",
+      type: job.type || "",
+      location: job.location || "",
+      focus: job.focus || "",
+      published: job.published !== false,
+    });
+    setShowJobForm(true);
+    setShowBlogForm(false);
+    setEditingBlogId("");
+    setContentStatus("");
+  };
+
+  const cancelContentEdit = () => {
+    setEditingBlogId("");
+    setEditingJobId("");
+    setBlogForm(emptyBlogForm);
+    setJobForm(emptyJobForm);
+    setShowBlogForm(false);
+    setShowJobForm(false);
+  };
+
+  const toggleContentPublished = async (item) => {
+    if (!canManageContent) {
+      setContentStatus("You do not have access to manage content.");
+      return;
+    }
+
+    try {
+      setContentStatus("");
+
+      if (contentMode === "blogs") {
+        const response = await updateAdminBlogPost(item._id, {
+          title: item.title,
+          category: item.category,
+          image: item.image,
+          desc: item.desc,
+          content: item.content,
+          published: item.published === false,
+        });
+
+        setBlogPosts((current) =>
+          current.map((post) => (post._id === item._id ? response.data.post : post)),
+        );
+        setContentStatus(response.data.post.published ? "Blog published." : "Blog moved to draft.");
+        return;
+      }
+
+      const response = await updateAdminJobPost(item._id, {
+        title: item.title,
+        type: item.type,
+        location: item.location,
+        focus: item.focus,
+        published: item.published === false,
+      });
+
+      setJobPosts((current) =>
+        current.map((job) => (job._id === item._id ? response.data.job : job)),
+      );
+      setContentStatus(response.data.job.published ? "Job published." : "Job moved to draft.");
+    } catch (error) {
+      setContentStatus(error.response?.data?.message || "Unable to update publish status.");
     }
   };
 
@@ -1157,11 +1265,17 @@ const AdminDashboard = () => {
                     className="w-full lg:w-auto"
                     onClick={() => {
                       if (contentMode === "blogs") {
+                        setEditingBlogId("");
+                        setBlogForm(emptyBlogForm);
                         setShowBlogForm((value) => !value);
+                        setShowJobForm(false);
                         return;
                       }
 
+                      setEditingJobId("");
+                      setJobForm(emptyJobForm);
                       setShowJobForm((value) => !value);
+                      setShowBlogForm(false);
                     }}
                   >
                     <Plus size={17} />
@@ -1183,7 +1297,9 @@ const AdminDashboard = () => {
                 >
                   <div className="flex min-w-0 items-center gap-3">
                     <FileText size={21} className="shrink-0 text-[#16837a]" />
-                    <h3 className="text-xl font-semibold">Add blog post</h3>
+                    <h3 className="text-xl font-semibold">
+                      {editingBlogId ? "Edit blog post" : "Add blog post"}
+                    </h3>
                   </div>
                   <div className="mt-5 grid min-w-0 gap-3">
                     <input
@@ -1242,15 +1358,35 @@ const AdminDashboard = () => {
                       }
                       className="min-w-0 rounded-lg border border-[#101312]/10 bg-[#f7f3ea] px-4 py-3 outline-none focus:border-[#101312]"
                     />
+                    <label className="flex min-h-12 items-center gap-3 rounded-lg border border-[#101312]/10 bg-[#f7f3ea] px-4 py-3 text-sm font-semibold">
+                      <input
+                        type="checkbox"
+                        checked={blogForm.published}
+                        onChange={(event) =>
+                          setBlogForm({ ...blogForm, published: event.target.checked })
+                        }
+                      />
+                      Published on website
+                    </label>
                   </div>
-                  <Button
-                    type="submit"
-                    className="mt-5 w-full"
-                    disabled={contentLoading}
-                  >
-                    <Plus size={17} />
-                    Publish Blog
-                  </Button>
+                  <div className="mt-5 grid gap-3 sm:flex">
+                    <Button
+                      type="submit"
+                      className="w-full sm:w-auto"
+                      disabled={contentLoading}
+                    >
+                      <Plus size={17} />
+                      {editingBlogId ? "Update Blog" : "Save Blog"}
+                    </Button>
+                    <Button
+                      type="button"
+                      variant="outline"
+                      className="w-full sm:w-auto"
+                      onClick={cancelContentEdit}
+                    >
+                      Cancel
+                    </Button>
+                  </div>
                 </form>
               )}
 
@@ -1261,7 +1397,9 @@ const AdminDashboard = () => {
                 >
                   <div className="flex min-w-0 items-center gap-3">
                     <BriefcaseBusiness size={21} className="shrink-0 text-[#16837a]" />
-                    <h3 className="text-xl font-semibold">Add career job</h3>
+                    <h3 className="text-xl font-semibold">
+                      {editingJobId ? "Edit career job" : "Add career job"}
+                    </h3>
                   </div>
                   <div className="mt-5 grid min-w-0 gap-3">
                     <input
@@ -1305,15 +1443,35 @@ const AdminDashboard = () => {
                       }
                       className="min-w-0 rounded-lg border border-[#101312]/10 bg-[#f7f3ea] px-4 py-3 outline-none focus:border-[#101312]"
                     />
+                    <label className="flex min-h-12 items-center gap-3 rounded-lg border border-[#101312]/10 bg-[#f7f3ea] px-4 py-3 text-sm font-semibold">
+                      <input
+                        type="checkbox"
+                        checked={jobForm.published}
+                        onChange={(event) =>
+                          setJobForm({ ...jobForm, published: event.target.checked })
+                        }
+                      />
+                      Published on website
+                    </label>
                   </div>
-                  <Button
-                    type="submit"
-                    className="mt-5 w-full"
-                    disabled={contentLoading}
-                  >
-                    <Plus size={17} />
-                    Publish Job
-                  </Button>
+                  <div className="mt-5 grid gap-3 sm:flex">
+                    <Button
+                      type="submit"
+                      className="w-full sm:w-auto"
+                      disabled={contentLoading}
+                    >
+                      <Plus size={17} />
+                      {editingJobId ? "Update Job" : "Save Job"}
+                    </Button>
+                    <Button
+                      type="button"
+                      variant="outline"
+                      className="w-full sm:w-auto"
+                      onClick={cancelContentEdit}
+                    >
+                      Cancel
+                    </Button>
+                  </div>
                 </form>
               )}
 
@@ -1366,11 +1524,22 @@ const AdminDashboard = () => {
                           </button>
                         </div>
                       ) : (
-                        <div className="grid gap-4 lg:grid-cols-[1fr_180px_52px] lg:items-start">
+                        <div className="grid gap-4 lg:grid-cols-[1fr_150px_240px] lg:items-start">
                           <div className="min-w-0">
-                            <p className="break-words text-lg font-semibold leading-snug">
-                              {item.title}
-                            </p>
+                            <div className="flex flex-wrap items-center gap-2">
+                              <p className="break-words text-lg font-semibold leading-snug">
+                                {item.title}
+                              </p>
+                              <span
+                                className={`rounded-lg border px-3 py-1 text-xs font-semibold ${
+                                  item.published === false
+                                    ? "border-[#f59e0b]/25 bg-[#f59e0b]/10 text-[#92400e]"
+                                    : "border-[#16837a]/20 bg-[#16837a]/10 text-[#0f5f58]"
+                                }`}
+                              >
+                                {item.published === false ? "Draft" : "Published"}
+                              </span>
+                            </div>
                             <p className="mt-1 break-words text-sm text-[#101312]/58">
                               {contentMode === "blogs"
                                 ? `${item.category} · /blog/${item.slug}`
@@ -1395,22 +1564,43 @@ const AdminDashboard = () => {
                           <p className="text-sm font-medium text-[#101312]/52">
                             {new Date(item.createdAt).toLocaleDateString()}
                           </p>
-                          <button
-                            type="button"
-                            onClick={() =>
-                              contentMode === "blogs"
-                                ? removeBlogPost(item._id)
-                                : removeJobPost(item._id)
-                            }
-                            className="inline-flex h-11 w-11 items-center justify-center rounded-lg border border-[#e05f2f]/20 bg-white text-[#e05f2f]"
-                            aria-label={
-                              contentMode === "blogs"
-                                ? "Delete blog post"
-                                : "Delete job post"
-                            }
-                          >
-                            <Trash2 size={17} />
-                          </button>
+                          <div className="grid gap-2 sm:grid-cols-[1fr_1fr_44px]">
+                            <button
+                              type="button"
+                              onClick={() =>
+                                contentMode === "blogs"
+                                  ? startEditBlog(item)
+                                  : startEditJob(item)
+                              }
+                              className="inline-flex min-h-11 items-center justify-center gap-2 rounded-lg border border-[#101312]/10 bg-white px-3 py-2 text-sm font-semibold text-[#101312]"
+                            >
+                              <Edit3 size={16} />
+                              Edit
+                            </button>
+                            <button
+                              type="button"
+                              onClick={() => toggleContentPublished(item)}
+                              className="inline-flex min-h-11 items-center justify-center rounded-lg border border-[#101312]/10 bg-[#f7f3ea] px-3 py-2 text-sm font-semibold text-[#101312]"
+                            >
+                              {item.published === false ? "Publish" : "Draft"}
+                            </button>
+                            <button
+                              type="button"
+                              onClick={() =>
+                                contentMode === "blogs"
+                                  ? removeBlogPost(item._id)
+                                  : removeJobPost(item._id)
+                              }
+                              className="inline-flex h-11 w-11 items-center justify-center rounded-lg border border-[#e05f2f]/20 bg-white text-[#e05f2f]"
+                              aria-label={
+                                contentMode === "blogs"
+                                  ? "Delete blog post"
+                                  : "Delete job post"
+                              }
+                            >
+                              <Trash2 size={17} />
+                            </button>
+                          </div>
                         </div>
                       )}
                     </article>
