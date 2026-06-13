@@ -1,15 +1,14 @@
 import { motion as Motion } from "framer-motion";
 import { useNavigate } from "react-router-dom";
-import { ArrowUpRight, CheckCircle2 } from "lucide-react";
+import { ArrowUpRight, CheckCircle2, UsersRound } from "lucide-react";
 import Button from "../components/Button";
 import CountUp from "../components/CountUp";
-import profile from "../assets/profile.jpg";
 
 const team = [
-  { name: "Md Gulfam", role: "Founder & CEO", image: profile },
-  { name: "Frontend Team", role: "Product UI", image: "https://i.pravatar.cc/100?img=11" },
-  { name: "Backend Team", role: "Systems", image: "https://i.pravatar.cc/100?img=12" },
-  { name: "Growth Team", role: "Marketing", image: "https://i.pravatar.cc/100?img=13" },
+  { name: "Md Gulfam", role: "Founder & CEO" },
+  { name: "Frontend Team", role: "Product UI" },
+  { name: "Backend Team", role: "Systems" },
+  { name: "Growth Team", role: "Marketing" },
 ];
 
 const capabilities = [
@@ -192,11 +191,9 @@ const About = () => {
                 viewport={{ once: true }}
                 className="dark-card rounded-lg p-5"
               >
-                <img
-                  src={member.image}
-                  alt={member.name}
-                  className="h-16 w-16 rounded-lg object-cover"
-                />
+                <div className="flex h-16 w-16 items-center justify-center rounded-lg border border-[#c7f9cc]/20 bg-[#c7f9cc]/10 text-[#c7f9cc]">
+                  <UsersRound size={28} />
+                </div>
                 <h3 className="mt-5 font-semibold">{member.name}</h3>
                 <p className="mt-1 text-sm text-white/50">{member.role}</p>
               </Motion.div>
