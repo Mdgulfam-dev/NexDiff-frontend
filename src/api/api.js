@@ -1,7 +1,13 @@
 import axios from "axios";
 
+const defaultBaseURL =
+  typeof window !== "undefined" &&
+  ["localhost", "127.0.0.1"].includes(window.location.hostname)
+    ? "http://localhost:5001/api"
+    : "https://nexdiff-backend.onrender.com/api";
+
 const API = axios.create({
-  baseURL: import.meta.env.VITE_API_URL || "http://localhost:5001/api",
+  baseURL: import.meta.env.VITE_API_URL || defaultBaseURL,
 });
 
 API.interceptors.request.use((config) => {
