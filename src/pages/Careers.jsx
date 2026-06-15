@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate, useParams } from "react-router-dom";
 import {
   ArrowUpRight,
   BriefcaseBusiness,
@@ -13,6 +13,7 @@ import {
   Users,
 } from "lucide-react";
 import Button from "../components/Button";
+import ShareButton from "../components/ShareButton";
 import { getJobPosts, sendCareerApplication } from "../api/api";
 
 const benefits = [
@@ -35,10 +36,16 @@ const formatJobDetails = (focus = "") =>
     .map((line) => line.trim())
     .filter(Boolean);
 
+const getJobSharePath = (job) => `/careers/${encodeURIComponent(job.jobId || job._id || job.title)}`;
+
 const Careers = () => {
   const formRef = useRef(null);
+  const jobRefs = useRef({});
+  const navigate = useNavigate();
+  const { jobId } = useParams();
   const [openings, setOpenings] = useState([]);
   const [jobsLoading, setJobsLoading] = useState(true);
+  const [selectedJobId, setSelectedJobId] = useState("");
   const [form, setForm] = useState({
     name: "",
     phone: "",
@@ -72,18 +79,50 @@ const Careers = () => {
       });
   }, []);
 
+  useEffect(() => {
+    if (jobsLoading || openings.length === 0) return;
+
+    const decodedJobId = jobId ? decodeURIComponent(jobId) : "";
+    const matchedJob = decodedJobId
+      ? openings.find(
+          (job) =>
+            String(job.jobId || "").toLowerCase() === decodedJobId.toLowerCase() ||
+            String(job._id || "") === decodedJobId,
+        )
+      : null;
+
+    if (matchedJob) {
+      setSelectedJobId(matchedJob.jobId || matchedJob._id || "");
+      setForm((current) => ({
+        ...current,
+        role: matchedJob.title,
+        jobId: matchedJob.jobId || "",
+      }));
+      window.setTimeout(() => {
+        jobRefs.current[matchedJob.jobId || matchedJob._id]?.scrollIntoView({
+          behavior: "smooth",
+          block: "center",
+        });
+      }, 120);
+    } else if (decodedJobId) {
+      setStatus("That job link is no longer available. Please choose another open role.");
+    }
+  }, [jobId, jobsLoading, openings]);
+
   const updateField = (field, value) => {
     setForm((current) => ({ ...current, [field]: value }));
     setStatus("");
   };
 
   const selectJob = (job) => {
+    setSelectedJobId(job.jobId || job._id || "");
     setForm((current) => ({
       ...current,
       role: job.title,
       jobId: job.jobId || "",
     }));
     setStatus("");
+    navigate(getJobSharePath(job), { replace: false });
     formRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
   };
 
@@ -244,24 +283,40 @@ const Careers = () => {
             ) : (
               openings.map((job) => {
                 const details = formatJobDetails(job.focus);
+                const isSelected = selectedJobId === (job.jobId || job._id || "");
 
                 return (
                   <article
                     key={job._id || job.title}
-                    className="light-card flex min-h-full min-w-0 flex-col overflow-hidden rounded-lg p-5 sm:p-6"
+                    ref={(element) => {
+                      if (element) jobRefs.current[job.jobId || job._id] = element;
+                    }}
+                    className={`light-card flex min-h-full min-w-0 flex-col overflow-hidden rounded-lg p-5 transition sm:p-6 ${
+                      isSelected ? "border-[#16837a] ring-2 ring-[#16837a]/20" : ""
+                    }`}
                   >
-                    <div className="flex flex-wrap items-center gap-2">
-                      <span className="break-words rounded-lg bg-[#101312] px-3 py-2 text-xs font-semibold text-white">
-                        {job.jobId || "JOB"}
-                      </span>
-                      <span className="rounded-lg bg-[#f7f3ea] px-3 py-2 text-xs font-semibold text-[#e05f2f]">
-                        {job.type}
-                      </span>
+                    <div className="flex min-w-0 flex-wrap items-start justify-between gap-3">
+                      <div className="flex min-w-0 flex-wrap items-center gap-2">
+                        <span className="break-words rounded-lg bg-[#101312] px-3 py-2 text-xs font-semibold text-white">
+                          {job.jobId || "JOB"}
+                        </span>
+                        <span className="rounded-lg bg-[#f7f3ea] px-3 py-2 text-xs font-semibold text-[#e05f2f]">
+                          {job.type}
+                        </span>
+                      </div>
+                      <ShareButton
+                        title={job.title}
+                        text={`NexDiff is hiring: ${job.title}`}
+                        url={getJobSharePath(job)}
+                        className="shrink-0"
+                      />
                     </div>
 
-                    <h3 className="mt-5 break-words text-xl font-semibold leading-snug text-[#101312]">
-                      {job.title}
-                    </h3>
+                    <Link to={getJobSharePath(job)} className="mt-5 block">
+                      <h3 className="break-words text-xl font-semibold leading-snug text-[#101312] hover:text-[#16837a]">
+                        {job.title}
+                      </h3>
+                    </Link>
 
                     <div className="mt-4 flex items-center gap-2 rounded-lg border border-[#101312]/10 bg-[#f7f3ea] px-3 py-2 text-sm font-medium text-[#101312]/62">
                       <MapPin size={16} className="shrink-0 text-[#16837a]" />

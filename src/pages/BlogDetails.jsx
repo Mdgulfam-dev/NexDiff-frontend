@@ -4,6 +4,7 @@ import ReactMarkdown from "react-markdown";
 import { Prism as SyntaxHighlighter } from "react-syntax-highlighter";
 import { oneDark } from "react-syntax-highlighter/dist/esm/styles/prism";
 import { ArrowLeft, ArrowUpRight, BookOpen, Clock3 } from "lucide-react";
+import ShareButton from "../components/ShareButton";
 import { getBlogPost, getBlogPosts } from "../api/api";
 
 const BlogDetails = () => {
@@ -54,6 +55,7 @@ const BlogDetails = () => {
     (item) => item.category === blog.category && String(item.slug || item.id) !== String(blog.slug || blog.id),
   );
   const readTime = Math.ceil(blog.content.trim().split(/\s+/).length / 200);
+  const blogPath = `/blog/${blog.slug || blog.id}`;
 
   return (
     <main className="page-shell">
@@ -93,6 +95,12 @@ const BlogDetails = () => {
                   <Clock3 size={16} className="text-[#16837a]" />
                   {readTime} min read
                 </div>
+                <ShareButton
+                  title={blog.title}
+                  text={blog.desc}
+                  url={blogPath}
+                  className="mt-4 w-full"
+                />
               </div>
             </div>
 
