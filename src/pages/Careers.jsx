@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import { Link, useNavigate, useParams } from "react-router-dom";
+import { Link, useSearchParams } from "react-router-dom";
 import {
   ArrowUpRight,
   BriefcaseBusiness,
@@ -40,12 +40,9 @@ const getJobSharePath = (job) => `/careers/${encodeURIComponent(job.jobId || job
 
 const Careers = () => {
   const formRef = useRef(null);
-  const jobRefs = useRef({});
-  const navigate = useNavigate();
-  const { jobId } = useParams();
+  const [searchParams] = useSearchParams();
   const [openings, setOpenings] = useState([]);
   const [jobsLoading, setJobsLoading] = useState(true);
-  const [selectedJobId, setSelectedJobId] = useState("");
   const [form, setForm] = useState({
     name: "",
     phone: "",
@@ -64,12 +61,26 @@ const Careers = () => {
   useEffect(() => {
     getJobPosts()
       .then((response) => {
-        setOpenings(response.data.jobs);
+        const jobs = response.data.jobs;
+        const applyJobId = searchParams.get("apply");
+        const selectedJob = jobs.find(
+          (job) =>
+            String(job.jobId || "").toLowerCase() === String(applyJobId || "").toLowerCase() ||
+            String(job._id || "") === String(applyJobId || ""),
+        );
+
+        setOpenings(jobs);
         setForm((current) => ({
           ...current,
-          role: current.role || response.data.jobs[0]?.title || "",
-          jobId: current.jobId || response.data.jobs[0]?.jobId || "",
+          role: current.role || selectedJob?.title || jobs[0]?.title || "",
+          jobId: current.jobId || selectedJob?.jobId || jobs[0]?.jobId || "",
         }));
+
+        if (selectedJob) {
+          window.setTimeout(() => {
+            formRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
+          }, 120);
+        }
       })
       .catch(() => {
         setOpenings([]);
@@ -77,37 +88,7 @@ const Careers = () => {
       .finally(() => {
         setJobsLoading(false);
       });
-  }, []);
-
-  useEffect(() => {
-    if (jobsLoading || openings.length === 0) return;
-
-    const decodedJobId = jobId ? decodeURIComponent(jobId) : "";
-    const matchedJob = decodedJobId
-      ? openings.find(
-          (job) =>
-            String(job.jobId || "").toLowerCase() === decodedJobId.toLowerCase() ||
-            String(job._id || "") === decodedJobId,
-        )
-      : null;
-
-    if (matchedJob) {
-      setSelectedJobId(matchedJob.jobId || matchedJob._id || "");
-      setForm((current) => ({
-        ...current,
-        role: matchedJob.title,
-        jobId: matchedJob.jobId || "",
-      }));
-      window.setTimeout(() => {
-        jobRefs.current[matchedJob.jobId || matchedJob._id]?.scrollIntoView({
-          behavior: "smooth",
-          block: "center",
-        });
-      }, 120);
-    } else if (decodedJobId) {
-      setStatus("That job link is no longer available. Please choose another open role.");
-    }
-  }, [jobId, jobsLoading, openings]);
+  }, [searchParams]);
 
   const updateField = (field, value) => {
     setForm((current) => ({ ...current, [field]: value }));
@@ -115,14 +96,12 @@ const Careers = () => {
   };
 
   const selectJob = (job) => {
-    setSelectedJobId(job.jobId || job._id || "");
     setForm((current) => ({
       ...current,
       role: job.title,
       jobId: job.jobId || "",
     }));
     setStatus("");
-    navigate(getJobSharePath(job), { replace: false });
     formRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
   };
 
@@ -283,17 +262,12 @@ const Careers = () => {
             ) : (
               openings.map((job) => {
                 const details = formatJobDetails(job.focus);
-                const isSelected = selectedJobId === (job.jobId || job._id || "");
+                const summary = details[0] || job.focus;
 
                 return (
                   <article
                     key={job._id || job.title}
-                    ref={(element) => {
-                      if (element) jobRefs.current[job.jobId || job._id] = element;
-                    }}
-                    className={`light-card flex min-h-full min-w-0 flex-col overflow-hidden rounded-lg p-5 transition sm:p-6 ${
-                      isSelected ? "border-[#16837a] ring-2 ring-[#16837a]/20" : ""
-                    }`}
+                    className="light-card flex min-h-full min-w-0 flex-col overflow-hidden rounded-lg p-5 transition hover:-translate-y-1 sm:p-6"
                   >
                     <div className="flex min-w-0 flex-wrap items-start justify-between gap-3">
                       <div className="flex min-w-0 flex-wrap items-center gap-2">
@@ -323,34 +297,35 @@ const Careers = () => {
                       <span className="min-w-0 break-words">{job.location}</span>
                     </div>
 
-                    <div className="mt-5 min-w-0 flex-1 rounded-lg border border-[#101312]/10 bg-white p-4">
-                      <p className="text-xs font-semibold uppercase tracking-[0.14em] text-[#101312]/42">
-                        Role details
-                      </p>
-                      {details.length > 1 ? (
-                        <ul className="mt-3 space-y-2">
-                          {details.map((line) => (
-                            <li key={line} className="flex min-w-0 gap-2 text-sm leading-6 text-[#101312]/68">
-                              <span className="mt-2 h-1.5 w-1.5 shrink-0 rounded-full bg-[#16837a]" />
-                              <span className="min-w-0 break-words">{line.replace(/^[-•]\s*/, "")}</span>
-                            </li>
-                          ))}
-                        </ul>
-                      ) : (
-                        <p className="mt-3 break-words text-sm leading-7 text-[#101312]/68">
-                          {job.focus}
-                        </p>
-                      )}
-                    </div>
-
-                    <button
-                      type="button"
-                      onClick={() => selectJob(job)}
-                      className="mt-6 inline-flex min-h-11 w-full items-center justify-center gap-2 rounded-lg border border-[#101312] bg-[#101312] px-4 py-3 text-sm font-semibold text-white transition hover:bg-[#202522]"
+                    <p
+                      className="mt-5 min-w-0 flex-1 break-words text-sm leading-6 text-[#101312]/62"
+                      style={{
+                        display: "-webkit-box",
+                        WebkitLineClamp: 3,
+                        WebkitBoxOrient: "vertical",
+                        overflow: "hidden",
+                      }}
                     >
-                      Apply
-                      <ArrowUpRight size={16} />
-                    </button>
+                      {summary.replace(/^[-•]\s*/, "")}
+                    </p>
+
+                    <div className="mt-6 grid gap-3 sm:grid-cols-2">
+                      <Link
+                        to={getJobSharePath(job)}
+                        className="inline-flex min-h-11 items-center justify-center gap-2 rounded-lg border border-[#101312] bg-[#101312] px-4 py-3 text-sm font-semibold text-white transition hover:bg-[#202522]"
+                      >
+                        View details
+                        <ArrowUpRight size={16} />
+                      </Link>
+                      <button
+                        type="button"
+                        onClick={() => selectJob(job)}
+                        className="inline-flex min-h-11 items-center justify-center gap-2 rounded-lg border border-[#101312]/10 bg-white px-4 py-3 text-sm font-semibold text-[#101312]/72 transition hover:border-[#101312]/30 hover:text-[#101312]"
+                      >
+                        Apply
+                        <ArrowUpRight size={16} />
+                      </button>
+                    </div>
                   </article>
                 );
               })
