@@ -2,6 +2,7 @@ import { useState } from "react";
 import { Mail, MapPin, Phone, ShieldCheck } from "lucide-react";
 import { FaWhatsapp } from "react-icons/fa";
 import Button from "../components/Button";
+import SuccessPopup from "../components/SuccessPopup";
 import { sendContactForm } from "../api/api";
 
 const services = [
@@ -37,6 +38,7 @@ const Contact = () => {
   });
   const [loading, setLoading] = useState(false);
   const [status, setStatus] = useState("");
+  const [showSuccess, setShowSuccess] = useState(false);
 
   const nextStep = () => setStep((prev) => Math.min(prev + 1, 4));
   const prevStep = () => setStep((prev) => Math.max(prev - 1, 1));
@@ -53,9 +55,10 @@ const Contact = () => {
       setLoading(true);
       setStatus("");
 
-      const response = await sendContactForm(form);
+      await sendContactForm(form);
 
-      setStatus(response.data?.message || "Thanks. Your project brief has been saved and our team will contact you soon.");
+      setStatus("");
+      setShowSuccess(true);
       setStep(1);
       setForm({
         name: "",
@@ -89,6 +92,12 @@ const Contact = () => {
 
   return (
     <main className="page-shell">
+      <SuccessPopup
+        open={showSuccess}
+        title="Project brief submitted"
+        message="Thank you for sharing your details. Our team will review your requirement and contact you soon with the next steps."
+        onClose={() => setShowSuccess(false)}
+      />
       <section className="section-pad">
         <div className="container-wide grid gap-10 lg:grid-cols-[0.92fr_1.08fr]">
           <div>

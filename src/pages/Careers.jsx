@@ -14,6 +14,7 @@ import {
 } from "lucide-react";
 import Button from "../components/Button";
 import ShareButton from "../components/ShareButton";
+import SuccessPopup from "../components/SuccessPopup";
 import { getJobPosts, sendCareerApplication } from "../api/api";
 
 const benefits = [
@@ -57,6 +58,7 @@ const Careers = () => {
   });
   const [status, setStatus] = useState("");
   const [loading, setLoading] = useState(false);
+  const [showSuccess, setShowSuccess] = useState(false);
 
   useEffect(() => {
     getJobPosts({ limit: 100 })
@@ -151,7 +153,8 @@ const Careers = () => {
     try {
       setLoading(true);
       await sendCareerApplication(form);
-      setStatus("Application submitted. Our team will review it from the admin dashboard.");
+      setStatus("");
+      setShowSuccess(true);
       setForm({
         name: "",
         phone: "",
@@ -173,6 +176,12 @@ const Careers = () => {
 
   return (
     <main className="page-shell overflow-hidden">
+      <SuccessPopup
+        open={showSuccess}
+        title="Application submitted"
+        message="Thank you for applying to NexDiff. Our team will review your profile and contact you if your application matches the next step."
+        onClose={() => setShowSuccess(false)}
+      />
       <section className="section-pad">
         <div className="container-wide grid min-w-0 gap-10 lg:grid-cols-[1fr_0.82fr] lg:items-center">
           <div className="min-w-0">
