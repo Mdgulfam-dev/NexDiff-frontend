@@ -2,6 +2,7 @@ import { useMemo, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { CheckCircle2, Copy, CreditCard, FileImage, ShieldCheck } from "lucide-react";
 import Button from "../components/Button";
+import SuccessPopup from "../components/SuccessPopup";
 import { sendPricingRequest } from "../api/api";
 import { UPI_ID, getAnalysisPlanById } from "../data/pricingPlans";
 
@@ -19,6 +20,8 @@ const PlanPayment = () => {
   const [status, setStatus] = useState("");
   const [copied, setCopied] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [showSuccess, setShowSuccess] = useState(false);
+  const [submitted, setSubmitted] = useState(false);
 
   const hasRequest = Boolean(request?.form);
   const isFree = amount === 0;
@@ -48,7 +51,7 @@ const PlanPayment = () => {
 
     try {
       setLoading(true);
-      const response = await sendPricingRequest({
+      await sendPricingRequest({
         planId: selectedPlan.id,
         planName: selectedPlan.name,
         packageLabel: selectedOption?.label || selectedPlan.note,
@@ -58,12 +61,9 @@ const PlanPayment = () => {
         ...request.form,
       });
 
-      setStatus(
-        response.data?.message ||
-          (isFree
-            ? "Request submitted. Our team will review it from the admin dashboard."
-            : "Payment proof submitted. Our team will verify it from the admin dashboard."),
-      );
+      setStatus("");
+      setSubmitted(true);
+      setShowSuccess(true);
     } catch (error) {
       setStatus(error.response?.data?.message || "Something went wrong. Please try again.");
     } finally {
@@ -73,6 +73,16 @@ const PlanPayment = () => {
 
   return (
     <main className="page-shell overflow-hidden">
+      <SuccessPopup
+        open={showSuccess}
+        title={isFree ? "Request submitted" : "Payment proof submitted"}
+        message={
+          isFree
+            ? "Thank you for sharing your business details. Our team will review your request and contact you soon."
+            : "Thank you for submitting your payment proof. Our team will verify it and contact you with the next steps."
+        }
+        onClose={() => setShowSuccess(false)}
+      />
       <section className="section-pad">
         <div className="container-wide grid min-w-0 gap-10 lg:grid-cols-[0.9fr_1.1fr]">
           <aside className="min-w-0">
@@ -183,8 +193,8 @@ const PlanPayment = () => {
               >
                 Back to Form
               </Button>
-              <Button type="submit" disabled={loading}>
-                {loading ? "Submitting..." : "Submit Request"}
+              <Button type="submit" disabled={loading || submitted}>
+                {loading ? "Submitting..." : submitted ? "Submitted" : "Submit Request"}
               </Button>
             </div>
           </form>
