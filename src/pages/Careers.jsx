@@ -59,7 +59,7 @@ const Careers = () => {
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
-    getJobPosts()
+    getJobPosts({ limit: 100 })
       .then((response) => {
         const jobs = response.data.jobs;
         const applyJobId = searchParams.get("apply");

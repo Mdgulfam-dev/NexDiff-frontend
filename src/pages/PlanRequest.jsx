@@ -5,6 +5,14 @@ import Button from "../components/Button";
 import { getAnalysisPlanById } from "../data/pricingPlans";
 
 const platforms = ["Instagram", "Facebook", "LinkedIn", "YouTube", "X", "Other"];
+const platformLinkPlaceholders = {
+  Instagram: "Instagram profile link *",
+  Facebook: "Facebook page/profile link *",
+  LinkedIn: "LinkedIn page/profile link *",
+  YouTube: "YouTube channel link *",
+  X: "X profile link *",
+  Other: "Website or other platform link *",
+};
 const contentTypes = ["Reels", "Posts", "Stories", "Videos", "Blogs", "Mixed"];
 const goals = [
   "More followers",
@@ -14,6 +22,27 @@ const goals = [
   "Sales growth",
   "Content consistency",
 ];
+
+const today = new Date().toISOString().split("T")[0];
+const namePattern = /^[a-zA-Z][a-zA-Z\s'.-]{1,}$/;
+const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+const phonePattern = /^[6-9]\d{9}$/;
+const datePattern = /^\d{4}-\d{2}-\d{2}$/;
+
+const isValidUrl = (value) => {
+  try {
+    const url = new URL(value);
+    return ["http:", "https:"].includes(url.protocol) && url.hostname.includes(".");
+  } catch {
+    return false;
+  }
+};
+
+const normalizeUrl = (value) => {
+  const trimmedValue = value.trim();
+  if (!trimmedValue) return "";
+  return /^https?:\/\//i.test(trimmedValue) ? trimmedValue : `https://${trimmedValue}`;
+};
 
 const PlanRequest = () => {
   const navigate = useNavigate();
@@ -31,6 +60,7 @@ const PlanRequest = () => {
     niche: "",
     accountStartDate: "",
     platform: [],
+    profileLinks: {},
     profileLink: "",
     contentType: [],
     goal: [],
@@ -39,6 +69,7 @@ const PlanRequest = () => {
   });
   const [status, setStatus] = useState("");
   const [invalidFields, setInvalidFields] = useState([]);
+  const [fieldErrors, setFieldErrors] = useState({});
 
   const selectedOption = selectedPlan.options?.[0] || null;
   const [planOption, setPlanOption] = useState(selectedOption);
@@ -47,6 +78,28 @@ const PlanRequest = () => {
   const updateField = (field, value) => {
     setForm((current) => ({ ...current, [field]: value }));
     setInvalidFields((current) => current.filter((item) => item !== field));
+    setFieldErrors((current) => {
+      const nextErrors = { ...current };
+      delete nextErrors[field];
+      return nextErrors;
+    });
+  };
+
+  const updateProfileLink = (platform, value) => {
+    const field = `profileLinks.${platform}`;
+    setForm((current) => ({
+      ...current,
+      profileLinks: {
+        ...current.profileLinks,
+        [platform]: value,
+      },
+    }));
+    setInvalidFields((current) => current.filter((item) => item !== field));
+    setFieldErrors((current) => {
+      const nextErrors = { ...current };
+      delete nextErrors[field];
+      return nextErrors;
+    });
   };
 
   const toggleMultiField = (field, value) => {
@@ -56,9 +109,23 @@ const PlanRequest = () => {
         ? currentValues.filter((item) => item !== value)
         : [...currentValues, value];
 
-      return { ...current, [field]: nextValues };
+      if (field !== "platform" || nextValues.includes(value)) {
+        return { ...current, [field]: nextValues };
+      }
+
+      const nextProfileLinks = { ...current.profileLinks };
+      delete nextProfileLinks[value];
+      return { ...current, [field]: nextValues, profileLinks: nextProfileLinks };
     });
-    setInvalidFields((current) => current.filter((item) => item !== field));
+    setInvalidFields((current) =>
+      current.filter((item) => item !== field && item !== `profileLinks.${value}`),
+    );
+    setFieldErrors((current) => {
+      const nextErrors = { ...current };
+      delete nextErrors[field];
+      delete nextErrors[`profileLinks.${value}`];
+      return nextErrors;
+    });
   };
 
   const optionButton = (field, value) => (
@@ -87,6 +154,15 @@ const PlanRequest = () => {
         : "border-[#101312]/10 focus:border-[#101312]"
     }`;
 
+  const getFieldError = (field) => fieldErrors[field];
+
+  const errorText = (field) =>
+    getFieldError(field) ? (
+      <p className="mt-2 break-words text-xs font-semibold text-[#9b3e1f]">
+        {getFieldError(field)}
+      </p>
+    ) : null;
+
   const sectionClass = (field) =>
     hasError(field)
       ? "rounded-lg border border-[#e05f2f]/40 bg-[#e05f2f]/5 p-3"
@@ -95,8 +171,10 @@ const PlanRequest = () => {
   const requiredFields = [
     "name",
     "phone",
+    "email",
     "businessName",
     "niche",
+    "accountStartDate",
     "platform",
     "contentType",
     "goal",
@@ -104,25 +182,107 @@ const PlanRequest = () => {
     "requirement",
   ];
 
+  const validateForm = () => {
+    const nextErrors = {};
+    const addError = (field, message) => {
+      nextErrors[field] = message;
+    };
+
+    requiredFields.forEach((field) => {
+      const value = form[field];
+      if (Array.isArray(value) ? value.length === 0 : !String(value || "").trim()) {
+        addError(field, "This field is required.");
+      }
+    });
+
+    if (form.name.trim() && !namePattern.test(form.name.trim())) {
+      addError("name", "Enter a valid name with at least 2 letters.");
+    }
+
+    const digitsOnlyPhone = form.phone.replace(/\D/g, "");
+    if (form.phone.trim() && !phonePattern.test(digitsOnlyPhone)) {
+      addError("phone", "Enter a valid 10-digit Indian mobile number.");
+    }
+
+    if (form.email.trim() && !emailPattern.test(form.email.trim())) {
+      addError("email", "Enter a valid email address.");
+    }
+
+    if (form.businessName.trim() && form.businessName.trim().length < 2) {
+      addError("businessName", "Business name must be at least 2 characters.");
+    }
+
+    if (form.niche.trim() && form.niche.trim().length < 2) {
+      addError("niche", "Niche must be at least 2 characters.");
+    }
+
+    if (form.accountStartDate.trim()) {
+      if (!datePattern.test(form.accountStartDate)) {
+        addError("accountStartDate", "Use a valid date in YYYY-MM-DD format.");
+      } else if (form.accountStartDate > today) {
+        addError("accountStartDate", "Account start date cannot be in the future.");
+      }
+    }
+
+    form.platform.forEach((platform) => {
+      const field = `profileLinks.${platform}`;
+      const normalizedLink = normalizeUrl(form.profileLinks[platform] || "");
+      if (!normalizedLink) {
+        addError(field, `${platform} profile link is required.`);
+      } else if (!isValidUrl(normalizedLink)) {
+        addError(field, "Enter a valid URL, for example https://example.com/profile.");
+      }
+    });
+
+    if (form.issue.trim() && form.issue.trim().length < 10) {
+      addError("issue", "Please describe the issue in at least 10 characters.");
+    }
+
+    if (form.requirement.trim() && form.requirement.trim().length < 10) {
+      addError("requirement", "Please describe your requirement in at least 10 characters.");
+    }
+
+    return nextErrors;
+  };
+
   const handleSubmit = (event) => {
     event.preventDefault();
 
-    const missingFields = requiredFields.filter((field) => {
-      const value = form[field];
-      return Array.isArray(value) ? value.length === 0 : !value.trim();
-    });
+    const validationErrors = validateForm();
+    const invalidFieldNames = Object.keys(validationErrors);
 
-    if (missingFields.length > 0) {
-      setInvalidFields(missingFields);
-      setStatus("Please complete the highlighted required fields before continuing.");
+    if (invalidFieldNames.length > 0) {
+      setInvalidFields(invalidFieldNames);
+      setFieldErrors(validationErrors);
+      setStatus("Please fix the highlighted fields before continuing.");
       return;
     }
+
+    const normalizedProfileLinks = form.platform.reduce((links, platform) => {
+      links[platform] = normalizeUrl(form.profileLinks[platform]);
+      return links;
+    }, {});
+
+    const normalizedForm = {
+      ...form,
+      name: form.name.trim(),
+      phone: form.phone.replace(/\D/g, ""),
+      email: form.email.trim(),
+      businessName: form.businessName.trim(),
+      niche: form.niche.trim(),
+      issue: form.issue.trim(),
+      requirement: form.requirement.trim(),
+      profileLinks: normalizedProfileLinks,
+      profileLink: form.platform
+        .map((platform) => `${platform}: ${normalizedProfileLinks[platform]}`)
+        .join(", "),
+    };
 
     navigate("/pricing/payment", {
       state: {
         planId: selectedPlan.id,
         planOption,
-        form,
+        form: normalizedForm,
       },
     });
   };
@@ -217,10 +377,10 @@ const PlanRequest = () => {
               />
               <input
                 type="email"
-                placeholder="Email"
+                placeholder="Email *"
                 value={form.email}
                 onChange={(event) => updateField("email", event.target.value)}
-                className="min-w-0 rounded-lg border border-[#101312]/10 bg-[#f7f3ea] px-4 py-3 outline-none transition focus:border-[#101312]"
+                className={fieldClass("email")}
               />
               <input
                 type="text"
@@ -237,12 +397,21 @@ const PlanRequest = () => {
                 className={fieldClass("niche")}
               />
               <input
-                type="text"
-                placeholder="Account start date"
+                type="date"
+                aria-label="Account start date"
+                max={today}
                 value={form.accountStartDate}
                 onChange={(event) => updateField("accountStartDate", event.target.value)}
-                className="min-w-0 rounded-lg border border-[#101312]/10 bg-[#f7f3ea] px-4 py-3 outline-none transition focus:border-[#101312]"
+                className={fieldClass("accountStartDate")}
               />
+            </div>
+            <div className="mt-2 grid min-w-0 gap-x-4 gap-y-2 sm:grid-cols-2">
+              {errorText("name")}
+              {errorText("phone")}
+              {errorText("email")}
+              {errorText("businessName")}
+              {errorText("niche")}
+              {errorText("accountStartDate")}
             </div>
 
             <div className={`mt-6 ${sectionClass("platform")}`}>
@@ -255,15 +424,29 @@ const PlanRequest = () => {
               <div className="mt-3 grid min-w-0 gap-3 sm:grid-cols-3">
                 {platforms.map((platform) => optionButton("platform", platform))}
               </div>
+              {errorText("platform")}
             </div>
 
-            <input
-              type="url"
-              placeholder="Profile or website link"
-              value={form.profileLink}
-              onChange={(event) => updateField("profileLink", event.target.value)}
-              className="mt-4 w-full min-w-0 rounded-lg border border-[#101312]/10 bg-[#f7f3ea] px-4 py-3 outline-none transition focus:border-[#101312]"
-            />
+            {form.platform.length > 0 && (
+              <div className="mt-4 grid min-w-0 gap-4 sm:grid-cols-2">
+                {form.platform.map((platform) => {
+                  const field = `profileLinks.${platform}`;
+                  return (
+                    <div key={platform} className="min-w-0">
+                      <input
+                        type="text"
+                        inputMode="url"
+                        placeholder={platformLinkPlaceholders[platform]}
+                        value={form.profileLinks[platform] || ""}
+                        onChange={(event) => updateProfileLink(platform, event.target.value)}
+                        className={`${fieldClass(field)} w-full`}
+                      />
+                      {errorText(field)}
+                    </div>
+                  );
+                })}
+              </div>
+            )}
 
             <div className="mt-6 grid min-w-0 gap-6 lg:grid-cols-2">
               <div className={sectionClass("contentType")}>
@@ -273,6 +456,7 @@ const PlanRequest = () => {
                 <div className="mt-3 grid min-w-0 gap-3">
                   {contentTypes.map((type) => optionButton("contentType", type))}
                 </div>
+                {errorText("contentType")}
               </div>
               <div className={sectionClass("goal")}>
                 <p className={`text-sm font-semibold ${hasError("goal") ? "text-[#9b3e1f]" : "text-[#101312]/68"}`}>
@@ -281,24 +465,31 @@ const PlanRequest = () => {
                 <div className="mt-3 grid min-w-0 gap-3">
                   {goals.map((goal) => optionButton("goal", goal))}
                 </div>
+                {errorText("goal")}
               </div>
             </div>
 
             <div className="mt-6 grid min-w-0 gap-4">
-              <textarea
-                rows="4"
-                placeholder="What issue are you facing right now? *"
-                value={form.issue}
-                onChange={(event) => updateField("issue", event.target.value)}
-                className={fieldClass("issue")}
-              />
-              <textarea
-                rows="4"
-                placeholder="What do you require from NexDiff? *"
-                value={form.requirement}
-                onChange={(event) => updateField("requirement", event.target.value)}
-                className={fieldClass("requirement")}
-              />
+              <div>
+                <textarea
+                  rows="4"
+                  placeholder="What issue are you facing right now? *"
+                  value={form.issue}
+                  onChange={(event) => updateField("issue", event.target.value)}
+                  className={`${fieldClass("issue")} w-full`}
+                />
+                {errorText("issue")}
+              </div>
+              <div>
+                <textarea
+                  rows="4"
+                  placeholder="What do you require from NexDiff? *"
+                  value={form.requirement}
+                  onChange={(event) => updateField("requirement", event.target.value)}
+                  className={`${fieldClass("requirement")} w-full`}
+                />
+                {errorText("requirement")}
+              </div>
             </div>
 
             <Button type="submit" className="mt-7 w-full">

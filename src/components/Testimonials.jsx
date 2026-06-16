@@ -21,7 +21,7 @@ const Testimonials = () => {
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
-    getTestimonials()
+    getTestimonials({ limit: 9 })
       .then((response) => setTestimonials(response.data.testimonials))
       .catch(() => setTestimonials([]));
   }, []);
