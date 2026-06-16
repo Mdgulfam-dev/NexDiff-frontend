@@ -53,6 +53,7 @@ const statusStyles = {
   payment_pending: "bg-[#dc2626]/10 text-[#991b1b] border-[#dc2626]/20",
   payment_received: "bg-[#059669]/10 text-[#047857] border-[#059669]/20",
   in_progress: "bg-[#0891b2]/10 text-[#0e7490] border-[#0891b2]/20",
+  selected: "bg-[#facc15]/20 text-[#854d0e] border-[#facc15]/35",
   completed: "bg-[#16a34a]/10 text-[#15803d] border-[#16a34a]/20",
   closed: "bg-[#101312]/10 text-[#101312]/65 border-[#101312]/15",
   rejected: "bg-[#6b7280]/10 text-[#4b5563] border-[#6b7280]/20",
@@ -67,6 +68,7 @@ const leadStatuses = [
   { value: "payment_pending", label: "Payment Pending" },
   { value: "payment_received", label: "Payment Received" },
   { value: "in_progress", label: "In Progress" },
+  { value: "selected", label: "Selected" },
   { value: "completed", label: "Completed" },
   { value: "closed", label: "Closed" },
   { value: "rejected", label: "Rejected" },
@@ -878,6 +880,7 @@ const AdminDashboard = () => {
       setSubmissions((current) =>
         current.map((item) => (item._id === id ? response.data.submission : item)),
       );
+      setStatus(response.data?.message || "Status updated.");
     } catch (error) {
       setStatus(error.response?.data?.message || "Unable to update status.");
     }
