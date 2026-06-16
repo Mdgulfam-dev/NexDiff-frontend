@@ -21,7 +21,7 @@ const BlogDetails = () => {
       .catch(() => setBlog(null))
       .finally(() => setLoading(false));
 
-    getBlogPosts()
+    getBlogPosts({ limit: 6 })
       .then((response) => {
         setAllBlogs(response.data.posts);
       })

@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { Link, useParams } from "react-router-dom";
 import { ArrowLeft, ArrowUpRight, BriefcaseBusiness, CheckCircle2, MapPin } from "lucide-react";
 import ShareButton from "../components/ShareButton";
-import { getJobPosts } from "../api/api";
+import { getJobPost } from "../api/api";
 
 const formatJobDetails = (focus = "") =>
   focus
@@ -11,16 +11,6 @@ const formatJobDetails = (focus = "") =>
     .filter(Boolean);
 
 const getJobPath = (job) => `/careers/${encodeURIComponent(job.jobId || job._id || job.title)}`;
-
-const findJobByParam = (jobs, jobId) => {
-  const decodedJobId = decodeURIComponent(jobId || "").toLowerCase();
-
-  return jobs.find(
-    (job) =>
-      String(job.jobId || "").toLowerCase() === decodedJobId ||
-      String(job._id || "").toLowerCase() === decodedJobId,
-  );
-};
 
 const JobDetails = () => {
   const { jobId } = useParams();
@@ -31,15 +21,10 @@ const JobDetails = () => {
   useEffect(() => {
     setLoading(true);
 
-    getJobPosts()
+    getJobPost(jobId)
       .then((response) => {
-        const jobs = response.data.jobs || [];
-        const matchedJob = findJobByParam(jobs, jobId);
-
-        setJob(matchedJob || null);
-        setRelatedJobs(
-          jobs.filter((item) => String(item.jobId || item._id) !== String(matchedJob?.jobId || matchedJob?._id)),
-        );
+        setJob(response.data.job || null);
+        setRelatedJobs(response.data.relatedJobs || []);
       })
       .catch(() => {
         setJob(null);

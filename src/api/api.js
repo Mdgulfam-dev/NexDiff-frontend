@@ -29,30 +29,31 @@ export const getAdminUsers = () => API.get("/admin/users");
 export const createAdminUser = (data) => API.post("/admin/users", data);
 export const updateAdminUser = (id, data) => API.patch(`/admin/users/${id}`, data);
 export const deleteAdminUser = (id) => API.delete(`/admin/users/${id}`);
-export const getAdminSubmissions = (type = "all") =>
+export const getAdminSubmissions = (type = "all", params = {}) =>
   API.get("/admin/submissions", {
-    params: type === "all" ? {} : { type },
+    params: type === "all" ? params : { ...params, type },
   });
 export const updateSubmissionStatus = (id, status) =>
   API.patch(`/admin/submissions/${id}/status`, { status });
 
-export const getBlogPosts = () => API.get("/blogs");
+export const getBlogPosts = (params = {}) => API.get("/blogs", { params });
 export const getBlogPost = (slug) => API.get(`/blogs/${slug}`);
-export const getJobPosts = () => API.get("/jobs");
-export const getTestimonials = () => API.get("/testimonials");
+export const getJobPosts = (params = {}) => API.get("/jobs", { params });
+export const getJobPost = (jobId) => API.get(`/jobs/${encodeURIComponent(jobId)}`);
+export const getTestimonials = (params = {}) => API.get("/testimonials", { params });
 export const submitTestimonial = (data) => API.post("/testimonials", data);
 
-export const getAdminBlogPosts = () => API.get("/admin/blogs");
+export const getAdminBlogPosts = (params = {}) => API.get("/admin/blogs", { params });
 export const createAdminBlogPost = (data) => API.post("/admin/blogs", data);
 export const updateAdminBlogPost = (id, data) => API.patch(`/admin/blogs/${id}`, data);
 export const deleteAdminBlogPost = (id) => API.delete(`/admin/blogs/${id}`);
 
-export const getAdminJobPosts = () => API.get("/admin/jobs");
+export const getAdminJobPosts = (params = {}) => API.get("/admin/jobs", { params });
 export const createAdminJobPost = (data) => API.post("/admin/jobs", data);
 export const updateAdminJobPost = (id, data) => API.patch(`/admin/jobs/${id}`, data);
 export const deleteAdminJobPost = (id) => API.delete(`/admin/jobs/${id}`);
 
-export const getAdminTestimonials = () => API.get("/admin/testimonials");
+export const getAdminTestimonials = (params = {}) => API.get("/admin/testimonials", { params });
 export const updateAdminTestimonialStatus = (id, status) =>
   API.patch(`/admin/testimonials/${id}/status`, { status });
 export const deleteAdminTestimonial = (id) => API.delete(`/admin/testimonials/${id}`);

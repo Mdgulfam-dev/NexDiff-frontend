@@ -14,7 +14,7 @@ const Blog = () => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    getBlogPosts()
+    getBlogPosts({ limit: 50 })
       .then((response) => {
         setPosts(response.data.posts);
       })
@@ -33,8 +33,8 @@ const Blog = () => {
       const matchCategory = active === "All" || blog.category === active;
       const matchSearch =
         blog.title.toLowerCase().includes(searchText) ||
-        blog.desc.toLowerCase().includes(searchText) ||
-        blog.content.toLowerCase().includes(searchText);
+        blog.category.toLowerCase().includes(searchText) ||
+        blog.desc.toLowerCase().includes(searchText);
 
       return matchCategory && matchSearch;
     });
