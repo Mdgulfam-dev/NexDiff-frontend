@@ -175,25 +175,77 @@ const formatValue = (value) => {
   return value || "Not specified";
 };
 
+const dataUrlToBlob = (dataUrl) => {
+  const [metadata = "", data = ""] = String(dataUrl || "").split(",");
+  const mimeType = metadata.match(/^data:([^;]+);base64$/)?.[1] || "application/octet-stream";
+
+  if (!data) {
+    return null;
+  }
+
+  const binary = window.atob(data);
+  const bytes = new Uint8Array(binary.length);
+
+  for (let index = 0; index < binary.length; index += 1) {
+    bytes[index] = binary.charCodeAt(index);
+  }
+
+  return new Blob([bytes], { type: mimeType });
+};
+
+const openResume = (resume) => {
+  const blob = dataUrlToBlob(resume?.dataUrl);
+
+  if (!blob) {
+    window.open(resume?.dataUrl, "_blank", "noopener,noreferrer");
+    return;
+  }
+
+  const resumeUrl = URL.createObjectURL(blob);
+  const resumeWindow = window.open(resumeUrl, "_blank", "noopener,noreferrer");
+
+  if (!resumeWindow) {
+    const link = document.createElement("a");
+    link.href = resumeUrl;
+    link.download = resume?.name || "resume";
+    link.click();
+  }
+
+  window.setTimeout(() => URL.revokeObjectURL(resumeUrl), 60 * 1000);
+};
+
+const downloadResume = (resume) => {
+  const blob = dataUrlToBlob(resume?.dataUrl);
+  const resumeUrl = blob ? URL.createObjectURL(blob) : resume?.dataUrl;
+  const link = document.createElement("a");
+
+  link.href = resumeUrl;
+  link.download = resume?.name || "resume";
+  link.click();
+
+  if (blob) {
+    window.setTimeout(() => URL.revokeObjectURL(resumeUrl), 1000);
+  }
+};
+
 const renderFieldValue = (field, value) => {
   if (field === "resume" && value?.dataUrl) {
     return (
       <div className="flex flex-wrap gap-2">
-        <a
-          href={value.dataUrl}
-          target="_blank"
-          rel="noreferrer"
+        <button
+          type="button"
+          onClick={() => openResume(value)}
           className="inline-flex min-h-10 items-center justify-center rounded-lg border border-[#101312]/15 bg-white px-4 py-2 text-sm font-semibold text-[#101312]"
         >
           View Resume
-        </a>
-        <a
-          href={value.dataUrl}
-          download={value.name || "resume"}
+        </button>
+        <button
+          type="button"
+          onClick={() => downloadResume(value)}
           className="inline-flex min-h-10 items-center justify-center rounded-lg border border-[#101312] bg-[#101312] px-4 py-2 text-sm font-semibold text-white"
         >
           Download Resume
-        </a>
+        </button>
       </div>
     );
   }
