@@ -7,6 +7,14 @@ import { getBlogPosts } from "../api/api";
 
 const getBlogPath = (blog) => `/blog/${blog.slug || blog.id}`;
 
+const getText = (value) => String(value || "");
+
+const getReadTime = (content) => {
+  const words = getText(content).trim().split(/\s+/).filter(Boolean);
+
+  return words.length ? Math.ceil(words.length / 200) : null;
+};
+
 const Blog = () => {
   const [active, setActive] = useState("All");
   const [search, setSearch] = useState("");
@@ -16,7 +24,7 @@ const Blog = () => {
   useEffect(() => {
     getBlogPosts({ limit: 50 })
       .then((response) => {
-        setPosts(response.data.posts);
+        setPosts(Array.isArray(response.data?.posts) ? response.data.posts : []);
       })
       .catch(() => {
         setPosts([]);
@@ -32,16 +40,16 @@ const Blog = () => {
     return posts.filter((blog) => {
       const matchCategory = active === "All" || blog.category === active;
       const matchSearch =
-        blog.title.toLowerCase().includes(searchText) ||
-        blog.category.toLowerCase().includes(searchText) ||
-        blog.desc.toLowerCase().includes(searchText);
+        getText(blog.title).toLowerCase().includes(searchText) ||
+        getText(blog.category).toLowerCase().includes(searchText) ||
+        getText(blog.desc).toLowerCase().includes(searchText);
 
       return matchCategory && matchSearch;
     });
   }, [search, active, posts]);
 
   const categories = useMemo(
-    () => ["All", ...new Set(posts.map((post) => post.category))],
+    () => ["All", ...new Set(posts.map((post) => post.category).filter(Boolean))],
     [posts],
   );
 
@@ -166,9 +174,11 @@ const Blog = () => {
                         {blog.title}
                       </h3>
                     </Link>
-                    <p className="mt-2 text-xs text-[#101312]/45">
-                      {Math.ceil(blog.content.split(" ").length / 200)} min read
-                    </p>
+                    {getReadTime(blog.content) && (
+                      <p className="mt-2 text-xs text-[#101312]/45">
+                        {getReadTime(blog.content)} min read
+                      </p>
+                    )}
                     <p className="mt-3 text-sm leading-6 text-[#101312]/62">{blog.desc}</p>
                   </div>
                 </article>
