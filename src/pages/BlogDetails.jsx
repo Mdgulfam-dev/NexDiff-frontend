@@ -7,6 +7,14 @@ import { ArrowLeft, ArrowUpRight, BookOpen, Clock3 } from "lucide-react";
 import ShareButton from "../components/ShareButton";
 import { getBlogPost, getBlogPosts } from "../api/api";
 
+const getText = (value) => String(value || "");
+
+const getReadTime = (content) => {
+  const words = getText(content).trim().split(/\s+/).filter(Boolean);
+
+  return words.length ? Math.ceil(words.length / 200) : null;
+};
+
 const BlogDetails = () => {
   const { id } = useParams();
   const [blog, setBlog] = useState(null);
@@ -17,13 +25,13 @@ const BlogDetails = () => {
     setLoading(true);
 
     getBlogPost(id)
-      .then((response) => setBlog(response.data.post))
+      .then((response) => setBlog(response.data?.post || null))
       .catch(() => setBlog(null))
       .finally(() => setLoading(false));
 
     getBlogPosts({ limit: 6 })
       .then((response) => {
-        setAllBlogs(response.data.posts);
+        setAllBlogs(Array.isArray(response.data?.posts) ? response.data.posts : []);
       })
       .catch(() => setAllBlogs([]));
   }, [id]);
@@ -54,7 +62,7 @@ const BlogDetails = () => {
   const related = allBlogs.filter(
     (item) => item.category === blog.category && String(item.slug || item.id) !== String(blog.slug || blog.id),
   );
-  const readTime = Math.ceil(blog.content.trim().split(/\s+/).length / 200);
+  const readTime = getReadTime(blog.content);
   const blogPath = `/blog/${blog.slug || blog.id}`;
 
   return (
@@ -93,7 +101,7 @@ const BlogDetails = () => {
                 </div>
                 <div className="mt-4 flex items-center gap-2 text-sm font-semibold text-[#101312]/62">
                   <Clock3 size={16} className="text-[#16837a]" />
-                  {readTime} min read
+                  {readTime ? `${readTime} min read` : "Article"}
                 </div>
                 <ShareButton
                   title={blog.title}
@@ -224,7 +232,7 @@ const BlogDetails = () => {
                 },
               }}
             >
-              {blog.content}
+              {getText(blog.content)}
             </ReactMarkdown>
             </div>
           </div>

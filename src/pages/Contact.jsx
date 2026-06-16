@@ -53,9 +53,9 @@ const Contact = () => {
       setLoading(true);
       setStatus("");
 
-      await sendContactForm(form);
+      const response = await sendContactForm(form);
 
-      setStatus("Thanks. Your project brief has been saved and our team will contact you soon.");
+      setStatus(response.data?.message || "Thanks. Your project brief has been saved and our team will contact you soon.");
       setStep(1);
       setForm({
         name: "",

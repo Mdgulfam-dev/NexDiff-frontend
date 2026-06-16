@@ -48,7 +48,7 @@ const PlanPayment = () => {
 
     try {
       setLoading(true);
-      await sendPricingRequest({
+      const response = await sendPricingRequest({
         planId: selectedPlan.id,
         planName: selectedPlan.name,
         packageLabel: selectedOption?.label || selectedPlan.note,
@@ -59,9 +59,10 @@ const PlanPayment = () => {
       });
 
       setStatus(
-        isFree
-          ? "Request submitted. Our team will review it from the admin dashboard."
-          : "Payment proof submitted. Our team will verify it from the admin dashboard.",
+        response.data?.message ||
+          (isFree
+            ? "Request submitted. Our team will review it from the admin dashboard."
+            : "Payment proof submitted. Our team will verify it from the admin dashboard."),
       );
     } catch (error) {
       setStatus(error.response?.data?.message || "Something went wrong. Please try again.");
