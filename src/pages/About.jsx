@@ -173,9 +173,9 @@ const About = () => {
 
           <div className="mt-16 grid gap-4 md:grid-cols-3">
             {[
-              { value: "10+", label: "Projects Completed" },
-              { value: "15+", label: "Clients Served" },
-              { value: "11+", label: "Industries Served" },
+              { value: "50+", label: "Projects Delivered" },
+              { value: "30+", label: "Happy Clients" },
+              { value: "10+", label: "Service Areas" },
             ].map((item) => (
               <div key={item.label} className="rounded-lg border border-[#101312]/10 bg-[#101312] p-6 text-white">
                 <p className="text-4xl font-semibold text-[#c7f9cc]">
