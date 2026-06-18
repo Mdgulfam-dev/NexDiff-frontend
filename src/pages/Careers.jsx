@@ -16,6 +16,7 @@ import Button from "../components/Button";
 import ShareButton from "../components/ShareButton";
 import SuccessPopup from "../components/SuccessPopup";
 import { getJobPosts, sendCareerApplication } from "../api/api";
+import { getJobSummary } from "../utils/jobFormatting";
 
 const benefits = [
   "Work on real business websites, funnels, and growth systems",
@@ -30,12 +31,6 @@ const process = [
   "Practical task or discussion",
   "Offer, onboarding, and project allocation",
 ];
-
-const formatJobDetails = (focus = "") =>
-  focus
-    .split(/\r?\n/)
-    .map((line) => line.trim())
-    .filter(Boolean);
 
 const getJobSharePath = (job) => `/careers/${encodeURIComponent(job.jobId || job._id || job.title)}`;
 
@@ -270,8 +265,7 @@ const Careers = () => {
               </div>
             ) : (
               openings.map((job) => {
-                const details = formatJobDetails(job.focus);
-                const summary = details[0] || job.focus;
+                const summary = getJobSummary(job.focus);
 
                 return (
                   <article
@@ -315,7 +309,7 @@ const Careers = () => {
                         overflow: "hidden",
                       }}
                     >
-                      {summary.replace(/^[-•]\s*/, "")}
+                      {summary}
                     </p>
 
                     <div className="mt-6 grid gap-3 sm:grid-cols-2">
