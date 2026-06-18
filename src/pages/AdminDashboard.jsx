@@ -36,6 +36,7 @@ import {
   updateAdminTestimonialStatus,
   updateSubmissionStatus,
 } from "../api/api";
+import { getJobSummary } from "../utils/jobFormatting";
 
 const leadTabs = [
   { id: "all", label: "All", icon: Inbox },
@@ -309,12 +310,6 @@ const getLeadMeta = (submission) => {
 
 const getSearchableText = (value) =>
   JSON.stringify(value || {}).toLowerCase();
-
-const getJobDetailLines = (focus = "") =>
-  focus
-    .split(/\r?\n/)
-    .map((line) => line.trim())
-    .filter(Boolean);
 
 const paginate = (items, page) => {
   const start = (page - 1) * pageSize;
@@ -1531,7 +1526,7 @@ const AdminDashboard = () => {
                     </div>
                     <textarea
                       rows="7"
-                      placeholder={"Role details, one point per line\nExample:\n- Build React dashboards\n- Skills: React, Tailwind, API integration\n- 1+ year experience preferred"}
+                      placeholder={"Role details\nExample:\nAbout the role:\nWrite a short paragraph about the position.\n\nResponsibilities:\n- Build React dashboards\n- Integrate APIs\n\nRequirements:\n- Skills: React, Tailwind, API integration\n- 1+ year experience preferred"}
                       value={jobForm.focus}
                       onChange={(event) =>
                         setJobForm({ ...jobForm, focus: event.target.value })
@@ -1643,16 +1638,11 @@ const AdminDashboard = () => {
                             {contentMode === "jobs" && (
                               <div className="mt-3 rounded-lg border border-[#101312]/10 bg-[#f7f3ea] p-3">
                                 <p className="text-xs font-semibold uppercase tracking-[0.14em] text-[#101312]/42">
-                                  Role details
+                                  Role summary
                                 </p>
-                                <ul className="mt-2 space-y-1.5">
-                                  {getJobDetailLines(item.focus).slice(0, 4).map((line) => (
-                                    <li key={line} className="flex min-w-0 gap-2 text-sm leading-6 text-[#101312]/68">
-                                      <span className="mt-2 h-1.5 w-1.5 shrink-0 rounded-full bg-[#16837a]" />
-                                      <span className="min-w-0 break-words">{line.replace(/^[-•]\s*/, "")}</span>
-                                    </li>
-                                  ))}
-                                </ul>
+                                <p className="mt-2 break-words text-sm leading-6 text-[#101312]/68">
+                                  {getJobSummary(item.focus) || "No role details added yet."}
+                                </p>
                               </div>
                             )}
                           </div>

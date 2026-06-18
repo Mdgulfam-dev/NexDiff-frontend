@@ -3,12 +3,7 @@ import { Link, useParams } from "react-router-dom";
 import { ArrowLeft, ArrowUpRight, BriefcaseBusiness, CheckCircle2, MapPin } from "lucide-react";
 import ShareButton from "../components/ShareButton";
 import { getJobPost } from "../api/api";
-
-const formatJobDetails = (focus = "") =>
-  focus
-    .split(/\r?\n/)
-    .map((line) => line.trim())
-    .filter(Boolean);
+import { parseJobDetails } from "../utils/jobFormatting";
 
 const getJobPath = (job) => `/careers/${encodeURIComponent(job.jobId || job._id || job.title)}`;
 
@@ -58,7 +53,7 @@ const JobDetails = () => {
     );
   }
 
-  const details = formatJobDetails(job.focus);
+  const details = parseJobDetails(job.focus);
   const applyPath = `/careers?apply=${encodeURIComponent(job.jobId || job._id || job.title)}`;
 
   return (
@@ -125,18 +120,53 @@ const JobDetails = () => {
 
           <article className="rounded-lg border border-[#101312]/10 bg-white px-5 py-7 shadow-[0_18px_48px_rgba(16,19,18,0.08)] sm:px-8 sm:py-10">
             <h2 className="text-2xl font-semibold text-[#101312]">Complete job details</h2>
-            {details.length > 1 ? (
-              <ul className="mt-6 space-y-4">
-                {details.map((line) => (
-                  <li key={line} className="flex min-w-0 gap-3 text-base leading-8 text-[#101312]/70">
-                    <CheckCircle2 size={18} className="mt-1.5 shrink-0 text-[#16837a]" />
-                    <span className="min-w-0 break-words">{line.replace(/^[-•]\s*/, "")}</span>
-                  </li>
-                ))}
-              </ul>
+            {details.length > 0 ? (
+              <div className="mt-6 space-y-6">
+                {details.map((block, index) => {
+                  if (block.type === "heading") {
+                    const HeadingTag = block.level <= 1 ? "h3" : "h4";
+
+                    return (
+                      <HeadingTag
+                        key={`${block.type}-${block.text}-${index}`}
+                        className={`break-words font-semibold text-[#101312] ${
+                          block.level <= 1 ? "text-2xl" : "text-xl"
+                        }`}
+                      >
+                        {block.text}
+                      </HeadingTag>
+                    );
+                  }
+
+                  if (block.type === "list") {
+                    return (
+                      <ul key={`${block.type}-${index}`} className="space-y-3">
+                        {block.items.map((item, itemIndex) => (
+                          <li
+                            key={`${item}-${itemIndex}`}
+                            className="flex min-w-0 gap-3 text-base leading-8 text-[#101312]/70"
+                          >
+                            <CheckCircle2 size={18} className="mt-1.5 shrink-0 text-[#16837a]" />
+                            <span className="min-w-0 break-words">{item}</span>
+                          </li>
+                        ))}
+                      </ul>
+                    );
+                  }
+
+                  return (
+                    <p
+                      key={`${block.type}-${block.text}-${index}`}
+                      className="break-words text-base leading-8 text-[#101312]/70"
+                    >
+                      {block.text}
+                    </p>
+                  );
+                })}
+              </div>
             ) : (
               <p className="mt-6 break-words text-base leading-8 text-[#101312]/70">
-                {job.focus}
+                Details for this role will be updated soon.
               </p>
             )}
           </article>
